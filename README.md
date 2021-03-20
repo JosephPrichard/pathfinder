@@ -8,10 +8,6 @@ This project is an educational Grid based Pathfinding tool written in Typescript
 
 This is is the react version of an older project I made: [here](https://github.com/JosephPrichard/Pathfinder)
 
-Pathfinder is an ongoing project and is maintained regularly.
-
-The source code is included in the src folder, while the files the github pages demo uses are in root.
-
 ## Build Process
 
 This project uses Webpack and Npm to compile the Typescript src files into the bundle.js file located in the root directory of the repository. 
