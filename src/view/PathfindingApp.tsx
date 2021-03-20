@@ -121,7 +121,7 @@ class PathfindingApp extends React.Component<IProps, IState>
                                        onClickOctile={this.settingsManager.changeOctile}/>
                 </DraggablePanel>
                 <TopBar onChangeHeight={this.onChangeHeight}>
-                    <a href='https://github.com/JosephPrichard/Pathfinder' className='title'>
+                    <a href='https://github.com/JosephPrichard/PathfindingReact' className='title'>
                         Pathfinding Visualizer
                     </a>
                     <div className='top-container'>
