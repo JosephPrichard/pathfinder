@@ -35,7 +35,7 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
     constructor(props: SpeedProps) {
         super(props);
         this.state = {
-            speedText: 'Medium'
+            speedText: '10'
         }
     }
 
@@ -45,9 +45,9 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
      * @param value
      */
     onChangeSpeed = (value: number) => {
-        const speedTexts = ['Slowest', 'Slower', 'Medium', 'Faster', 'Fastest'];
+        const speedTexts = value*5;
         this.setState({
-            speedText: speedTexts[value-1]
+            speedText: String(speedTexts)
         })
         this.props.onChange(value);
     }
@@ -58,7 +58,7 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
                 <div className='slider-text'>
                     Speed: <div className='speed-text'> {this.state.speedText} </div>
                 </div>
-                <SteppedRangeSlider min={1} max={5} step={1} default={3}
+                <SteppedRangeSlider min={1} max={10} step={1} default={2}
                                     sliderStyle='slider speed-slider'
                                     onChange={this.onChangeSpeed}
                 />
@@ -68,6 +68,11 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
                     <option>3</option>
                     <option>4</option>
                     <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
                 </datalist>
             </div>
         );

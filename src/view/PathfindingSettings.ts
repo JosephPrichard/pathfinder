@@ -1,9 +1,3 @@
-export const SLOWEST = 16;
-export const SLOWER = 12;
-export const MEDIUM = 8;
-export const FASTER = 4;
-export const FASTEST = 2;
-
 interface PathfindingSettings
 {
     visualizeAlg: boolean,
@@ -17,7 +11,7 @@ interface PathfindingSettings
 export function getDefaultSettings() {
     return {
         visualizeAlg: true,
-        delayInc: MEDIUM,
+        delayInc: 10,
         algorithm: 'a*',
         heuristicKey: 'euclidean',
         navigatorKey: 'asterisk',

@@ -1,4 +1,4 @@
-import PathfindingSettings, {FASTER, FASTEST, getDefaultSettings, MEDIUM, SLOWER, SLOWEST} from './PathfindingSettings';
+import PathfindingSettings, {getDefaultSettings} from './PathfindingSettings';
 
 class SettingsManager
 {
@@ -21,8 +21,7 @@ class SettingsManager
     }
 
     changeSpeed = (value: number) => {
-        const speeds = [SLOWEST, SLOWER, MEDIUM, FASTER, FASTEST];
-        this.settings.delayInc = speeds[value-1];
+        this.settings.delayInc = value*5;
     }
 
     changeManhattan = () => {

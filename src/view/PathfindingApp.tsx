@@ -121,7 +121,7 @@ class PathfindingApp extends React.Component<IProps, IState>
                                        onClickOctile={this.settingsManager.changeOctile}/>
                 </DraggablePanel>
                 <TopBar onChangeHeight={this.onChangeHeight}>
-                    <a href='https://github.com/JosephPrichard/PathfinderReact' className='title'>
+                    <a href='https://github.com/JosephPrichard/Pathfinder' className='title'>
                         Pathfinding Visualizer
                     </a>
                     <div className='top-container'>
@@ -129,8 +129,8 @@ class PathfindingApp extends React.Component<IProps, IState>
                         <VisualizeButton color={this.state.vButtonColor} onClick={this.doPathfinding}/>
                         <ClearDropDown onClickTiles={this.clearTiles}
                                        onClickPath={this.clearPath}/>
-                        <SettingsButton onClick={this.toggleSettings}/>
                         <MazeButton onClick={this.createMaze}/>
+                        <SettingsButton onClick={this.toggleSettings}/>
                     </div>
                 </TopBar>
                 <PathfindingVisualizer ref={this.grid} onChangeVisualizing={this.changeVButtonColor} topMargin={this.state.topMargin}
