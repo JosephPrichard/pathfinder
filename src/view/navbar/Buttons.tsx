@@ -1,4 +1,5 @@
 import React from 'react';
+import mazeImg from '../web-content/maze_image_button.png';
 
 interface IProps {
     onClick: ()  => void
@@ -36,7 +37,7 @@ export class MazeButton extends React.Component<IProps>
     render() {
         return (
             <button className='button maze-button' onClick={this.props.onClick}>
-                Maze
+                <img src={mazeImg} className={'maze-img'} alt='Maze'/>
             </button>
         );
     }

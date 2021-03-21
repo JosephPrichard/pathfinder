@@ -129,8 +129,8 @@ class PathfindingApp extends React.Component<IProps, IState>
                         <VisualizeButton color={this.state.vButtonColor} onClick={this.doPathfinding}/>
                         <ClearDropDown onClickTiles={this.clearTiles}
                                        onClickPath={this.clearPath}/>
-                        <MazeButton onClick={this.createMaze}/>
                         <SettingsButton onClick={this.toggleSettings}/>
+                        <MazeButton onClick={this.createMaze}/>
                     </div>
                 </TopBar>
                 <PathfindingVisualizer ref={this.grid} onChangeVisualizing={this.changeVButtonColor} topMargin={this.state.topMargin}
