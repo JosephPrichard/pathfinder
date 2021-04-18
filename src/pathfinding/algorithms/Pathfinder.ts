@@ -35,6 +35,8 @@ abstract class Pathfinder
         this.recentSearch.push(node);
     }
 
+    abstract getAlgorithmName(): string;
+
     /**
      * Finds the best path between initial and goal on the grid
      * and returns it in an array
@@ -49,7 +51,7 @@ abstract class Pathfinder
      * @param onGeneration to determine what to do when a node's generation is expanded
      */
     reconstructSolution(onGeneration: (nodes: Node) => void) {
-        for(let node of this.recentSearch) {
+        for(const node of this.recentSearch) {
             onGeneration(node);
         }
     }
@@ -70,7 +72,7 @@ export function reconstructPath(bottomLeaf: Node): Tile[] {
  * @param bottomLeaf bottom of the tree to start from
  */
 export function reconstructPathReversed(bottomLeaf: Node): Tile[] {
-    let path: Tile[] = [];
+    const path: Tile[] = [];
     while(bottomLeaf.parent !== null) {
         path.push(bottomLeaf.tile);
         bottomLeaf = bottomLeaf.parent;

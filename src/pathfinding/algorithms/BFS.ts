@@ -5,6 +5,10 @@ import {Node} from './Node';
 
 class BFSPathfinder extends Pathfinder
 {
+    getAlgorithmName(): string {
+        return 'Breadth-First-Search';
+    }
+
     /**
      * Implementation of BFS to find the shortest path from initial to point
      * Always returns the shortest path, but performs poorly on larger grids

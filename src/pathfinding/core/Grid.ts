@@ -22,7 +22,7 @@ export interface Grid
  * and y corresponds to the row of the matrix
  * TileData.ts should be treated like graph nodes
  */
-class SquareGrid implements Grid
+class GridGraph implements Grid
 {
     private readonly tiles: Tile[][];
     private readonly width: number;
@@ -34,21 +34,27 @@ class SquareGrid implements Grid
      * @param height of grid
      * @param tiles, optional parameter for predefined tiles,
      * will perform a defensive copy to the grid
+     * @param grid, optional parameter to copy tiles from that grid to
+     * this grid
      */
-    constructor(width: number, height: number, tiles?: Tile[][]) {
+    constructor(width: number, height: number, grid?: Grid) {
         this.width = width;
         this.height = height;
-        if(tiles === undefined) {
+        if(grid === undefined) {
             this.tiles = createEmptyGrid(width, height);
         } else {
             this.tiles = [];
             for(let y = 0; y < height; y++) {
                 const row: Tile[] = [];
                 for(let x = 0; x < width; x++) {
+                    const point = {
+                        x: x, y: y
+                    }
+                    const inBounds = grid.inBounds(point);
                     row.push({
                         data: {
-                            pathCost: tiles[y][x].data.pathCost,
-                            isSolid: tiles[y][x].data.isSolid
+                            pathCost: inBounds ? grid.get(point).data.pathCost : 1,
+                            isSolid: inBounds ? grid.get(point).data.isSolid : false
                         },
                         point: {
                             x: x, y: y
@@ -153,7 +159,7 @@ class SquareGrid implements Grid
     }
 
     clone(): Grid {
-        return new SquareGrid(this.width, this.height, this.tiles);
+        return new GridGraph(this.width, this.height, this);
     }
 }
 
@@ -177,4 +183,4 @@ function createEmptyGrid(width: number, height: number) {
     return nodes;
 }
 
-export default SquareGrid;
+export default GridGraph;

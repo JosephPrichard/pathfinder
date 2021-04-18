@@ -1,6 +1,7 @@
 import React, {RefObject} from 'react';
 
 interface IProps {
+    title: string,
     show: boolean,
     onClickXButton: () => void
 }
@@ -140,7 +141,7 @@ class DraggablePanel extends React.Component<IProps, IState>
                  ref={this.draggable}
                  onMouseDown={e => this.mouseDown(e.nativeEvent)}
             >
-                <div className='draggable-title'>Grid Settings</div>
+                <div className='draggable-title'>{this.props.title}</div>
                 <div className='x-button' onClick={this.props.onClickXButton}>X</div>
             </div>
         );

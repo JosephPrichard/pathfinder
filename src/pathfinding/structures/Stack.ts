@@ -24,14 +24,14 @@ class Stack<E>
     }
 
     push(e: E) {
-        let node = new Node(e);
+        const node = new Node(e);
         node.next = this.top;
         this.top = node;
         this.size++;
     }
 
     pop() {
-        let top = this.peek();
+        const top = this.peek();
         if(this.top != null) {
             this.top = this.top.next;
             this.size--;

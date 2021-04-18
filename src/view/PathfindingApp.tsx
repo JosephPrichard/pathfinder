@@ -1,13 +1,14 @@
 import React, {RefObject} from 'react';
 import '../App.css';
 import TopBar from './navbar/TopBar';
-import {MazeButton, VisualizeButton, SettingsButton} from './navbar/Buttons';
-import {AlgorithmDropDown, ClearDropDown} from './navbar/DropDown';
+import {VisualizeButton, SettingsButton} from './navbar/Buttons';
+import {AlgorithmDropDown, ClearDropDown, MazeDropDown} from './navbar/DropDown';
 import DraggablePanel from './elements/DraggablePanel';
 import PathfindingVisualizer from './grid/PathfindingVisualizer';
 import {VisualSettings, SpeedSettings, AlgorithmSettings, HeuristicSettings} from './navbar/SettingPanels';
 import SettingsManager from './SettingsManager';
-import PathfinderFactory from '../pathfinding/algorithms/PathfinderFactory';
+import PathfinderBuilder from '../pathfinding/algorithms/PathfinderBuilder';
+import {HORIZONTAL_SKEW, NO_SKEW, VERTICAL_SKEW} from '../pathfinding/algorithms/MazeGenerator';
 
 interface IProps {}
 
@@ -26,6 +27,10 @@ class PathfindingApp extends React.Component<IProps, IState>
     //expose grid to parent to connect to button siblings
     private grid: RefObject<PathfindingVisualizer> = React.createRef();
 
+    private algDropDown: RefObject<AlgorithmDropDown> = React.createRef();
+    private clrDropDown: RefObject<ClearDropDown> = React.createRef();
+    private mazeDropDown: RefObject<MazeDropDown> = React.createRef();
+
     private settingsManager: SettingsManager = new SettingsManager();
 
     constructor(props: IProps) {
@@ -39,6 +44,29 @@ class PathfindingApp extends React.Component<IProps, IState>
             topMargin: 75,
             vButtonColor: 'green-button'
         }
+    }
+
+    componentDidMount() {
+        window.addEventListener('click', e => {
+            this.algDropDown.current!.hide();
+            this.clrDropDown.current!.hide();
+            this.mazeDropDown.current!.hide();
+        });
+    }
+
+    onClickAlgDrop = () => {
+        this.clrDropDown.current!.hide();
+        this.mazeDropDown.current!.hide();
+    }
+
+    onClickClrDrop = () => {
+        this.algDropDown.current!.hide();
+        this.mazeDropDown.current!.hide();
+    }
+
+    onClickMazeDrop = () => {
+        this.clrDropDown.current!.hide();
+        this.algDropDown.current!.hide();
     }
 
     changeVButtonColor = (visualizing: boolean) => {
@@ -62,8 +90,8 @@ class PathfindingApp extends React.Component<IProps, IState>
 
     changeAlgo = (algorithm: string) => {
         this.setState({
-            hDisabled: !PathfinderFactory.usesHeuristic(algorithm),
-            aDisabled: !PathfinderFactory.hasBidirectional(algorithm)
+            hDisabled: !PathfinderBuilder.usesHeuristic(algorithm),
+            aDisabled: !PathfinderBuilder.hasBidirectional(algorithm)
         });
         this.settingsManager.changeAlgo(algorithm);
     }
@@ -74,16 +102,24 @@ class PathfindingApp extends React.Component<IProps, IState>
 
     clearPath = () => {
         this.grid.current!.clearPath();
-        this.grid.current!.clearVisualization();
+        this.grid.current!.clearVisualizationChecked();
     }
 
     clearTiles = () => {
         this.clearPath();
-        this.grid.current!.clearTiles();
+        this.grid.current!.clearTilesChecked();
     }
 
     createMaze = () => {
-        this.grid.current!.createMaze();
+        this.grid.current!.createMaze(NO_SKEW);
+    }
+
+    createMazeVSkew = () => {
+        this.grid.current!.createMaze(VERTICAL_SKEW);
+    }
+
+    createMazeHSkew = () => {
+        this.grid.current!.createMaze(HORIZONTAL_SKEW);
     }
 
     setLength = (len: number) => {
@@ -108,7 +144,10 @@ class PathfindingApp extends React.Component<IProps, IState>
         const tileWidth = isMobile() ? 47 : 27;
         return (
             <div>
-                <DraggablePanel show={this.state.panelShow} onClickXButton={this.hideSettings}>
+                <DraggablePanel title={'Grid Settings'}
+                                show={this.state.panelShow}
+                                onClickXButton={this.hideSettings}
+                >
                     <VisualSettings onChangeViz={this.settingsManager.changeVisualize}/>
                     <SpeedSettings onChange={this.settingsManager.changeSpeed}/>
                     <AlgorithmSettings disabled={this.state.aDisabled}
@@ -125,16 +164,32 @@ class PathfindingApp extends React.Component<IProps, IState>
                         Pathfinding Visualizer
                     </a>
                     <div className='top-container'>
-                        <AlgorithmDropDown onChange={this.changeAlgo}/>
-                        <VisualizeButton color={this.state.vButtonColor} onClick={this.doPathfinding}/>
-                        <ClearDropDown onClickTiles={this.clearTiles}
-                                       onClickPath={this.clearPath}/>
+                        <AlgorithmDropDown ref={this.algDropDown}
+                                           onClick={this.onClickAlgDrop}
+                                           onChange={this.changeAlgo}
+                        />
+                        <VisualizeButton color={this.state.vButtonColor}
+                                         onClick={this.doPathfinding}
+                        />
+                        <ClearDropDown ref={this.clrDropDown}
+                                       onClick={this.onClickClrDrop}
+                                       onClickTiles={this.clearTiles}
+                                       onClickPath={this.clearPath}
+                        />
+                        <MazeDropDown ref={this.mazeDropDown}
+                                      onClick={this.onClickMazeDrop}
+                                      onClickMaze={this.createMaze}
+                                      onClickMazeHorizontal={this.createMazeHSkew}
+                                      onClickMazeVertical={this.createMazeVSkew}
+                        />
                         <SettingsButton onClick={this.toggleSettings}/>
-                        <MazeButton onClick={this.createMaze}/>
                     </div>
                 </TopBar>
-                <PathfindingVisualizer ref={this.grid} onChangeVisualizing={this.changeVButtonColor} topMargin={this.state.topMargin}
-                                       settings={this.settingsManager.settings} tileWidth={tileWidth}/>
+                <PathfindingVisualizer ref={this.grid}
+                                       onChangeVisualizing={this.changeVButtonColor}
+                                       topMargin={this.state.topMargin}
+                                       settings={this.settingsManager.settings}
+                                       tileWidth={tileWidth}/>
             </div>
         );
     }

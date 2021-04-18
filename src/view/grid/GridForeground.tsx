@@ -1,6 +1,6 @@
 import React, {RefObject} from 'react';
 import {Point, Tile} from '../../pathfinding/core/Components';
-import SquareGrid, {Grid} from '../../pathfinding/core/Grid';
+import GridGraph, {Grid} from '../../pathfinding/core/Grid';
 import TileFg from './TileFg';
 
 interface IProps {
@@ -21,6 +21,7 @@ interface IState {
 const SOLID_COLOR = 'rgb(45, 48, 54)';
 const INITIAL_COLOR = 'rgb(131, 217, 52)';
 const GOAL_COLOR = 'rgb(203, 75, 14)';
+const LINE_COLOR = 'rgb(254,252,119)';
 
 class GridForeground extends React.Component<IProps,IState>
 {
@@ -38,7 +39,7 @@ class GridForeground extends React.Component<IProps,IState>
         super(props);
         const end = this.calcEndPointInView();
         this.state = {
-            grid: new SquareGrid(this.props.tilesX, this.props.tilesY),
+            grid: new GridGraph(this.props.tilesX, this.props.tilesY),
             path: [],
             initial: {
                 x: ((end.x)/3) >> 0,
@@ -170,10 +171,8 @@ class GridForeground extends React.Component<IProps,IState>
         if(this.mouseDown0) {
             if(this.draggingInitial) {
                 this.moveInitial(point);
-                this.props.onTilesDragged();
             } else if(this.draggingGoal) {
                 this.moveGoal(point);
-                this.props.onTilesDragged();
             } else if(!pointsEqual(point,this.state.initial) && !pointsEqual(point, this.state.goal) && !this.disable) {
                 this.drawTile(point);
             }
@@ -200,13 +199,11 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     drawTile = (point: Point) => {
-        const grid = this.state.grid.clone();
+        const grid = this.state.grid;
         if(grid.inBounds(point)) {
             grid.mutateDefault(point, true);
         }
-        this.setState({
-            grid: grid
-        });
+        this.forceUpdate();
     }
 
     /**
@@ -214,20 +211,18 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     eraseTile = (point: Point) => {
-        const grid = this.state.grid.clone();
+        const grid = this.state.grid;
         if(grid.inBounds(point)) {
             grid.mutateDefault(point, false);
         }
-        this.setState({
-            grid: grid
-        })
+        this.forceUpdate();
     }
 
     /**
      * Clear grid in state
      */
     clearTiles = () => {
-        const grid = this.state.grid.clone();
+        const grid = this.state.grid;
         for(let y = 0; y < this.props.tilesY; y++) {
             for(let x = 0; x < this.props.tilesX; x++) {
                 const point = {
@@ -236,9 +231,7 @@ class GridForeground extends React.Component<IProps,IState>
                 grid.mutateDefault(point, false);
             }
         }
-        this.setState({
-            grid: grid
-        })
+        this.forceUpdate();
     }
 
     /**
@@ -246,12 +239,15 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     moveInitial = (point: Point) => {
-        const revealed = this.state.grid.isSolid(point);
-        if(this.state.grid.inBounds(point) && !revealed &&
-            !pointsEqual(this.state.goal, point)  && !this.disable) {
+        if(this.state.grid.inBounds(point)
+            && !this.state.grid.isSolid(point)
+            && !pointsEqual(this.state.goal, point)
+            && !pointsEqual(this.state.initial, point)
+            && !this.disable)
+        {
             this.setState({
                 initial: point
-            });
+            }, () => this.props.onTilesDragged());
         }
     }
 
@@ -260,12 +256,15 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     moveGoal = (point: Point) => {
-        const revealed = this.state.grid.isSolid(point);
-        if(this.state.grid.inBounds(point) && !revealed &&
-            !pointsEqual(this.state.initial, point) && !this.disable) {
+        if(this.state.grid.inBounds(point)
+            && !this.state.grid.isSolid(point)
+            && !pointsEqual(this.state.initial, point)
+            && !pointsEqual(this.state.goal, point)
+            && !this.disable)
+        {
             this.setState({
                 goal: point
-            });
+            }, () => this.props.onTilesDragged());
         }
     }
 
@@ -332,7 +331,7 @@ class GridForeground extends React.Component<IProps,IState>
             <line key={second.x + ',' + second.y}
                   x1={first.x * width + offset} y1={first.y * width + offset}
                   x2={second.x * width + offset} y2={second.y * width + offset}
-                  stroke='black' strokeWidth='2' className='line'/>
+                  stroke={LINE_COLOR} strokeWidth='2' className='line'/>
         );
     }
 

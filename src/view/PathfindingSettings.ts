@@ -11,7 +11,7 @@ interface PathfindingSettings
 export function getDefaultSettings() {
     return {
         visualizeAlg: true,
-        delayInc: 10,
+        delayInc: 8,
         algorithm: 'a*',
         heuristicKey: 'euclidean',
         navigatorKey: 'asterisk',

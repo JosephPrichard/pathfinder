@@ -37,7 +37,7 @@ class Checkbox extends React.Component<IProps,IState>
         return(
             <div>
                 <input checked={this.state.checked} type='checkbox' disabled={this.props.disabled}
-                       className={this.props.boxStyle} onChange={this.onChange}
+                       className={this.props.boxStyle} onKeyPress={this.onChange} onChange={this.onChange}
                 >
                 </input>
                 {this.props.children}

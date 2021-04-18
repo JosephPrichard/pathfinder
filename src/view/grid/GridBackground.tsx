@@ -32,7 +32,7 @@ class GridBackground extends React.Component<IProps>
     createEmptyBg() {
         const visualization = [];
         for(let y = 0; y < this.props.tilesY; y++) {
-            let row: string[] = [];
+            const row: string[] = [];
             for(let x = 0; x < this.props.tilesX; x++) {
                 row.push(EMPTY_NODE);
             }
@@ -97,7 +97,7 @@ class GridBackground extends React.Component<IProps>
     private renderTiles = () => {
         const tiles: JSX.Element[][] = [];
         for(let y = 0; y < this.props.tilesY; y++) {
-            let row: JSX.Element[] = [];
+            const row: JSX.Element[] = [];
             for(let x = 0; x < this.props.tilesX; x++) {
                 const point = {
                     x: x, y: y

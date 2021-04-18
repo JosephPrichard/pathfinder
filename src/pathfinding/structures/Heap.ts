@@ -51,7 +51,7 @@ class Heap<E>
      * Fails if heap is empty
      */
     pop() {
-        let val = this.peek();
+        const val = this.peek();
         this.move(this.elements.length - 1, 0);
         this.elements.pop();
         this.siftDown(0);
@@ -90,14 +90,14 @@ class Heap<E>
      * @param pos of new element
      */
     private siftDown(pos: number) {
-        let left = 2 * pos + 1;
-        let right = 2 * pos + 2;
+        const left = 2 * pos + 1;
+        const right = 2 * pos + 2;
         //stop if the children are out of bounds
         if(left >= this.elements.length) {
             return;
         }
         //find the better child
-        let child = (right >= this.elements.length || this.compare(this.elements[left], this.elements[right]))
+        const child = (right >= this.elements.length || this.compare(this.elements[left], this.elements[right]))
             ? left : right;
         //continues to sift down if the child is better than the current position
         if(this.compare(this.elements[child], this.elements[pos])) {

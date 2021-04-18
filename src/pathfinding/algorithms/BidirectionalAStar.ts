@@ -17,6 +17,10 @@ class BiAStarPathfinder extends Pathfinder
         }
     }
 
+    getAlgorithmName(): string {
+        return 'Bidirectional A*';
+    }
+
     /**
      * Performs aStar algorithm on the grid given an initial and goal point
      * Always returns the shortest path, and performs well on larger grids

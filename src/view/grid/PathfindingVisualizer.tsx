@@ -1,9 +1,10 @@
 import React, {RefObject} from 'react';
 import GridBackground from './GridBackground';
 import GridForeground from './GridForeground';
+import StatsPanel from './StatsPanel';
 import {Node} from '../../pathfinding/algorithms/Node';
 import PathfindingSettings from '../PathfindingSettings';
-import PathfinderFactory from '../../pathfinding/algorithms/PathfinderFactory';
+import PathfinderBuilder from '../../pathfinding/algorithms/PathfinderBuilder';
 import Pathfinder from '../../pathfinding/algorithms/Pathfinder';
 import MazeGenerator from '../../pathfinding/algorithms/MazeGenerator';
 import {Point, Tile} from '../../pathfinding/core/Components';
@@ -20,7 +21,9 @@ interface IState {
     tilesX: number,
     tilesY: number,
     time: number,
-    length: number
+    length: number,
+    nodes: number,
+    algorithm: string
 }
 
 class PathfindingVisualizer extends React.Component<IProps,IState>
@@ -28,6 +31,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     //references to expose background and foreground grids to parent
     private background: RefObject<GridBackground> = React.createRef();
     private foreground: RefObject<GridForeground> = React.createRef();
+    private stats: RefObject<StatsPanel> = React.createRef();
 
     private visualized = false;
     private visualizing = false;
@@ -35,13 +39,17 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
 
     constructor(props: IProps) {
         super(props);
-        const tilesX = Math.floor(window.screen.availWidth / this.props.tileWidth) + 1;
-        const tilesY = Math.floor((window.screen.availHeight - 75 - 30) / this.props.tileWidth) + 1;
+        const w = window.screen.availWidth;
+        const h = window.screen.availHeight;
+        const tilesX = Math.floor(w / this.props.tileWidth) + 1;
+        const tilesY = Math.floor((h - this.props.topMargin - 30) / this.props.tileWidth) + 1;
         this.state = {
             tilesX: tilesX,
             tilesY: tilesY,
-            time: 0,
-            length: 0
+            time: -1,
+            length: -1,
+            nodes: -1,
+            algorithm: ''
         }
     }
 
@@ -120,10 +128,13 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
      */
     private getPathfinder = (settings: PathfindingSettings) => {
         const algorithmKey = settings.algorithm;
-        const algorithm = settings.bidirectional && PathfinderFactory.hasBidirectional(algorithmKey) ?
-            PathfinderFactory.getBidirectional(algorithmKey) : algorithmKey;
-        const navigator = PathfinderFactory.getNavigator(this.foreground.current!.state.grid, settings.navigatorKey);
-        return PathfinderFactory.getPathfinder(navigator, algorithm, settings.heuristicKey);
+        const algorithm = settings.bidirectional && PathfinderBuilder.hasBidirectional(algorithmKey) ?
+            PathfinderBuilder.makeBidirectional(algorithmKey) : algorithmKey;
+        return new PathfinderBuilder(this.foreground.current!.state.grid)
+            .setAlgorithm(algorithm)
+            .setHeuristic(settings.heuristicKey)
+            .setNavigator(settings.navigatorKey)
+            .build();
     }
 
     /**
@@ -135,9 +146,12 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         const t0 = performance.now();
         const path = pathfinder.findPath(foreground.state.initial, foreground.state.goal);
         const t1 = performance.now();
-        const t2 = +(t1 - t0).toFixed(3);
+        const t2 = (t1 - t0);
         this.setState({
-            time: t2
+            time: t2,
+            nodes: pathfinder.getRecentNodes(),
+            length: calcLength(foreground.state.initial, path),
+            algorithm: pathfinder.getAlgorithmName()
         });
         return path;
     }
@@ -150,9 +164,6 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         const foreground = this.foreground.current!
         path.unshift(this.foreground.current!.state.grid.get(foreground.state.initial));
         this.foreground.current!.drawPath(path);
-        this.setState({
-            length: calcLength(path)
-        });
     }
 
     /**
@@ -169,7 +180,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     /**
      * Create a maze on the grid foreground
      */
-    createMaze = () => {
+    createMaze = (slant: number) => {
         if(this.visualizing) {
             return;
         }
@@ -177,7 +188,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         this.clearPath();
         this.clearVisualization();
         const prevGrid = this.foreground.current!.state.grid;
-        const generator = new MazeGenerator(prevGrid.getWidth(), prevGrid.getHeight());
+        const generator = new MazeGenerator(prevGrid.getWidth(), prevGrid.getHeight(), slant);
         const end = this.calcEndPointInView();
         const topLeft = {
             x: 1, y: 1
@@ -196,9 +207,10 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     /**
      * Calculate the end/goal point in view of the screen
      */
-    calcEndPointInView() {
+    calcEndPointInView = () => {
         const xEnd = window.innerWidth / this.props.tileWidth;
-        const yEnd = (window.innerHeight - this.props.topMargin - 30) / this.props.tileWidth;
+        const yEnd = (window.innerHeight - this.props.topMargin
+            - this.stats.current!.getHeight()) / this.props.tileWidth;
         const xFloor = Math.floor(xEnd);
         const yFloor = Math.floor(yEnd);
         const xDecimal = xEnd - xFloor;
@@ -227,9 +239,22 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         this.foreground.current!.clearTiles();
     }
 
+    clearTilesChecked = () => {
+        if(!this.visualizing) {
+            this.foreground.current!.clearTiles();
+        }
+    }
+
     clearVisualization = () => {
         this.visualized = false;
         this.background.current!.clear();
+    }
+
+    clearVisualizationChecked = () => {
+        if(!this.visualizing) {
+            this.visualized = false;
+            this.background.current!.clear();
+        }
     }
 
     private visualizeGenerations = (generations: Node[]) => {
@@ -244,10 +269,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     render() {
         return (
             <div>
-                <div id='info-margin' className='info-margin'>
-                    <div className='info-text'>Length: {this.state.length}</div>
-                    <div className='info-text'>Time: {this.state.time} ms</div>
-                </div>
+                <StatsPanel ref={this.stats} algorithm={this.state.algorithm} length={this.state.length}
+                            time={this.state.time} nodes={this.state.nodes}/>
                 <GridBackground ref={this.background} tileWidth={this.props.tileWidth}
                                 tilesX={this.state.tilesX} tilesY={this.state.tilesY}/>
                 <GridForeground ref={this.foreground} topMargin={this.props.topMargin}
@@ -258,17 +281,12 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     }
 }
 
-function calcLength(path: Tile[]) {
-    let len = 0;
+function calcLength(initial: Point, path: Tile[]) {
+    let len = euclidean(initial, path[0].point);
     for (let i = 0; i < path.length - 1; i++) {
         len += euclidean(path[i].point, path[i + 1].point);
     }
     return +(len).toFixed(3);
 }
-
-function isMobile() {
-    return /Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
-
 
 export default PathfindingVisualizer;

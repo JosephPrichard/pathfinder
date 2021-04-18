@@ -7,12 +7,34 @@ interface VisualProps {
     onChangeViz: () => void;
 }
 
+interface SpeedProps {
+    onChange: (value: number) => void
+}
+
+interface SpeedState {
+    speedText: string
+}
+
+interface AlgorithmProps {
+    onChangeDiagonals: (checked: boolean) => void,
+    onChangeBidirectional: (checked: boolean) => void
+    disabled: boolean
+}
+
+interface HeuristicProps {
+    onClickManhattan: () => void,
+    onClickEuclidean: () => void,
+    onClickChebyshev: () => void,
+    onClickOctile: () => void
+    disabled: boolean
+}
+
 export class VisualSettings extends React.Component<VisualProps>
 {
     render() {
         return (
             <div>
-                <div className='draggable-content-title'>Algorithm Visualization</div>
+                <div className='draggable-content-title'>Visualization</div>
                 <Checkbox defaultChecked={true} boxStyle='box'
                           onChange={this.props.onChangeViz}>
                     Show Visualization
@@ -20,14 +42,6 @@ export class VisualSettings extends React.Component<VisualProps>
             </div>
         );
     }
-}
-
-interface SpeedProps {
-    onChange: (value: number) => void
-}
-
-interface SpeedState {
-    speedText: string
 }
 
 export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
@@ -79,12 +93,6 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
     }
 }
 
-interface AlgorithmProps {
-    onChangeDiagonals: (checked: boolean) => void,
-    onChangeBidirectional: (checked: boolean) => void
-    disabled: boolean
-}
-
 export class AlgorithmSettings extends React.Component<AlgorithmProps>
 {
     constructor(props: AlgorithmProps) {
@@ -110,14 +118,6 @@ export class AlgorithmSettings extends React.Component<AlgorithmProps>
             </div>
         );
     }
-}
-
-interface HeuristicProps {
-    onClickManhattan: () => void,
-    onClickEuclidean: () => void,
-    onClickChebyshev: () => void,
-    onClickOctile: () => void
-    disabled: boolean
 }
 
 export class HeuristicSettings extends React.Component<HeuristicProps>

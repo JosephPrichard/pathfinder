@@ -1,7 +1,11 @@
-import SquareGrid, {Grid} from '../core/Grid';
+import GridGraph, {Grid} from '../core/Grid';
 import {Point, Tile, createTile} from '../core/Components';
 
 const LIMIT = 2;
+
+export const NO_SKEW = 0;
+export const VERTICAL_SKEW = 1;
+export const HORIZONTAL_SKEW = 2;
 
 interface Chamber
 {
@@ -14,9 +18,20 @@ class MazeGenerator
     private readonly width: number;
     private readonly height: number;
 
-    constructor(width: number, height: number) {
+    private readonly divideWidth: (width: number, height: number) => boolean;
+
+    constructor(width: number, height: number, slant?: number) {
         this.width = width;
         this.height = height;
+        if(slant === undefined || slant === NO_SKEW) {
+            this.divideWidth = divideWidthNoSkew;
+        } else if(slant === VERTICAL_SKEW) {
+            this.divideWidth = divideWidthVSkew;
+        } else if(slant === HORIZONTAL_SKEW) {
+            this.divideWidth = divideWidthHSkew;
+        } else {
+            throw new Error("Invalid recursive maze division skew type");
+        }
     }
 
     /**
@@ -29,7 +44,7 @@ class MazeGenerator
      *  This should not be further right/down than (width-2,height-2)
      */
     generateMaze(topLeft?: Point, bottomRight?: Point) {
-        const grid = new SquareGrid(this.width, this.height);
+        const grid = new GridGraph(this.width, this.height);
         if(topLeft === undefined) {
             topLeft = {
                 x: 1, y: 1
@@ -82,7 +97,7 @@ class MazeGenerator
      * @param tiles
      */
     private static drawArr(grid: Grid, tiles: Tile[]) {
-        for(let tile of tiles) {
+        for(const tile of tiles) {
             MazeGenerator.draw(grid, tile);
         }
     }
@@ -108,7 +123,7 @@ class MazeGenerator
         const height = heightOf(chamber);
         const min = chamber.topLeft;
         const max = chamber.bottomRight;
-        if(divideWidth(width,height)) {
+        if(this.divideWidth(width,height)) {
             if(width > LIMIT) {
                 //calculate axis
                 const randY = getRand(
@@ -252,8 +267,16 @@ class MazeGenerator
     }
 }
 
-function divideWidth(width: number, height: number) {
+function divideWidthNoSkew(width: number, height: number) {
     return width >= height;
+}
+
+function divideWidthHSkew(width: number, height: number) {
+    return width >= height * 2;
+}
+
+function divideWidthVSkew(width: number, height: number) {
+    return width * 2 >= height;
 }
 
 function widthOf(chamber: Chamber) {
