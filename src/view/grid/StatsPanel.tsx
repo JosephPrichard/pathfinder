@@ -27,7 +27,7 @@ class StatsPanel extends React.Component<IProps>
         return(
             <div>
                 <textarea tabIndex={-1} ref={this.textLog} readOnly={true}
-                          className='stats-text-area no-select scroll'
+                          className='stats-text-area no-select'
                           value={text} unselectable={'on'} onDrop={() => false}
                 />
             </div>

@@ -141,7 +141,8 @@ class PathfindingApp extends React.Component<IProps, IState>
     }
 
     render() {
-        const tileWidth = isMobile() ? 47 : 27;
+        const tileWidth =  window.screen.availWidth >= 3000 || isMobile() ? 47 :
+            window.screen.availWidth >= 2000 ? 37 : 27;
         return (
             <div>
                 <DraggablePanel title={'Grid Settings'}

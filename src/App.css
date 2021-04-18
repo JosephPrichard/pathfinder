@@ -4,6 +4,10 @@
     }
 }
 
+body {
+    overflow-x: hidden;
+}
+
 .top-container {
     display: inline-block;
     vertical-align: center;
@@ -486,6 +490,12 @@
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+}
+
+@media only screen and (max-device-width: 468px) {
+    .stats-text-area {
+        font-size: 11px;
+    }
 }
 
 .no-select {

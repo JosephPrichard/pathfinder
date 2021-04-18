@@ -21,8 +21,17 @@ class GridBackground extends React.Component<IProps>
      */
     private visualization: string[][];
 
+    private readonly width: number;
+    private readonly height: number;
+
+    /**
+     * Constructs a GridBackground with immutable height and width
+     * @param props
+     */
     constructor(props: IProps) {
         super(props);
+        this.width = this.props.tilesX;
+        this.height = this.props.tilesY;
         this.visualization = this.createEmptyBg();
     }
 
@@ -31,9 +40,9 @@ class GridBackground extends React.Component<IProps>
      */
     createEmptyBg() {
         const visualization = [];
-        for(let y = 0; y < this.props.tilesY; y++) {
+        for(let y = 0; y < this.height; y++) {
             const row: string[] = [];
-            for(let x = 0; x < this.props.tilesX; x++) {
+            for(let x = 0; x < this.width; x++) {
                 row.push(EMPTY_NODE);
             }
             visualization.push(row);
@@ -46,7 +55,7 @@ class GridBackground extends React.Component<IProps>
      */
     clear = () => {
         this.visualization = this.createEmptyBg();
-        this.setState({});
+        this.forceUpdate();
     }
 
     /**
@@ -70,7 +79,7 @@ class GridBackground extends React.Component<IProps>
      */
     visualizeGeneration = (generation: Node) => {
         this.doGeneration(generation, this.visualization); //modify state directly to improve performance
-        this.setState({});
+        this.forceUpdate();
     }
 
     /**
@@ -83,7 +92,7 @@ class GridBackground extends React.Component<IProps>
             this.doGeneration(generation, visualization);
         }
         this.visualization = visualization;
-        this.setState({});
+        this.forceUpdate();
     }
 
     render() {
@@ -96,9 +105,9 @@ class GridBackground extends React.Component<IProps>
 
     private renderTiles = () => {
         const tiles: JSX.Element[][] = [];
-        for(let y = 0; y < this.props.tilesY; y++) {
+        for(let y = 0; y < this.height; y++) {
             const row: JSX.Element[] = [];
-            for(let x = 0; x < this.props.tilesX; x++) {
+            for(let x = 0; x < this.width; x++) {
                 const point = {
                     x: x, y: y
                 };

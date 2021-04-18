@@ -32,7 +32,6 @@ class GridGraph implements Grid
      * Constructs a grid either with empty or predefined tiles
      * @param width of the grid
      * @param height of grid
-     * @param tiles, optional parameter for predefined tiles,
      * will perform a defensive copy to the grid
      * @param grid, optional parameter to copy tiles from that grid to
      * this grid

@@ -7,7 +7,7 @@ import Stack from '../structures/Stack';
 class DFSPathfinder extends Pathfinder
 {
     getAlgorithmName(): string {
-        return 'Depth-First-Search';
+        return 'Depth First Search';
     }
 
     /**

@@ -6,7 +6,7 @@ import {Node} from './Node';
 class BFSPathfinder extends Pathfinder
 {
     getAlgorithmName(): string {
-        return 'Breadth-First-Search';
+        return 'Breadth First Search';
     }
 
     /**

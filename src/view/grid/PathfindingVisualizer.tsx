@@ -214,7 +214,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         const xFloor = Math.floor(xEnd);
         const yFloor = Math.floor(yEnd);
         const xDecimal = xEnd - xFloor;
-        const yDecimal = yEnd - yFloor
+        const yDecimal = yEnd - yFloor;
         return {
             x: xDecimal > 0.05 ? Math.ceil(xEnd) : xFloor,
             y: yDecimal > 0.05 ? Math.ceil(yEnd) : yFloor

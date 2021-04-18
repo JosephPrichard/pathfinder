@@ -7,7 +7,7 @@ interface IProps {
     tileWidth: number,
     tilesX: number,
     tilesY: number,
-    onTilesDragged: () => void;
+    onTilesDragged: () => void,
     topMargin: number
 }
 
@@ -35,11 +35,20 @@ class GridForeground extends React.Component<IProps,IState>
 
     private doTileAnimation: boolean = true;
 
+    private readonly width: number;
+    private readonly height: number;
+
+    /**
+     * Constructs a GridForeground with immutable height and width
+     * @param props
+     */
     constructor(props: IProps) {
         super(props);
+        this.width = this.props.tilesX;
+        this.height = this.props.tilesY;
         const end = this.calcEndPointInView();
         this.state = {
-            grid: new GridGraph(this.props.tilesX, this.props.tilesY),
+            grid: new GridGraph(this.width, this.height),
             path: [],
             initial: {
                 x: ((end.x)/3) >> 0,
@@ -223,8 +232,8 @@ class GridForeground extends React.Component<IProps,IState>
      */
     clearTiles = () => {
         const grid = this.state.grid;
-        for(let y = 0; y < this.props.tilesY; y++) {
-            for(let x = 0; x < this.props.tilesX; x++) {
+        for(let y = 0; y < this.height; y++) {
+            for(let x = 0; x < this.width; x++) {
                 const point = {
                     x: x, y: y
                 }
@@ -337,8 +346,8 @@ class GridForeground extends React.Component<IProps,IState>
 
     private renderTiles = () => {
         const tiles: JSX.Element[] = [];
-        for(let y = 0; y < this.props.tilesY; y++) {
-            for(let x = 0; x < this.props.tilesX; x++) {
+        for(let y = 0; y < this.height; y++) {
+            for(let x = 0; x < this.width; x++) {
                 const point = {
                     x: x, y: y
                 }
