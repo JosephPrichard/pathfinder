@@ -1,4 +1,4 @@
-import {HashTable, stringify} from '../structures/Hash';
+import {HashSet, HashTable, stringify} from '../structures/Hash';
 import Heap from '../structures/Heap';
 import Pathfinder, {reconstructPath, reconstructPathReversed} from './Pathfinder';
 import {Point, Tile} from '../core/Components';
@@ -9,12 +9,16 @@ import {euclidean, HeuristicFunc} from './Heuristics';
 class BiAStarPathfinder extends Pathfinder
 {
     private readonly heuristic: HeuristicFunc = (a: Point, b: Point) => euclidean(a,b);
+    private readonly isNewScoreBetter: (newF: number, oldF: number) => boolean;
 
-    constructor(navigator: Navigator, func?: HeuristicFunc) {
+    constructor(navigator: Navigator, func?: HeuristicFunc, canRediscover?: boolean) {
         super(navigator);
         if(func !== undefined) {
             this.heuristic = func;
         }
+        this.isNewScoreBetter = canRediscover === undefined || canRediscover ?
+            (newScore: number, oldScore: number) => newScore < oldScore :
+            () => false;
     }
 
     getAlgorithmName(): string {
@@ -30,36 +34,39 @@ class BiAStarPathfinder extends Pathfinder
     findPath(initial: Point, goal: Point): Tile[] {
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
-        const startOpenSet = new Heap<AStarNode>(
+        const closedSet = new HashSet();
+        const startOpenFrontier = new Heap<AStarNode>(
             (a, b) => a.f() < b.f()
         );
-        const startClosedSet = new HashTable<AStarNode>();
-        const endOpenSet = new Heap<AStarNode>(
+        const startOpenSet = new HashTable<AStarNode>();
+        const endOpenFrontier = new Heap<AStarNode>(
             (a, b) => a.f() < b.f()
         );
-        const endClosedSet = new HashTable<AStarNode>();
+        const endOpenSet = new HashTable<AStarNode>();
         const initialRoot = new AStarNode(
             grid.get(initial), 0, 0
         );
-        startOpenSet.push(initialRoot);
-        startClosedSet.add(stringify(initial), initialRoot);
+        startOpenFrontier.push(initialRoot);
+        startOpenSet.add(stringify(initial), initialRoot);
         const goalRoot = new AStarNode(
             grid.get(goal), 0, 0
         );
-        endOpenSet.push(goalRoot);
-        endClosedSet.add(stringify(goal), goalRoot);
-        while (!startOpenSet.isEmpty() && !endOpenSet.isEmpty()) {
-            //expand startOpenSet
-            const startCurrentNode = startOpenSet.pop();
-            this.addRecent(startCurrentNode);
+        endOpenFrontier.push(goalRoot);
+        endOpenSet.add(stringify(goal), goalRoot);
+        while (!startOpenFrontier.isEmpty() && !endOpenFrontier.isEmpty()) {
+            //expand startOpenFrontier
+            const startCurrentNode = startOpenFrontier.pop();
             const startCurrentPoint = startCurrentNode.tile.point;
             const startCurrentPointKey = stringify(startCurrentPoint);
-            if(endClosedSet.has(startCurrentPointKey)) {
+            startOpenSet.remove(startCurrentPointKey);
+            closedSet.add(startCurrentPointKey);
+            this.addRecent(startCurrentNode);
+            if(endOpenSet.has(startCurrentPointKey)) {
                 if(startCurrentNode.parent != null) {
                     return reconstructPath(
                         startCurrentNode.parent
                     ).concat(reconstructPathReversed(
-                        endClosedSet.get(startCurrentPointKey)!
+                        endOpenSet.get(startCurrentPointKey)!
                     )).concat(
                         grid.get(goal)
                     );
@@ -70,26 +77,31 @@ class BiAStarPathfinder extends Pathfinder
             for (const neighbor of this.navigator.neighbors(startCurrentPoint)) {
                 const neighborPoint = neighbor.point;
                 const neighborKey = stringify(neighborPoint);
+                if(closedSet.has(neighborKey)) {
+                    continue;
+                }
                 const g = startCurrentNode.g + this.stepCost(startCurrentPoint, neighborPoint);
                 const f = g + this.heuristic(neighborPoint, goal);
-                if (!startClosedSet.has(neighborKey) || f < startClosedSet.get(neighborKey)!.f()) {
+                if (!startOpenSet.has(neighborKey) || this.isNewScoreBetter(g, startOpenSet.get(neighborKey)!.g)) {
                     const neighborNode = new AStarNode(
                         neighbor, g, f
                     );
                     startCurrentNode.addChild(neighborNode);
-                    startOpenSet.push(neighborNode);
-                    startClosedSet.add(neighborKey, neighborNode);
+                    startOpenFrontier.push(neighborNode);
+                    startOpenSet.add(neighborKey, neighborNode);
                 }
             }
-            //expand closedOpenSet
-            const endCurrentNode = endOpenSet.pop();
-            this.addRecent(endCurrentNode);
+            //expand endOpenFrontier
+            const endCurrentNode = endOpenFrontier.pop();
             const endCurrentPoint = endCurrentNode.tile.point;
             const endCurrentPointKey = stringify(endCurrentPoint);
-            if(startClosedSet.has(endCurrentPointKey)) {
+            endOpenSet.remove(endCurrentPointKey);
+            closedSet.add(endCurrentPointKey);
+            this.addRecent(endCurrentNode);
+            if(startOpenSet.has(endCurrentPointKey)) {
                 if(endCurrentNode.parent != null) {
                     return reconstructPath(
-                        startClosedSet.get(endCurrentPointKey)!
+                        startOpenSet.get(endCurrentPointKey)!
                     ).concat(reconstructPathReversed(
                         endCurrentNode.parent!
                     )).concat(
@@ -98,20 +110,22 @@ class BiAStarPathfinder extends Pathfinder
                 } else {
                     return [grid.get(goal)];
                 }
-
             }
             for (const neighbor of this.navigator.neighbors(endCurrentPoint)) {
                 const neighborPoint = neighbor.point;
                 const neighborKey = stringify(neighborPoint);
+                if(closedSet.has(neighborKey)) {
+                    continue;
+                }
                 const g = endCurrentNode.g + this.stepCost(endCurrentPoint, neighborPoint);
                 const f = g + this.heuristic(neighborPoint, initial);
-                if (!endClosedSet.has(neighborKey) || f < endClosedSet.get(neighborKey)!.f()) {
+                if (!endOpenSet.has(neighborKey) || this.isNewScoreBetter(g, endOpenSet.get(neighborKey)!.g)) {
                     const neighborNode = new AStarNode(
                         neighbor, g, f
                     );
                     endCurrentNode.addChild(neighborNode);
-                    endOpenSet.push(neighborNode);
-                    endClosedSet.add(neighborKey, neighborNode);
+                    endOpenFrontier.push(neighborNode);
+                    endOpenSet.add(neighborKey, neighborNode);
                 }
             }
         }

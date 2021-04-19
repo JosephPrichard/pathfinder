@@ -113,7 +113,7 @@ export class AlgorithmSettings extends React.Component<AlgorithmProps>
         return (
             <div>
                 <div className='draggable-content-title'>Algorithm</div>
-                <Checkbox defaultChecked={false} boxStyle='box'
+                <Checkbox defaultChecked={true} boxStyle='box'
                           onChange={this.props.onChangeDiagonals}>
                     Allow Diagonals
                 </Checkbox>

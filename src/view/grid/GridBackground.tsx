@@ -2,6 +2,11 @@ import React from 'react';
 import {Node} from '../../pathfinding/algorithms/Node';
 import {Point} from '../../pathfinding/core/Components';
 
+interface Arrow {
+    to: Point,
+    from: Point
+}
+
 interface IProps {
     tileWidth: number,
     tilesX: number,
@@ -23,7 +28,7 @@ class GridBackground extends React.Component<IProps>
      * updates with forceUpdate to improve App performance
      */
     private visualization: string[][];
-    private arrows: {to: Point, from: Point}[];
+    private arrows: Arrow[];
 
     private readonly width: number;
     private readonly height: number;
@@ -102,21 +107,30 @@ class GridBackground extends React.Component<IProps>
     }
 
     /**
-     * Perform an arrow generation on an arrows array
+     * Perform an arrow generation
      * @param generation
-     * @param arrows
      */
-    private doArrowGeneration = (generation: Node, arrows: {to: Point, from: Point}[]) => {
+    private doArrowGeneration = (generation: Node) => {
         //modify state directly to improve performance
         const point = generation.tile.point;
         for(const node of generation.children) {
             const childPoint = node.tile.point;
-            arrows.push({
+            const newArrow = {
                 from: point,
                 to: childPoint,
-            });
+            };
+            //remove a duplicate arrow to indicate replacement
+            //in A* for example, we could have re-discovered a better path to a tile
+            for(let i = 0; i < this.arrows.length; i++) {
+                const a = this.arrows[i];
+                if(pointsEqual(a.to, newArrow.to)) {
+                    const index = this.arrows.indexOf(a);
+                    this.arrows.splice(index, 1);
+                    i--;
+                }
+            }
+            this.arrows.push(newArrow);
         }
-        return arrows;
     }
 
     /**
@@ -124,7 +138,7 @@ class GridBackground extends React.Component<IProps>
      * @param generation
      */
     addArrowGeneration = (generation: Node) => {
-        this.doArrowGeneration(generation, this.arrows);
+        this.doArrowGeneration(generation);
     }
 
     /**
@@ -134,7 +148,7 @@ class GridBackground extends React.Component<IProps>
     addArrowGenerations = (generations: Node[]) => {
         this.arrows = [];
         for(const generation of generations) {
-            this.doArrowGeneration(generation, this.arrows)
+            this.doArrowGeneration(generation)
         }
         this.forceUpdate();
     }
@@ -220,6 +234,10 @@ class GridBackground extends React.Component<IProps>
             <div key={point.x + ',' + point.y} style={style} className='tile'/>
         );
     }
+}
+
+function pointsEqual(point1: Point, point2: Point) {
+    return point1.x === point2.x && point1.y === point2.y;
 }
 
 export default GridBackground;

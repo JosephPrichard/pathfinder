@@ -44,6 +44,8 @@ abstract class Navigator
      * @param point
      */
     abstract neighbors(point: Point): Tile[];
+
+    abstract getType(): string;
 }
 
 export default Navigator;

@@ -123,6 +123,9 @@ class AsteriskNavigator extends Navigator
         return euclidean(a,b) * this.grid.get(b).data.pathCost;
     }
 
+    getType() {
+        return 'asterisk';
+    }
 }
 
 export default AsteriskNavigator;

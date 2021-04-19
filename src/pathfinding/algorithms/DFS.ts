@@ -21,15 +21,15 @@ class DFSPathfinder extends Pathfinder
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
         const root = new Node(grid.get(initial));
-        const stack = new Stack<Node>();
-        stack.push(root);
+        const frontier = new Stack<Node>();
+        frontier.push(root);
         const visited = new HashSet();
         visited.add(stringify(initial));
-        while(!stack.isEmpty()) {
-            const currentNode = stack.pop()!;
-            this.addRecent(currentNode);
+        while(!frontier.isEmpty()) {
+            const currentNode = frontier.pop()!;
             const currentPoint = currentNode.tile.point;
             visited.add(stringify(currentPoint));
+            this.addRecent(currentNode);
             if(this.navigator.equals(currentPoint, goal)) {
                 return reconstructPath(currentNode);
             }
@@ -39,7 +39,7 @@ class DFSPathfinder extends Pathfinder
                 if(!visited.has(neighborKey)) {
                     const neighborNode = new Node(neighbor);
                     currentNode.addChild(neighborNode);
-                    stack.push(neighborNode);
+                    frontier.push(neighborNode);
                 }
             }
         }

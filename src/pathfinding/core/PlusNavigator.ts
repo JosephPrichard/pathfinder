@@ -61,6 +61,10 @@ class PlusNavigator extends Navigator
     cost(a: Point, b: Point) {
         return this.grid.get(b).data.pathCost;
     }
+
+    getType() {
+        return 'plus';
+    }
 }
 
 export default PlusNavigator;

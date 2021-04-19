@@ -17,11 +17,11 @@ const CREATE_NAVIGATOR: {[key: string]: ((grid: Grid) => Navigator)} = {
 }
 
 const CREATE_HEURISTIC: {[key: string]: (() => HeuristicFunc)} = {
-    'manhattan': () => (a,b) => manhattan(a,b),
-    'euclidean': () => (a,b) => euclidean(a,b),
-    'chebyshev': () => (a,b) => chebyshev(a,b),
-    'octile': () => (a,b) => octile(a,b),
-    'null': () => (a,b) => nullHeuristic(a,b)
+    'manhattan': () => manhattan,
+    'euclidean': () => euclidean,
+    'chebyshev': () => chebyshev,
+    'octile': () => octile,
+    'null': () => nullHeuristic
 }
 
 const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: HeuristicFunc) => Pathfinder)} = {
@@ -30,7 +30,7 @@ const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: Heur
             getAlgorithmName(): string {
                 return 'Dijkstra';
             }
-        })(navigator, (a,b) => nullHeuristic(a,b));
+        })(navigator, nullHeuristic);
     },
     'best-first': (navigator, heuristic) => {
         return new (class BestFirstPathfinder extends AStarPathfinder {
@@ -43,7 +43,7 @@ const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: Heur
         })(navigator, heuristic);
     },
     'a*': (navigator, heuristic) => {
-        return new AStarPathfinder(navigator, heuristic);
+        return new AStarPathfinder(navigator, heuristic,navigator.getType() !== 'plus');
     },
     'bfs': (navigator) => {
         return new BFSPathfinder(navigator);
@@ -52,14 +52,14 @@ const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: Heur
         return new DFSPathfinder(navigator);
     },
     'bi-a*': (navigator, heuristic) => {
-        return new BiAStarPathfinder(navigator, heuristic);
+        return new BiAStarPathfinder(navigator, heuristic, navigator.getType() !== 'plus');
     },
     'bi-dijkstra': (navigator) => {
         return new (class BiDijkstraPathfinder extends BiAStarPathfinder {
             getAlgorithmName(): string {
                 return 'Bidirectional Dijkstra';
             }
-        })(navigator, (a,b) => nullHeuristic(a,b));
+        })(navigator, nullHeuristic);
     },
     'bi-bfs': (navigator) => {
         return new BiBFSPathfinder(navigator);

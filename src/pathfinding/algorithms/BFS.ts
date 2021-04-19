@@ -18,15 +18,15 @@ class BFSPathfinder extends Pathfinder
     findPath(initial: Point, goal: Point): Tile[] {
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
-        const queue: Node[] = []; //fifo, stores nodes on the frontier
+        const frontier: Node[] = []; //fifo, stores nodes on the frontier
         const visited = new HashSet();
         const root = new Node(grid.get(initial));
-        queue.push(root); //enqueue
+        frontier.push(root); //enqueue
         visited.add(stringify(initial));
-        while(queue.length !== 0) { //not empty
-            const currentNode = queue.shift()!; //dequeue
-            this.addRecent(currentNode);
+        while(frontier.length !== 0) { //not empty
+            const currentNode = frontier.shift()!; //dequeue
             const currentPoint = currentNode.tile.point;
+            this.addRecent(currentNode);
             if(this.navigator.equals(currentPoint, goal)) {
                 return reconstructPath(currentNode);
             }
@@ -35,7 +35,7 @@ class BFSPathfinder extends Pathfinder
                 if(!visited.has(neighborKey)) {
                     const neighborNode = new Node(neighbor);
                     currentNode.addChild(neighborNode);
-                    queue.push(neighborNode); //enqueue
+                    frontier.push(neighborNode); //enqueue
                     visited.add(neighborKey);
                 }
             }
