@@ -2,13 +2,14 @@ import React, {RefObject} from 'react';
 import {Point, Tile} from '../../pathfinding/core/Components';
 import GridGraph, {Grid} from '../../pathfinding/core/Grid';
 import TileFg from './TileFg';
+import PathfindingSettings from '../PathfindingSettings';
 
 interface IProps {
     tileWidth: number,
     tilesX: number,
     tilesY: number,
     onTilesDragged: () => void,
-    topMargin: number
+    topMargin: number,
 }
 
 interface IState {
@@ -21,7 +22,7 @@ interface IState {
 const SOLID_COLOR = 'rgb(45, 48, 54)';
 const INITIAL_COLOR = 'rgb(131, 217, 52)';
 const GOAL_COLOR = 'rgb(203, 75, 14)';
-const LINE_COLOR = 'rgb(254,252,119)';
+const ARROW_PATH_COLOR = 'rgb(73, 79, 250)';
 
 class GridForeground extends React.Component<IProps,IState>
 {
@@ -277,12 +278,19 @@ class GridForeground extends React.Component<IProps,IState>
         }
     }
 
+    /**
+     * Draw a path onto the grid
+     * @param path
+     */
     drawPath = (path: Tile[]) => {
         this.setState({
             path: path.slice()
         });
     }
 
+    /**
+     * Erase path from the grid
+     */
     erasePath = () => {
         this.setState({
             path: []
@@ -315,32 +323,49 @@ class GridForeground extends React.Component<IProps,IState>
                  onTouchEnd={e => this.onEndingEvent(e.nativeEvent)}
                  onTouchCancel={e => this.onEndingEvent(e.nativeEvent)}
             >
+                <defs>
+                    <marker id='arrowhead-path' markerWidth='3' markerHeight='3'
+                            refX='0' refY='1.5' orient='auto'
+                            fill={ARROW_PATH_COLOR}
+                    >
+                        <polygon points='0 0, 3 1.5, 0 3'/>
+                    </marker>
+                </defs>
                 {this.renderEndTile(this.state.initial, INITIAL_COLOR,'initial')}
                 {this.renderEndTile(this.state.goal, GOAL_COLOR,'goal')}
-                {this.renderLines()}
+                {this.renderPath()}
                 {this.renderTiles()}
             </svg>
         );
     }
 
-    private renderLines = () => {
+    private renderPath = () => {
         const lines: JSX.Element[] = [];
         for(let i = 0; i < this.state.path.length-1; i++) {
             const first = this.state.path[i].point;
             const second = this.state.path[i+1].point;
-            lines.push(this.renderLine(first, second));
+            lines.push(this.renderPathArrow(i, first, second));
         }
         return lines;
     }
 
-    private renderLine = (first: Point, second: Point) => {
+    private renderPathArrow = (index: number, first: Point, second: Point) => {
         const width = this.props.tileWidth;
         const offset = width/2;
+        const firstX = first.x * width;
+        const firstY = first.y * width;
+        const secondX = second.x * width;
+        const secondY = second.y * width;
+        const offsetX = (secondX - firstX)/4;
+        const offsetY = (secondY - firstY)/4;
         return (
-            <line key={second.x + ',' + second.y}
-                  x1={first.x * width + offset} y1={first.y * width + offset}
-                  x2={second.x * width + offset} y2={second.y * width + offset}
-                  stroke={LINE_COLOR} strokeWidth='2' className='line'/>
+            <line key={'path ' + index}
+                  x1={firstX + offset + offsetX}
+                  y1={firstY + offset + offsetY}
+                  x2={secondX + offset - offsetX}
+                  y2={secondY + offset - offsetY}
+                  stroke={ARROW_PATH_COLOR} strokeWidth='2' className='line-path-arrow'
+                  markerEnd='url(#arrowhead-path)' />
         );
     }
 

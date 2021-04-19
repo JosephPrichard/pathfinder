@@ -444,8 +444,19 @@ body {
 
 .line {
     position: absolute;
+    z-index: 4;
+}
+
+.line-arrow {
+    position: absolute;
     z-index: 3;
 }
+
+.line-path-arrow {
+    position: absolute;
+    z-index: 4;
+}
+
 
 .tile {
     border-color: rgb(190,216,246);

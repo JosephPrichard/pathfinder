@@ -60,11 +60,15 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         const settings = this.props.settings;
         const pathfinder = this.getPathfinder(settings);
         const path = this.findPath(pathfinder);
+        this.clearPath();
+        const nodes: Node[] = [];
+        pathfinder.reconstructSolution((node) => {
+            nodes.push(node);
+        });
+        if(settings.showArrows && settings.algorithm !== 'dfs') {
+            this.addArrowGenerations(nodes);
+        }
         if(settings.visualizeAlg) {
-            const nodes: Node[] = [];
-            pathfinder.reconstructSolution((node) => {
-                nodes.push(node);
-            });
             this.visualizeGenerations(nodes);
         }
         this.drawPath(path);
@@ -81,33 +85,42 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         this.visualized = false;
         const foreground = this.foreground.current!;
         foreground.toggleDisable();
+        const nodes: Node[] = [];
         if(!this.visualizing) {
             this.visualizing = true;
             this.props.onChangeVisualizing(this.visualizing);
             const pathfinder = this.getPathfinder(settings);
             const path = this.findPath(pathfinder);
-            const increment = settings.delayInc;
+            const increment = settings.visualizeAlg ? settings.delayInc : 0;
             const promises: Promise<NodeJS.Timeout>[] = []; //to call function when timeouts finish
             this.visualTimeouts = [];
             let delay = 0;
-            if(settings.visualizeAlg) {
-                //reconstruct solution by visualizing each generation
-                pathfinder.reconstructSolution((node) => {
-                    const promise = new Promise<NodeJS.Timeout>((resolve) => {
-                        //each generation gets a higher timeout
-                        const timeout = setTimeout(() => {
-                            this.visualizeGeneration(node);
-                            resolve(timeout);
-                        }, delay);
-                        this.visualTimeouts.push(timeout);
-                        delay += increment;
-                    });
-                    promises.push(promise);
+            const expandVisualization = settings.visualizeAlg
+                ?
+                (node: Node) => {
+                    this.visualizeGeneration(node);
+                }
+                :
+                () => {}
+            pathfinder.reconstructSolution((node) => {
+                const promise = new Promise<NodeJS.Timeout>((resolve) => {
+                    //each generation gets a higher timeout
+                    const timeout = setTimeout(() => {
+                        expandVisualization(node);
+                        nodes.push(node);
+                        resolve(timeout);
+                    }, delay);
+                    this.visualTimeouts.push(timeout);
+                    delay += increment;
                 });
-            }
+                promises.push(promise);
+            });
             //call functions when timeouts finish
             Promise.all(promises).then(() => {
                 this.drawPath(path);
+                if(settings.showArrows && settings.algorithm !== 'dfs') {
+                    this.addArrowGenerations(nodes)
+                }
                 foreground.toggleDisable();
                 this.visualizing = false;
                 this.visualized = true;
@@ -264,6 +277,14 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
 
     private visualizeGeneration = (generation: Node) => {
         this.background.current!.visualizeGeneration(generation);
+    }
+
+    private addArrowGenerations = (generations: Node[]) => {
+        this.background.current!.addArrowGenerations(generations);
+    }
+
+    private addArrowGeneration = (generation: Node) => {
+        this.background.current!.addArrowGeneration(generation);
     }
 
     render() {

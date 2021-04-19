@@ -12,6 +12,10 @@ class SettingsManager
         this.settings.visualizeAlg = !this.settings.visualizeAlg;
     }
 
+    changeShowArrows = () => {
+        this.settings.showArrows = !this.settings.showArrows;
+    }
+
     changeBidirectional = () => {
         this.settings.bidirectional = !this.settings.bidirectional;
     }

@@ -1,16 +1,18 @@
 interface PathfindingSettings
 {
     visualizeAlg: boolean,
-    delayInc: number
-    algorithm: string
-    heuristicKey: string
-    navigatorKey: string
+    showArrows: boolean,
+    delayInc: number,
+    algorithm: string,
+    heuristicKey: string,
+    navigatorKey: string,
     bidirectional: boolean
 }
 
-export function getDefaultSettings() {
+export function getDefaultSettings(): PathfindingSettings {
     return {
         visualizeAlg: true,
+        showArrows: true,
         delayInc: 8,
         algorithm: 'a*',
         heuristicKey: 'euclidean',

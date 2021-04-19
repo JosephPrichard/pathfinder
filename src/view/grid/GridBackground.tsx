@@ -11,6 +11,7 @@ interface IProps {
 const CLOSED_NODE = 'rgb(198, 237, 238)';
 const OPEN_NODE = 'rgb(191, 248, 159)';
 const EMPTY_NODE = 'white';
+const ARROW_COLOR = 'rgb(153,153,153)';
 
 class GridBackground extends React.Component<IProps>
 {
@@ -20,9 +21,12 @@ class GridBackground extends React.Component<IProps>
      * updates with forceUpdate to improve App performance
      */
     private visualization: string[][];
+    private arrows: {to: Point, from: Point}[];
 
     private readonly width: number;
     private readonly height: number;
+
+    private renderKey: number = 0;
 
     /**
      * Constructs a GridBackground with immutable height and width
@@ -33,6 +37,7 @@ class GridBackground extends React.Component<IProps>
         this.width = this.props.tilesX;
         this.height = this.props.tilesY;
         this.visualization = this.createEmptyBg();
+        this.arrows = [];
     }
 
     /**
@@ -55,6 +60,7 @@ class GridBackground extends React.Component<IProps>
      */
     clear = () => {
         this.visualization = this.createEmptyBg();
+        this.arrows = [];
         this.forceUpdate();
     }
 
@@ -64,6 +70,7 @@ class GridBackground extends React.Component<IProps>
      * @param visualization
      */
     private doGeneration = (generation: Node, visualization: string[][]) => {
+        //modify state directly to improve performance
         for(const node of generation.children) {
             const point = node.tile.point;
             visualization[point.y][point.x] = OPEN_NODE;
@@ -78,7 +85,7 @@ class GridBackground extends React.Component<IProps>
      * @param generation
      */
     visualizeGeneration = (generation: Node) => {
-        this.doGeneration(generation, this.visualization); //modify state directly to improve performance
+        this.doGeneration(generation, this.visualization);
         this.forceUpdate();
     }
 
@@ -95,12 +102,93 @@ class GridBackground extends React.Component<IProps>
         this.forceUpdate();
     }
 
+    /**
+     * Perform an arrow generation on an arrows array
+     * @param generation
+     * @param arrows
+     */
+    private doArrowGeneration = (generation: Node, arrows: {to: Point, from: Point}[]) => {
+        //modify state directly to improve performance
+        const point = generation.tile.point;
+        for(const node of generation.children) {
+            const childPoint = node.tile.point;
+            arrows.push({
+                from: point,
+                to: childPoint,
+            });
+        }
+        return arrows;
+    }
+
+    /**
+     * Add arrow generation without updating UI
+     * @param generation
+     */
+    addArrowGeneration = (generation: Node) => {
+        this.doArrowGeneration(generation, this.arrows);
+    }
+
+    /**
+     * Add arrow generations without updating UI
+     * @param generations
+     */
+    addArrowGenerations = (generations: Node[]) => {
+        this.arrows = [];
+        for(const generation of generations) {
+            this.doArrowGeneration(generation, this.arrows)
+        }
+        this.forceUpdate();
+    }
+
     render() {
+        this.renderKey++;
         return (
-            <div className='bg'>
-                {this.renderTiles()}
+            <div>
+                <div className='bg'>
+                    {this.renderTiles()}
+                </div>
+                <svg xmlns='http://www.w3.org/2000/svg' className='grid'>
+                    <defs>
+                        <marker id='arrowhead' markerWidth='3' markerHeight='3'
+                                refX='0' refY='1.5' orient='auto'
+                                fill={ARROW_COLOR}
+                        >
+                            <polygon points='0 0, 3 1.5, 0 3'/>
+                        </marker>
+                    </defs>
+                    {this.renderArrows()}
+                </svg>
             </div>
         );
+    }
+
+    private renderArrows = () => {
+        const width = this.props.tileWidth;
+        const offset = width/2;
+        const arrows: JSX.Element[] = [];
+        for(let i = 0; i < this.arrows.length; i++) {
+            //calculate arrow position and dimensions
+            const arrow = this.arrows[i];
+            const first = arrow.from;
+            const second = arrow.to;
+            const firstX = first.x * width;
+            const firstY = first.y * width;
+            const secondX = second.x * width;
+            const secondY = second.y * width;
+            const offsetX = (secondX - firstX)/4;
+            const offsetY = (secondY - firstY)/4;
+            //generate a key for arrow that unique within the arrows array and across all possible arrow arrays
+            const key = 'arrow ' + i + ',' + this.renderKey;
+            //create arrow
+            arrows.push(<line key={key}
+                              x1={firstX + offset + offsetX}
+                              y1={firstY + offset + offsetY}
+                              x2={secondX + offset - offsetX}
+                              y2={secondY + offset - offsetY}
+                              stroke={ARROW_COLOR} strokeWidth='2' className='line-arrow'
+                              markerEnd='url(#arrowhead)' />);
+        }
+        return arrows;
     }
 
     private renderTiles = () => {

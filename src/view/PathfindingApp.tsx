@@ -15,8 +15,9 @@ interface IProps {}
 interface IState {
     length: number,
     time: number,
-    hDisabled: boolean,
-    aDisabled: boolean,
+    heuristicDisabled: boolean,
+    bidirectionalDisabled: boolean,
+    arrowsDisabled: boolean,
     panelShow: boolean,
     topMargin: number,
     vButtonColor: string
@@ -38,8 +39,9 @@ class PathfindingApp extends React.Component<IProps, IState>
         this.state = {
             length: 0,
             time: 0,
-            hDisabled: false,
-            aDisabled: false,
+            heuristicDisabled: false,
+            bidirectionalDisabled: false,
+            arrowsDisabled: false,
             panelShow: false,
             topMargin: 75,
             vButtonColor: 'green-button'
@@ -90,8 +92,9 @@ class PathfindingApp extends React.Component<IProps, IState>
 
     changeAlgo = (algorithm: string) => {
         this.setState({
-            hDisabled: !PathfinderBuilder.usesHeuristic(algorithm),
-            aDisabled: !PathfinderBuilder.hasBidirectional(algorithm)
+            heuristicDisabled: !PathfinderBuilder.usesHeuristic(algorithm),
+            bidirectionalDisabled: !PathfinderBuilder.hasBidirectional(algorithm),
+            arrowsDisabled: algorithm === 'dfs'
         });
         this.settingsManager.changeAlgo(algorithm);
     }
@@ -141,24 +144,28 @@ class PathfindingApp extends React.Component<IProps, IState>
     }
 
     render() {
-        const tileWidth =  window.screen.availWidth >= 3000 || isMobile() ? 47 :
-            window.screen.availWidth >= 2000 ? 37 : 27;
+        const tileWidth =  isMobile() ? 47 : Math.round(window.screen.availWidth / 57);
         return (
             <div>
                 <DraggablePanel title={'Grid Settings'}
                                 show={this.state.panelShow}
                                 onClickXButton={this.hideSettings}
                 >
-                    <VisualSettings onChangeViz={this.settingsManager.changeVisualize}/>
+                    <VisualSettings disabled={this.state.arrowsDisabled}
+                                    onChangeViz={this.settingsManager.changeVisualize}
+                                    onChangeShowArrows={this.settingsManager.changeShowArrows}
+                    />
                     <SpeedSettings onChange={this.settingsManager.changeSpeed}/>
-                    <AlgorithmSettings disabled={this.state.aDisabled}
+                    <AlgorithmSettings disabled={this.state.bidirectionalDisabled}
                                        onChangeBidirectional={this.settingsManager.changeBidirectional}
-                                       onChangeDiagonals={this.settingsManager.changeDiagonals}/>
-                    <HeuristicSettings disabled={this.state.hDisabled}
+                                       onChangeDiagonals={this.settingsManager.changeDiagonals}
+                    />
+                    <HeuristicSettings disabled={this.state.heuristicDisabled}
                                        onClickManhattan={this.settingsManager.changeManhattan}
                                        onClickEuclidean={this.settingsManager.changeEuclidean}
                                        onClickChebyshev={this.settingsManager.changeChebyshev}
-                                       onClickOctile={this.settingsManager.changeOctile}/>
+                                       onClickOctile={this.settingsManager.changeOctile}
+                    />
                 </DraggablePanel>
                 <TopBar onChangeHeight={this.onChangeHeight}>
                     <a href='https://github.com/JosephPrichard/PathfinderReact' className='title'>

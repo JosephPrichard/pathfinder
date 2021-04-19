@@ -4,7 +4,9 @@ import SteppedRangeSlider from '../elements/SteppedRangeSlider';
 import RadioButtonGroup from '../elements/RadioButtonGroup';
 
 interface VisualProps {
-    onChangeViz: () => void;
+    onChangeViz: () => void,
+    onChangeShowArrows: () => void,
+    disabled: boolean
 }
 
 interface SpeedProps {
@@ -25,7 +27,7 @@ interface HeuristicProps {
     onClickManhattan: () => void,
     onClickEuclidean: () => void,
     onClickChebyshev: () => void,
-    onClickOctile: () => void
+    onClickOctile: () => void,
     disabled: boolean
 }
 
@@ -37,7 +39,12 @@ export class VisualSettings extends React.Component<VisualProps>
                 <div className='draggable-content-title'>Visualization</div>
                 <Checkbox defaultChecked={true} boxStyle='box'
                           onChange={this.props.onChangeViz}>
-                    Show Visualization
+                    Show Frontier
+                </Checkbox>
+                <Checkbox defaultChecked={true} boxStyle='box'
+                          onChange={this.props.onChangeShowArrows}
+                          disabled={this.props.disabled}>
+                    Show Tree
                 </Checkbox>
             </div>
         );
