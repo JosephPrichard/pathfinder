@@ -23,6 +23,8 @@ const INITIAL_COLOR = 'rgb(131, 217, 52)';
 const GOAL_COLOR = 'rgb(203, 75, 14)';
 const ARROW_PATH_COLOR = 'rgb(73, 79, 250)';
 
+const BASE_WIDTH = 27;
+
 class GridForeground extends React.Component<IProps,IState>
 {
     private svg: RefObject<SVGSVGElement> = React.createRef();
@@ -363,7 +365,9 @@ class GridForeground extends React.Component<IProps,IState>
                   y1={firstY + offset + offsetY}
                   x2={secondX + offset - offsetX}
                   y2={secondY + offset - offsetY}
-                  stroke={ARROW_PATH_COLOR} strokeWidth='2' className='line-path-arrow'
+                  stroke={ARROW_PATH_COLOR}
+                  strokeWidth={2 * this.props.tileWidth/BASE_WIDTH}
+                  className='line-path-arrow'
                   markerEnd='url(#arrowhead-path)' />
         );
     }

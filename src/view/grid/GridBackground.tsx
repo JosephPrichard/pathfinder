@@ -13,6 +13,8 @@ const OPEN_NODE = 'rgb(191, 248, 159)';
 const EMPTY_NODE = 'white';
 const ARROW_COLOR = 'rgb(153,153,153)';
 
+const BASE_WIDTH = 27;
+
 class GridBackground extends React.Component<IProps>
 {
     /**
@@ -25,8 +27,6 @@ class GridBackground extends React.Component<IProps>
 
     private readonly width: number;
     private readonly height: number;
-
-    private renderKey: number = 0;
 
     /**
      * Constructs a GridBackground with immutable height and width
@@ -81,12 +81,11 @@ class GridBackground extends React.Component<IProps>
     }
 
     /**
-     * Visualize generation and update UI
+     * Visualize generation without updating UI
      * @param generation
      */
     visualizeGeneration = (generation: Node) => {
         this.doGeneration(generation, this.visualization);
-        this.forceUpdate();
     }
 
     /**
@@ -129,7 +128,7 @@ class GridBackground extends React.Component<IProps>
     }
 
     /**
-     * Add arrow generations without updating UI
+     * Add arrow generations and update UI
      * @param generations
      */
     addArrowGenerations = (generations: Node[]) => {
@@ -141,7 +140,6 @@ class GridBackground extends React.Component<IProps>
     }
 
     render() {
-        this.renderKey++;
         return (
             <div>
                 <div className='bg'>
@@ -177,15 +175,14 @@ class GridBackground extends React.Component<IProps>
             const secondY = second.y * width;
             const offsetX = (secondX - firstX)/4;
             const offsetY = (secondY - firstY)/4;
-            //generate a key for arrow that unique within the arrows array and across all possible arrow arrays
-            const key = 'arrow ' + i + ',' + this.renderKey;
-            //create arrow
-            arrows.push(<line key={key}
+            arrows.push(<line key={'arrow ' + i}
                               x1={firstX + offset + offsetX}
                               y1={firstY + offset + offsetY}
                               x2={secondX + offset - offsetX}
                               y2={secondY + offset - offsetY}
-                              stroke={ARROW_COLOR} strokeWidth='2' className='line-arrow'
+                              stroke={ARROW_COLOR}
+                              strokeWidth={2 * this.props.tileWidth/BASE_WIDTH}
+                              className='line-arrow'
                               markerEnd='url(#arrowhead)' />);
         }
         return arrows;

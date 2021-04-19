@@ -85,42 +85,38 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         this.visualized = false;
         const foreground = this.foreground.current!;
         foreground.toggleDisable();
-        const nodes: Node[] = [];
         if(!this.visualizing) {
             this.visualizing = true;
             this.props.onChangeVisualizing(this.visualizing);
             const pathfinder = this.getPathfinder(settings);
             const path = this.findPath(pathfinder);
-            const increment = settings.visualizeAlg ? settings.delayInc : 0;
+            const increment = settings.delayInc;
             const promises: Promise<NodeJS.Timeout>[] = []; //to call function when timeouts finish
             this.visualTimeouts = [];
             let delay = 0;
-            const expandVisualization = settings.visualizeAlg
-                ?
-                (node: Node) => {
-                    this.visualizeGeneration(node);
-                }
-                :
-                () => {}
-            pathfinder.reconstructSolution((node) => {
-                nodes.push(node);
-                const promise = new Promise<NodeJS.Timeout>((resolve) => {
-                    //each generation gets a higher timeout
-                    const timeout = setTimeout(() => {
-                        expandVisualization(node);
-                        resolve(timeout);
-                    }, delay);
-                    this.visualTimeouts.push(timeout);
-                    delay += increment;
+            const visualizeAlg = settings.visualizeAlg;
+            const showArrows = settings.showArrows && settings.algorithm !== 'dfs';
+            if(showArrows || visualizeAlg) {
+                const expandVisualization = visualizeAlg ? this.visualizeGeneration : () => {};
+                const expandArrows = showArrows ? this.addArrowGeneration : () => {};
+                pathfinder.reconstructSolution((node) => {
+                    const promise = new Promise<NodeJS.Timeout>((resolve) => {
+                        //each generation gets a higher timeout
+                        const timeout = setTimeout(() => {
+                            expandArrows(node);
+                            expandVisualization(node);
+                            this.background.current!.forceUpdate();
+                            resolve(timeout);
+                        }, delay);
+                        this.visualTimeouts.push(timeout);
+                        delay += increment;
+                    });
+                    promises.push(promise);
                 });
-                promises.push(promise);
-            });
+            }
             //call functions when timeouts finish
             Promise.all(promises).then(() => {
                 this.drawPath(path);
-                if(settings.showArrows && settings.algorithm !== 'dfs') {
-                    this.addArrowGenerations(nodes)
-                }
                 foreground.toggleDisable();
                 this.visualizing = false;
                 this.visualized = true;
