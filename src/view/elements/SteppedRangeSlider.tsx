@@ -29,7 +29,7 @@ class SteppedRangeSlider extends React.Component<IProps, IState>
      * @param e
      */
     onChange = (e: React.FormEvent<HTMLInputElement>) => {
-        if(!this.mouseUp) {
+        if(!this.mouseUp) { //to prevent firefox from resetting on release
             const val = Number(e.currentTarget.value);
             this.setState({
                 value: val
@@ -46,7 +46,6 @@ class SteppedRangeSlider extends React.Component<IProps, IState>
     }
 
     render() {
-        console.log('render');
         return (
             <input type='range' list='step-list'
                    value={this.state.value}

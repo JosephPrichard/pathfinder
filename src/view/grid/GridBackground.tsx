@@ -37,7 +37,7 @@ class GridBackground extends React.Component<IProps>
         this.width = this.props.tilesX;
         this.height = this.props.tilesY;
         this.visualization = this.createEmptyBg();
-        this.arrows = [];
+        this.arrows = []
     }
 
     /**

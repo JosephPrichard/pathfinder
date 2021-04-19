@@ -2,7 +2,6 @@ import React, {RefObject} from 'react';
 import {Point, Tile} from '../../pathfinding/core/Components';
 import GridGraph, {Grid} from '../../pathfinding/core/Grid';
 import TileFg from './TileFg';
-import PathfindingSettings from '../PathfindingSettings';
 
 interface IProps {
     tileWidth: number,

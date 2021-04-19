@@ -103,11 +103,11 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                 :
                 () => {}
             pathfinder.reconstructSolution((node) => {
+                nodes.push(node);
                 const promise = new Promise<NodeJS.Timeout>((resolve) => {
                     //each generation gets a higher timeout
                     const timeout = setTimeout(() => {
                         expandVisualization(node);
-                        nodes.push(node);
                         resolve(timeout);
                     }, delay);
                     this.visualTimeouts.push(timeout);
@@ -303,6 +303,9 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
 }
 
 function calcLength(initial: Point, path: Tile[]) {
+    if(path.length === 0) {
+        return 0;
+    }
     let len = euclidean(initial, path[0].point);
     for (let i = 0; i < path.length - 1; i++) {
         len += euclidean(path[i].point, path[i + 1].point);
