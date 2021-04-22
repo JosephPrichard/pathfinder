@@ -3,7 +3,9 @@ import React, {RefObject} from 'react';
 interface IProps {
     title: string,
     show: boolean,
-    onClickXButton: () => void
+    onClickXButton: () => void,
+    width: number,
+    height: number
 }
 
 interface IState {
@@ -116,9 +118,22 @@ class DraggablePanel extends React.Component<IProps, IState>
         };
     }
 
-    contentStyle = () => {
+    visibleStyle = () => {
+        return this.props.show ? 'block' : 'none';
+    }
+
+    draggableStyle() {
         return {
-            display: this.props.show ? 'block' : 'none'
+            width: this.props.width,
+            display: this.visibleStyle()
+        }
+    }
+
+    contentStyle() {
+        return {
+            width: this.props.width,
+            minHeight: this.props.height,
+            display: this.visibleStyle()
         }
     }
 
@@ -137,7 +152,7 @@ class DraggablePanel extends React.Component<IProps, IState>
 
     private renderDraggable = () => {
         return (
-            <div style={this.contentStyle()} className='draggable'
+            <div style={this.draggableStyle()} className='draggable'
                  ref={this.draggable}
                  onMouseDown={e => this.mouseDown(e.nativeEvent)}
             >

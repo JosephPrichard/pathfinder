@@ -1,7 +1,7 @@
 import React from 'react';
-import Checkbox from '../elements/Checkbox';
-import SteppedRangeSlider from '../elements/SteppedRangeSlider';
-import RadioButtonGroup from '../elements/RadioButtonGroup';
+import Checkbox from '../utility/Checkbox';
+import SteppedRangeSlider from '../utility/SteppedRangeSlider';
+import RadioButtonGroup from '../utility/RadioButtonGroup';
 
 interface VisualProps {
     onChangeViz: () => void,

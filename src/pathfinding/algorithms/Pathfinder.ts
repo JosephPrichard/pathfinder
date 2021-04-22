@@ -31,7 +31,11 @@ abstract class Pathfinder
         this.recentSearch = [];
     }
 
-    addRecent(node: Node) {
+    getRecentGenerations() {
+        return this.recentSearch.slice();
+    }
+
+    protected addRecent(node: Node) {
         this.recentSearch.push(node);
     }
 
@@ -44,17 +48,6 @@ abstract class Pathfinder
      * @param goal
      */
     abstract findPath(initial: Point, goal: Point): Tile[];
-
-    /**
-     * Reconstructs the solution using the recent search array and calls a
-     * function for every generation and for every expansion
-     * @param onGeneration to determine what to do when a node's generation is expanded
-     */
-    reconstructSolution(onGeneration: (nodes: Node) => void) {
-        for(const node of this.recentSearch) {
-            onGeneration(node);
-        }
-    }
 }
 
 /**

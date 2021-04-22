@@ -41,7 +41,7 @@ body {
 
 .button {
     vertical-align: top;
-    height: 47px;
+    height: 48px;
     border: 0;
     padding: 10px;
     background: none;
@@ -52,6 +52,50 @@ body {
 
 .button:focus {
     outline: 5px auto -webkit-focus-ring-color;
+}
+
+.center {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.svg-icon {
+    display: block;
+    margin: auto;
+}
+
+.viz-button {
+    width: 94px;
+}
+
+.half-viz-button {
+    width: 47px;
+}
+
+.half-button-wrapper {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 10px 0 10px;
+    padding: 0;
+}
+
+.half-button-left {
+    padding: 0;
+    min-height: 48px;
+    border: 0;
+    border-right: 1px solid rgb(230,230,230);
+    background: none;
+    box-shadow: none;
+    border-radius: 6px 0 0 6px;
+}
+
+.half-button-right {
+    padding: 0;
+    height: 48px;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0 6px 6px 0;
 }
 
 .drop-down {
@@ -123,6 +167,7 @@ body {
     border-radius: 6px;
     padding: 10px 10px 10px 15px;
     width: 155px;
+    height: 48px;
 }
 
 .drop-down-content {
@@ -362,7 +407,6 @@ body {
     position: absolute;
     cursor: move;
     background-color: rgb(54,58,64);
-    width: 350px;
     min-height: 35px;
     box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2);
     z-index: 5;
@@ -375,9 +419,7 @@ body {
     padding: 40px 40px 0 20px;
     background-color: rgba(255,255,255,0.9);
     border-radius: 3px;
-    width: 350px;
     z-index: 4;
-    min-height: 420px;
 }
 
 .x-button {
@@ -456,7 +498,6 @@ body {
     position: absolute;
     z-index: 4;
 }
-
 
 .tile {
     border-color: rgb(190,216,246);
@@ -544,4 +585,13 @@ body {
 
 .settings-general {
     display: block;
+}
+
+.track {
+    stroke: rgb(230,230,230);
+    stroke-width: 1.5;
+}
+
+.round {
+    stroke-linejoin: round;
 }

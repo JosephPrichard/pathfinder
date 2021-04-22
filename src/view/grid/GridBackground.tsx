@@ -153,6 +153,14 @@ class GridBackground extends React.Component<IProps>
         this.forceUpdate();
     }
 
+    /**
+     * Should be called to update render and state when enough generations
+     * have been added
+     */
+    doUpdate = () => {
+        this.forceUpdate();
+    }
+
     render() {
         return (
             <div>

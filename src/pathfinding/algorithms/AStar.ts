@@ -43,7 +43,7 @@ class AStarPathfinder extends Pathfinder
             grid.get(initial), 0, 0
         );
         openFrontier.push(root);
-        openSet.add(stringify(initial), root.f());
+        openSet.add(stringify(initial), root.g);
         while (!openFrontier.isEmpty()) {
             const currentNode = openFrontier.pop();
             const currentPoint = currentNode.tile.point;
