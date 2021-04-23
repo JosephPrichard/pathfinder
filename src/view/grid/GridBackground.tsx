@@ -162,6 +162,8 @@ class GridBackground extends React.Component<IProps>
     }
 
     render() {
+        // console.timeEnd('time');
+        // console.time('time');
         return (
             <div>
                 <div className='bg'>

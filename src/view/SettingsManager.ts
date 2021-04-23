@@ -25,7 +25,7 @@ class SettingsManager
     }
 
     changeSpeed = (value: number) => {
-        this.settings.delayInc = value*5;
+        this.settings.delayInc = value;
     }
 
     changeManhattan = () => {

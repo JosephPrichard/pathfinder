@@ -107,7 +107,6 @@ class PathfindingApp extends React.Component<IProps, IState>
     }
 
     pausePathfinding = () => {
-        console.log('pause');
         this.setState({
             paused: true
         });
@@ -115,7 +114,6 @@ class PathfindingApp extends React.Component<IProps, IState>
     }
 
     resumePathfinding = () => {
-        console.log('resume');
         this.setState({
             paused: false
         });

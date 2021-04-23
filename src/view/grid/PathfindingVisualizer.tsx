@@ -131,9 +131,9 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
             this.props.onChangeVisualizing(this.visualizing);
             const pathfinder = this.getPathfinder(settings);
             const path = this.findPath(pathfinder);
-            const increment = settings.delayInc;
             const promises: Promise<VirtualTimer>[] = []; //to call function when timeouts finish
             this.visualTimeouts = [];
+            const baseIncrement = settings.delayInc;
             let delay = 0;
             const visualizeAlg = this.canShowFrontier();
             const showArrows = this.canShowArrows();
@@ -141,7 +141,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                 const expandVisualization = visualizeAlg ? this.visualizeGeneration : () => {};
                 const expandArrows = showArrows ? this.addArrowGeneration : () => {};
                 this.generations = pathfinder.getRecentGenerations();
-                for(const generation of this.generations) {
+                this.generations.forEach((generation) => {
                     const promise = new Promise<VirtualTimer>((resolve) => {
                         //each generation gets a higher timeout
                         const timeout = new VirtualTimer(() => {
@@ -151,10 +151,10 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                             resolve(timeout);
                         }, delay);
                         this.visualTimeouts.push(timeout);
-                        delay += increment;
                     });
                     promises.push(promise);
-                }
+                    delay += baseIncrement;
+                });
             }
             //call functions when timeouts finish
             Promise.all(promises).then(() => {

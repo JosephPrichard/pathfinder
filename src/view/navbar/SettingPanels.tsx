@@ -31,6 +31,10 @@ interface HeuristicProps {
     disabled: boolean
 }
 
+const SPEED_STEP = 2;
+const SPEED_INITIAL = 2;
+const MAX = 19;
+
 export class VisualSettings extends React.Component<VisualProps>
 {
     render() {
@@ -56,7 +60,7 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
     constructor(props: SpeedProps) {
         super(props);
         this.state = {
-            speedText: '10'
+            speedText: String(SPEED_INITIAL + SPEED_STEP * 2)
         }
     }
 
@@ -66,34 +70,29 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
      * @param value
      */
     onChangeSpeed = (value: number) => {
-        const speedTexts = value*5;
+        const speed = SPEED_INITIAL + SPEED_STEP * value;
         this.setState({
-            speedText: String(speedTexts)
+            speedText: String(speed)
         })
-        this.props.onChange(value);
+        this.props.onChange(speed);
     }
 
     render() {
+        const options: JSX.Element[] = [];
+        for(let i = 1; i <= MAX; i++) {
+            options.push(<option key={'option ' + i}>{i}</option>);
+        }
         return (
             <div className='slider-container'>
                 <div className='slider-text'>
                     Speed: <div className='speed-text'> {this.state.speedText} </div>
                 </div>
-                <SteppedRangeSlider min={1} max={10} step={1} default={2}
+                    <SteppedRangeSlider min={1} max={MAX} step={1} default={2}
                                     sliderStyle='slider speed-slider'
                                     onChange={this.onChangeSpeed}
                 />
                 <datalist id='step-list'>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
+                    {options}
                 </datalist>
             </div>
         );
