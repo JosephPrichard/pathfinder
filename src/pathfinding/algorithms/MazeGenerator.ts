@@ -1,5 +1,6 @@
 import GridGraph, {Grid} from '../core/Grid';
 import {Point, Tile, createTile} from '../core/Components';
+import TerrainGenerator from './TerrainGenerator';
 
 const LIMIT = 2;
 
@@ -13,16 +14,12 @@ interface Chamber
     bottomRight: Point; //max
 }
 
-class MazeGenerator
+class MazeGenerator extends TerrainGenerator
 {
-    private readonly width: number;
-    private readonly height: number;
-
     private readonly divideWidth: (width: number, height: number) => boolean;
 
-    constructor(width: number, height: number, slant?: number) {
-        this.width = width;
-        this.height = height;
+    constructor(width: number, height: number, ignore?: Point[], slant?: number) {
+        super(width, height, ignore);
         if(slant === undefined || slant === NO_SKEW) {
             this.divideWidth = divideWidthNoSkew;
         } else if(slant === VERTICAL_SKEW) {
@@ -43,7 +40,7 @@ class MazeGenerator
      * @param bottomRight optional parameter to specify how far down and right the maze will go
      *  This should not be further right/down than (width-2,height-2)
      */
-    generateMaze(topLeft?: Point, bottomRight?: Point) {
+    generateTerrain(topLeft?: Point, bottomRight?: Point) {
         const grid = new GridGraph(this.width, this.height);
         if(topLeft === undefined) {
             topLeft = {
@@ -57,13 +54,13 @@ class MazeGenerator
             }
         }
         for(let x = topLeft.x - 1; x <= bottomRight.x + 1; x++) {
-            MazeGenerator.draw(grid,{
+            this.draw(grid,{
                 point: {
                     x: x, y: topLeft.y - 1
                 },
                 data: createTile(true)
             });
-            MazeGenerator.draw(grid,{
+            this.draw(grid,{
                 point: {
                     x: x, y: bottomRight.y + 1
                 },
@@ -71,13 +68,13 @@ class MazeGenerator
             });
         }
         for(let y = topLeft.y - 1; y <= bottomRight.y + 1; y++) {
-            MazeGenerator.draw(grid,{
+            this.draw(grid,{
                 point: {
                     x: topLeft.x - 1, y: y
                 },
                 data: createTile(true)
             });
-            MazeGenerator.draw(grid,{
+            this.draw(grid,{
                 point: {
                     x: bottomRight.x + 1, y: y
                 },
@@ -96,21 +93,11 @@ class MazeGenerator
      * @param grid
      * @param tiles
      */
-    private static drawArr(grid: Grid, tiles: Tile[]) {
+    private drawArr(grid: Grid, tiles: Tile[]) {
         for(const tile of tiles) {
-            MazeGenerator.draw(grid, tile);
+            this.draw(grid, tile);
         }
     }
-
-    /**
-     * Draws a tile to the grid
-     * @param grid
-     * @param tile
-     */
-    private static draw(grid: Grid, tile: Tile) {
-        grid.mutateTile(tile);
-    }
-
     /**
      * Create a line between a region, with an open hole, in a chamber,
      * and call bisection algorithm on it, and call division algorithms on
@@ -126,9 +113,6 @@ class MazeGenerator
         if(this.divideWidth(width,height)) {
             if(width > LIMIT) {
                 //calculate axis
-                const randY = getRand(
-                    min.y, max.y,
-                );
                 const randX = getMidPoint(
                     min.x, max.x
                 );
@@ -167,6 +151,9 @@ class MazeGenerator
                     edgeBlocked = true;
                 }
                 if(!edgeBlocked) {
+                    const randY = getRand(
+                        min.y, max.y,
+                    );
                     toDraw.push({
                         point: {
                             x: randX, y: randY
@@ -174,7 +161,7 @@ class MazeGenerator
                         data: createTile(false)
                     });
                 }
-                MazeGenerator.drawArr(grid, toDraw);
+                this.drawArr(grid, toDraw);
                 //create children chambers and recurse
                 const leftChamber = {
                     topLeft: chamber.topLeft,
@@ -196,9 +183,6 @@ class MazeGenerator
         } else {
             if(height > LIMIT) {
                 //calculate axis
-                const randX = getRand(
-                    min.x, max.x,
-                );
                 const randY = getMidPoint(
                     min.y, max.y
                 );
@@ -237,6 +221,9 @@ class MazeGenerator
                     edgeBlocked = true;
                 }
                 if(!edgeBlocked) {
+                    const randX = getRand(
+                        min.x, max.x,
+                    );
                     toDraw.push({
                         point: {
                             x: randX, y: randY
@@ -244,7 +231,7 @@ class MazeGenerator
                         data: createTile(false)
                     });
                 }
-                MazeGenerator.drawArr(grid, toDraw);
+                this.drawArr(grid, toDraw);
                 //create children chambers and recurse
                 const topChamber = {
                     topLeft: chamber.topLeft,

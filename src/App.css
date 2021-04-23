@@ -233,15 +233,15 @@ body {
 
 .clr-drop-down-text {
     display: inline-block;
-    width: 95px;
+    width: 60px;
 }
 
 .clr-drop-down-content {
-    min-width: 180px;
+    min-width: 140px;
 }
 
 .clr-drop-down-button {
-    width: 145px;
+    width: 110px;
     background-color: rgb(227,62,69);
     color: white;
 }
@@ -273,7 +273,7 @@ body {
 
 .maze-drop-down-text {
     display: inline-block;
-    width: 65px;
+    width: 70px;
 }
 
 .maze-drop-down-content {

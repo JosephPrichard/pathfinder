@@ -311,6 +311,20 @@ class GridForeground extends React.Component<IProps,IState>
         }
     }
 
+    resetPoints = () => {
+        const end = this.calcEndPointInView();
+        this.setState({
+            initial: {
+                x: ((end.x)/3) >> 0,
+                y: ((end.y)/3) >> 0
+            },
+            goal: {
+                x: ((2*(end.x)/3) >> 0) - 1,
+                y: ((2*(end.y)/3) >> 0) - 1
+            }
+        });
+    }
+
     render() {
         return (
             <svg ref={this.svg} xmlns='http://www.w3.org/2000/svg' className='grid'
