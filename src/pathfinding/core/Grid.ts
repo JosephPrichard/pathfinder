@@ -89,7 +89,7 @@ class GridGraph implements Grid
      * a mutate function
      * @param point, point to get
      */
-    get(point: Point) {
+    get(point: Point): Tile {
         return {
             point: this.tiles[point.y][point.x].point,
             data: this.tiles[point.y][point.x].data
@@ -150,15 +150,24 @@ class GridGraph implements Grid
      * @param point
      */
     walkable(point: Point) {
-        return !this.get(point).data.isSolid;
+        return !this.tiles[point.y][point.x].data.isSolid;
     }
 
     isSolid(point: Point): boolean {
-        return this.get(point).data.isSolid;
+        return this.tiles[point.y][point.x].data.isSolid;
     }
 
     clone(): Grid {
-        return new GridGraph(this.width, this.height, this);
+        const grid = new GridGraph(this.width, this.height);
+        for(let y = 0; y < grid.height; y++) {
+            for(let x = 0; x < grid.width; x++) {
+                const point = {
+                    x: x, y: y
+                }
+                grid.mutateTile(this.get(point));
+            }
+        }
+        return grid;
     }
 }
 

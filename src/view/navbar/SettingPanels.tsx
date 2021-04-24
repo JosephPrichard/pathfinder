@@ -10,7 +10,8 @@ interface VisualProps {
 }
 
 interface SpeedProps {
-    onChange: (value: number) => void
+    onChange: (value: number) => void,
+    initialSpeed: number
 }
 
 interface SpeedState {
@@ -60,7 +61,7 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
     constructor(props: SpeedProps) {
         super(props);
         this.state = {
-            speedText: String(SPEED_INITIAL + SPEED_STEP * 2)
+            speedText: String(this.props.initialSpeed)
         }
     }
 
@@ -87,9 +88,10 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
                 <div className='slider-text'>
                     Speed: <div className='speed-text'> {this.state.speedText} </div>
                 </div>
-                    <SteppedRangeSlider min={1} max={MAX} step={1} default={2}
-                                    sliderStyle='slider speed-slider'
-                                    onChange={this.onChangeSpeed}
+                    <SteppedRangeSlider min={1} max={MAX} step={1}
+                                        default={(this.props.initialSpeed - SPEED_INITIAL) / SPEED_STEP}
+                                        sliderStyle='slider speed-slider'
+                                        onChange={this.onChangeSpeed}
                 />
                 <datalist id='step-list'>
                     {options}

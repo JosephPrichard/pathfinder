@@ -54,6 +54,8 @@ class SteppedRangeSlider extends React.Component<IProps, IState>
                    onInput={this.onChange}
                    onMouseUp={this.onMouseUp}
                    onMouseDown={this.onMouseDown}
+                   onTouchEnd={this.onMouseUp}
+                   onTouchStart={this.onMouseDown}
             >
             </input>
         );

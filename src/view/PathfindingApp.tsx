@@ -159,7 +159,11 @@ class PathfindingApp extends React.Component<IProps, IState>
     }
 
     render() {
-        const tileWidth =  isMobile() ? 47 : Math.round(window.screen.availWidth / 57);
+        const mobile = isMobile();
+        const tileWidth =  mobile ? 47 : Math.round(window.screen.availWidth / 57);
+        if(mobile) {
+            this.settingsManager.changeSpeed(12);
+        }
         return (
             <div>
                 <DraggablePanel title='Grid Settings'
@@ -172,7 +176,9 @@ class PathfindingApp extends React.Component<IProps, IState>
                                     onChangeViz={this.settingsManager.changeVisualize}
                                     onChangeShowArrows={this.settingsManager.changeShowArrows}
                     />
-                    <SpeedSettings onChange={this.settingsManager.changeSpeed}/>
+                    <SpeedSettings onChange={this.settingsManager.changeSpeed}
+                                   initialSpeed={this.settingsManager.settings.delayInc}
+                    />
                     <AlgorithmSettings disabled={this.state.bidirectionalDisabled}
                                        onChangeBidirectional={this.settingsManager.changeBidirectional}
                                        onChangeDiagonals={this.settingsManager.changeDiagonals}

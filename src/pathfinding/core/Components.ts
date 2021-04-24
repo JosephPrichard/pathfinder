@@ -1,5 +1,6 @@
 /**
  * Represents a point in 2d space
+ * Immutable
  */
 export interface Point
 {
@@ -11,6 +12,7 @@ export interface Point
  * Represents the data inside a tile
  * Solid tiles cannot be passed while non solid ones can
  * pathCost stores how expensive it is to travel to the tile if it isn't solid
+ * Immutable
  */
 export interface TileData
 {

@@ -102,6 +102,7 @@ export class VisualizeButton extends React.Component<VProps>
 
 export class SettingsButton extends React.Component<SProps>
 {
+
     render() {
         return (
             <button onMouseDown={e => e.preventDefault()}

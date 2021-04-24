@@ -33,24 +33,25 @@ class TileFg extends React.Component<IProps, IState>
      * Can be slow to execute so animations should be enabled with caution
      */
     applyExpandAnimation = () => {
-        const total = 5
+        const expansionDuration = 100;
+        const expansions = 10;
+        const expansionStep = expansionDuration/expansions;
+        const overStep = 2;
         const original = this.state.tileSize;
-        for(let i = 1; i <= total; i++) {
+        for(let i = 1; i <= expansions + overStep; i++) {
             const expand = () => this.setState({
-                tileSize: original + i * (this.props.tileWidth/(total))
+                tileSize: original + i * (this.props.tileWidth/(expansions))
             });
-            setTimeout(expand, i*10);
+            setTimeout(expand, i * expansionStep);
         }
-    }
-
-    applyShrinkAnimation = () => {
-        const total = 5
-        const original = this.state.tileSize;
-        for(let i = 1; i <= total; i++) {
-            const expand = () => this.setState({
-                tileSize: original - i * (this.props.tileWidth/(total))
+        let time = expansions + overStep + 1;
+        for(let i = expansions + overStep - 0.5; i >= expansions; i -= 0.5) {
+            console.log(time * expansionStep);
+            const shrink = () => this.setState({
+                tileSize: original + i * (this.props.tileWidth/(expansions))
             });
-            setTimeout(expand, i*10);
+            setTimeout(shrink, time * expansionStep);
+            time += 6;
         }
     }
 

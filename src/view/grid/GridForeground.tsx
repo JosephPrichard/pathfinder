@@ -210,11 +210,13 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     drawTile = (point: Point) => {
-        const grid = this.state.grid;
+        const grid = this.state.grid.clone();
         if(grid.inBounds(point)) {
             grid.mutateDefault(point, true);
         }
-        this.forceUpdate();
+        this.setState({
+            grid: grid
+        });
     }
 
     /**
@@ -222,18 +224,20 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     eraseTile = (point: Point) => {
-        const grid = this.state.grid;
+        const grid = this.state.grid.clone();
         if(grid.inBounds(point)) {
             grid.mutateDefault(point, false);
         }
-        this.forceUpdate();
+        this.setState({
+            grid: grid
+        });
     }
 
     /**
      * Clear grid in state
      */
     clearTiles = () => {
-        const grid = this.state.grid;
+        const grid = this.state.grid.clone();
         for(let y = 0; y < this.height; y++) {
             for(let x = 0; x < this.width; x++) {
                 const point = {
@@ -242,7 +246,9 @@ class GridForeground extends React.Component<IProps,IState>
                 grid.mutateDefault(point, false);
             }
         }
-        this.forceUpdate();
+        this.setState({
+            grid: grid
+        });
     }
 
     /**

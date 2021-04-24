@@ -147,7 +147,6 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                         const timeout = new VirtualTimer(() => {
                             expandArrows(generation);
                             expandVisualization(generation);
-                            this.background.current!.doUpdate();
                             resolve(timeout);
                         }, delay);
                         this.visualTimeouts.push(timeout);

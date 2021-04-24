@@ -10,7 +10,7 @@ interface IProps {
 
 interface IState {
     top: number,
-    left: number,
+    left: number
 }
 
 class DraggablePanel extends React.Component<IProps, IState>
@@ -29,11 +29,12 @@ class DraggablePanel extends React.Component<IProps, IState>
         super(props);
         this.state = {
             top: -1,
-            left: -1,
+            left: -1
         };
     }
 
     componentDidMount() {
+        //mouse
         document.addEventListener('mouseup', e => {
             this.mouseUp(e);
         });
@@ -42,6 +43,13 @@ class DraggablePanel extends React.Component<IProps, IState>
         });
         window.addEventListener('mouseleave', e => {
             this.mouseUp(e);
+        });
+        //touch
+        document.addEventListener('touchend', e => {
+            this.dragging = false;
+        });
+        document.addEventListener('touchmove', e => {
+            this.touchMove(e);
         });
     }
 
@@ -57,10 +65,21 @@ class DraggablePanel extends React.Component<IProps, IState>
     }
 
     /**
+     * Start drag and init prev touch location when finger is clicked on draggable
+     * @param e
+     */
+    private touchStart = (e: TouchEvent) => {
+        const touch = e.touches[0] || e.changedTouches[0];
+        this.prevY = touch.clientY;
+        this.prevX = touch.clientX;
+        this.dragging = true;
+    }
+
+    /**
      * Called when mouse is risen on document stop drag
      * @param e
      */
-    private mouseUp = (e: MouseEvent) => {
+    private mouseUp = (e: Event) => {
         e.preventDefault();
         this.dragging = false;
     }
@@ -71,15 +90,34 @@ class DraggablePanel extends React.Component<IProps, IState>
      * @param e
      */
     private mouseMove = (e: MouseEvent) => {
+        this.drag(e.clientX, e.clientY);
+    }
+
+    /**
+     * Called when the touch is moved over the document to calculate the new position of
+     * the draggable canvas
+     * @param e
+     */
+    private touchMove = (e: TouchEvent) => {
+        const touch = e.touches[0] || e.changedTouches[0];
+        this.drag(touch.clientX, touch.clientY);
+    }
+
+    /**
+     * Called when user drags over the document to move the panel
+     * @param clientX
+     * @param clientY
+     */
+    private drag = (clientX: number, clientY: number) => {
         if(this.dragging) {
             const container = this.draggableContainer.current!;
-            let top = (container.offsetTop - (this.prevY - e.clientY))
-            let left = (container.offsetLeft - (this.prevX - e.clientX));
+            let top = (container.offsetTop - (this.prevY - clientY))
+            let left = (container.offsetLeft - (this.prevX - clientX));
             const content = this.draggableContent.current!;
             const draggable = this.draggable.current!;
             //stop drag if mouse goes out of bounds
-            if(e.clientY < 0 || e.clientY > window.innerHeight
-                    || e.clientX < 0 || e.clientX > window.innerWidth) {
+            if(clientY < 0 || clientY > window.innerHeight
+                || clientX < 0 || clientX > window.innerWidth) {
                 this.dragging = false;
             }
             //check if position is out of bounds and prevent the panel from being dragged there
@@ -101,8 +139,8 @@ class DraggablePanel extends React.Component<IProps, IState>
                 left: left
             });
             //update previous pos
-            this.prevY = e.clientY;
-            this.prevX = e.clientX;
+            this.prevY = clientY;
+            this.prevX = clientX;
         }
     }
 
@@ -155,6 +193,7 @@ class DraggablePanel extends React.Component<IProps, IState>
             <div style={this.draggableStyle()} className='draggable'
                  ref={this.draggable}
                  onMouseDown={e => this.mouseDown(e.nativeEvent)}
+                 onTouchStart={e => this.touchStart(e.nativeEvent)}
             >
                 <div className='draggable-title'>{this.props.title}</div>
                 <div className='x-button' onClick={this.props.onClickXButton}>X</div>

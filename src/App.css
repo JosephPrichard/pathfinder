@@ -1,3 +1,8 @@
+html {
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+}
+
 @media only screen and (min-device-width: 1100px) {
     body {
         overflow: hidden;
@@ -121,6 +126,9 @@ body {
     .button {
         margin: 10px;
     }
+    .half-button-wrapper {
+        margin: 10px;
+    }
     .drop-down{
         margin: 10px;
     }
@@ -128,11 +136,12 @@ body {
 
 @media only screen and (max-device-width: 500px) {
     .top-navbar {
-        font-size: 14px;
         padding: 10px;
     }
     .button {
-        height: 41px;
+        margin: 5px;
+    }
+    .half-button-wrapper {
         margin: 5px;
     }
     .maze-img {
@@ -482,6 +491,7 @@ body {
     padding: 0;
     width: 100vw;
     height: calc(100vh - 75px - 30px);
+    touch-action: none; /* stop overflow-y scrolling on touch */
 }
 
 .line {
