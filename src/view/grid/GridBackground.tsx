@@ -1,4 +1,5 @@
 import React from 'react';
+import './Grid.css';
 import {Node} from '../../pathfinding/algorithms/Node';
 import {Point} from '../../pathfinding/core/Components';
 
@@ -75,7 +76,6 @@ class GridBackground extends React.Component<IProps,IState>
      * @param visualization
      */
     private doGeneration = (generation: Node, visualization: string[][]) => {
-        //modify state directly to improve performance
         for(const node of generation.children) {
             const point = node.tile.point;
             visualization[point.y][point.x] = OPEN_NODE;
@@ -120,7 +120,6 @@ class GridBackground extends React.Component<IProps,IState>
      * @param arrows
      */
     private doArrowGeneration = (generation: Node, arrows: Arrow[]) => {
-        //modify state directly to improve performance
         const point = generation.tile.point;
         for(const node of generation.children) {
             const childPoint = node.tile.point;

@@ -1,4 +1,5 @@
 import React from 'react';
+import './Navbar.css'
 
 interface AlgProps {
     onClick: () => void,

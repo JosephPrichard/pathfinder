@@ -1,4 +1,5 @@
 import React, {RefObject} from 'react';
+import './Grid.css';
 import GridBackground from './GridBackground';
 import GridForeground from './GridForeground';
 import StatsPanel from './StatsPanel';

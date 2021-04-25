@@ -22,7 +22,7 @@ export interface Grid
  * and y corresponds to the row of the matrix
  * TileData.ts should be treated like graph nodes
  */
-class GridGraph implements Grid
+class RectGrid implements Grid
 {
     private readonly tiles: Tile[][];
     private readonly width: number;
@@ -33,36 +33,11 @@ class GridGraph implements Grid
      * @param width of the grid
      * @param height of grid
      * will perform a defensive copy to the grid
-     * @param grid, optional parameter to copy tiles from that grid to
-     * this grid
      */
-    constructor(width: number, height: number, grid?: Grid) {
+    constructor(width: number, height: number) {
         this.width = width;
         this.height = height;
-        if(grid === undefined) {
-            this.tiles = createEmptyGrid(width, height);
-        } else {
-            this.tiles = [];
-            for(let y = 0; y < height; y++) {
-                const row: Tile[] = [];
-                for(let x = 0; x < width; x++) {
-                    const point = {
-                        x: x, y: y
-                    }
-                    const inBounds = grid.inBounds(point);
-                    row.push({
-                        data: {
-                            pathCost: inBounds ? grid.get(point).data.pathCost : 1,
-                            isSolid: inBounds ? grid.get(point).data.isSolid : false
-                        },
-                        point: {
-                            x: x, y: y
-                        }
-                    });
-                }
-               this.tiles.push(row);
-            }
-        }
+        this.tiles = createEmptyGrid(width, height);
     }
 
     getWidth() {
@@ -153,12 +128,12 @@ class GridGraph implements Grid
         return !this.tiles[point.y][point.x].data.isSolid;
     }
 
-    isSolid(point: Point): boolean {
+    isSolid(point: Point) {
         return this.tiles[point.y][point.x].data.isSolid;
     }
 
     clone(): Grid {
-        const grid = new GridGraph(this.width, this.height);
+        const grid = new RectGrid(this.width, this.height);
         for(let y = 0; y < grid.height; y++) {
             for(let x = 0; x < grid.width; x++) {
                 const point = {
@@ -191,4 +166,4 @@ function createEmptyGrid(width: number, height: number) {
     return nodes;
 }
 
-export default GridGraph;
+export default RectGrid;

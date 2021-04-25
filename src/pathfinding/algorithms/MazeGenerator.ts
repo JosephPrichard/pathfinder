@@ -1,4 +1,4 @@
-import GridGraph, {Grid} from '../core/Grid';
+import RectGrid, {Grid} from '../core/Grid';
 import {Point, Tile, createTile} from '../core/Components';
 import TerrainGenerator from './TerrainGenerator';
 
@@ -41,7 +41,7 @@ class MazeGenerator extends TerrainGenerator
      *  This should not be further right/down than (width-2,height-2)
      */
     generateTerrain(topLeft?: Point, bottomRight?: Point) {
-        const grid = new GridGraph(this.width, this.height);
+        const grid = new RectGrid(this.width, this.height);
         if(topLeft === undefined) {
             topLeft = {
                 x: 1, y: 1

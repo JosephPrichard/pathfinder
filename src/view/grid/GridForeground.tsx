@@ -1,6 +1,7 @@
 import React, {RefObject} from 'react';
+import './Grid.css';
 import {Point, Tile} from '../../pathfinding/core/Components';
-import GridGraph, {Grid} from '../../pathfinding/core/Grid';
+import RectGrid, {Grid} from '../../pathfinding/core/Grid';
 import TileFg from './TileFg';
 
 interface IProps {
@@ -50,7 +51,7 @@ class GridForeground extends React.Component<IProps,IState>
         this.height = this.props.tilesY;
         const end = this.calcEndPointInView();
         this.state = {
-            grid: new GridGraph(this.width, this.height),
+            grid: new RectGrid(this.width, this.height),
             path: [],
             initial: {
                 x: ((end.x)/3) >> 0,

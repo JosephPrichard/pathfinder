@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 import PathfindingApp from './view/PathfindingApp';
 
 class App extends React.Component

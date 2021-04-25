@@ -24,7 +24,7 @@ abstract class TerrainGenerator
      * @param grid
      * @param tile
      */
-    protected draw(grid: Grid, tile: Tile) {
+    draw(grid: Grid, tile: Tile) {
         if(!this.shouldIgnore(tile.point)) {
             grid.mutateTile(tile);
         }

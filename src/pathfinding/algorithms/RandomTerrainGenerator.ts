@@ -1,6 +1,6 @@
 import TerrainGenerator from './TerrainGenerator';
 import {createTile, Point} from '../core/Components';
-import GridGraph, {Grid} from '../core/Grid';
+import RectGrid, {Grid} from '../core/Grid';
 
 class RandomTerrainGenerator extends TerrainGenerator
 {
@@ -17,7 +17,7 @@ class RandomTerrainGenerator extends TerrainGenerator
      *  This should not be further right/down than (width-2,height-2)
      */
     generateTerrain(topLeft?: Point, bottomRight?: Point): Grid {
-        const grid = new GridGraph(this.width, this.height);
+        const grid = new RectGrid(this.width, this.height);
         if(topLeft === undefined) {
             topLeft = {
                 x: 1, y: 1

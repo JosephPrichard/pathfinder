@@ -1,4 +1,5 @@
 import React, {RefObject} from 'react';
+import './Navbar.css'
 
 interface IProps {
     onChangeHeight: (height: number) => void

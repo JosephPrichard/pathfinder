@@ -1,5 +1,4 @@
 import React, {RefObject} from 'react';
-import '../App.css';
 import TopBar from './navbar/TopBar';
 import {VisualizeButton, SettingsButton} from './navbar/Buttons';
 import {AlgorithmDropDown, ClearDropDown, MazeDropDown} from './navbar/DropDown';
@@ -170,7 +169,7 @@ class PathfindingApp extends React.Component<IProps, IState>
                                 show={this.state.panelShow}
                                 onClickXButton={this.hideSettings}
                                 width={350}
-                                height={420}
+                                height={430}
                 >
                     <VisualSettings disabled={this.state.arrowsDisabled}
                                     onChangeViz={this.settingsManager.changeVisualize}

@@ -1,0 +1,65 @@
+.draggable-container {
+    position: absolute;
+    height: auto;
+    width: auto;
+    top: 20%;
+    left: 35%;
+    z-index: 30;
+}
+
+@media only screen and (max-device-width: 900px) {
+    .draggable-container {
+        top: 10%;
+        left: 20%;
+    }
+}
+
+@media only screen and (max-device-width: 468px) {
+    .draggable-container {
+        font-size: 12px;
+        top: 0;
+        left: 0;
+    }
+}
+
+.draggable-title {
+    color: white;
+    height: auto;
+    margin-left: 60px;
+    display: inline-block;
+}
+
+.draggable {
+    position: absolute;
+    cursor: move;
+    background-color: rgb(54,58,64);
+    min-height: 35px;
+    box-shadow: 0 4px 16px 0 rgba(0,0,0,0.2);
+    z-index: 5;
+    padding: 5px 0 5px;
+    border-radius: 3px;
+}
+
+.draggable-content {
+    position: absolute;
+    padding: 40px 40px 0 20px;
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 3px;
+    z-index: 4;
+}
+
+.x-button {
+    color: white;
+    display: inline-block;
+    float: right;
+    padding-right: 20px;
+    cursor: pointer;
+}
+
+.draggable-content-title {
+    margin: 10px 0 10px 0;
+}
+
+.settings-general {
+    display: block;
+}

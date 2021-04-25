@@ -1,4 +1,5 @@
 import React from 'react';
+import './Navbar.css'
 import Checkbox from '../utility/Checkbox';
 import SteppedRangeSlider from '../utility/SteppedRangeSlider';
 import RadioButtonGroup from '../utility/RadioButtonGroup';
