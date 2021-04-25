@@ -9,16 +9,12 @@ import {euclidean, HeuristicFunc} from './Heuristics';
 class AStarPathfinder extends Pathfinder
 {
     private readonly heuristic: HeuristicFunc = (a: Point, b: Point) => euclidean(a,b);
-    private readonly isNewScoreBetter: (newF: number, oldF: number) => boolean;
 
-    constructor(navigator: Navigator, func?: HeuristicFunc, canRediscover?: boolean) {
+    constructor(navigator: Navigator, func?: HeuristicFunc) {
         super(navigator);
         if(func !== undefined) {
             this.heuristic = func;
         }
-        this.isNewScoreBetter = canRediscover === undefined || canRediscover ?
-            (newScore: number, oldScore: number) => newScore < oldScore :
-            () => false;
     }
 
     getAlgorithmName(): string {
@@ -62,7 +58,7 @@ class AStarPathfinder extends Pathfinder
                 }
                 const g = currentNode.g + this.stepCost(currentPoint, neighborPoint);
                 const f = g + this.heuristic(neighborPoint, goal);
-                if (!openSet.has(neighborKey) || this.isNewScoreBetter(g, openSet.get(neighborKey)!)) {
+                if (!openSet.has(neighborKey) || g < openSet.get(neighborKey)!) {
                     const neighborNode = new AStarNode(
                         neighbor, g, f
                     );

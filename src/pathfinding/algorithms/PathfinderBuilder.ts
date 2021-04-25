@@ -43,7 +43,7 @@ const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: Heur
         })(navigator, heuristic);
     },
     'a*': (navigator, heuristic) => {
-        return new AStarPathfinder(navigator, heuristic,navigator.getType() !== 'plus');
+        return new AStarPathfinder(navigator, heuristic);
     },
     'bfs': (navigator) => {
         return new BFSPathfinder(navigator);
@@ -52,7 +52,7 @@ const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: Heur
         return new DFSPathfinder(navigator);
     },
     'bi-a*': (navigator, heuristic) => {
-        return new BiAStarPathfinder(navigator, heuristic, navigator.getType() !== 'plus');
+        return new BiAStarPathfinder(navigator, heuristic);
     },
     'bi-dijkstra': (navigator) => {
         return new (class BiDijkstraPathfinder extends BiAStarPathfinder {
