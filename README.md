@@ -6,7 +6,7 @@ Educational grid based pathfinding tool and library.
 
 This project is an educational Grid based Pathfinding tool written in Typescript that visualizes pathfinding and maze generation algorithms on a web browser! You can find an online demo [here](https://josephprichard.github.io/PathfinderReact).
 
-This is is the react version of an older project I made: [here](https://github.com/JosephPrichard/Pathfinder)
+This is is the react version of an older project I made: [here](https://github.com/JosephPrichard/PathfindingVisualizer)
 
 ## Build Process
 
@@ -116,5 +116,5 @@ const generator = new MazeGenerator(width, height);
 
 We can invoke the random generation algorithm (recursive division) like:
 ```
-const maze: Grid = generator.generateMaze();
+const maze: Grid = generator.generateTerrain();
 ```
