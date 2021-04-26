@@ -47,7 +47,6 @@ class TileFg extends React.Component<IProps, IState>
         }
         let time = expansions + overStep + 1;
         for(let i = expansions + overStep - 0.5; i >= expansions; i -= 0.5) {
-            console.log(time * expansionStep);
             const shrink = () => this.setState({
                 tileSize: original + i * (this.props.tileWidth/(expansions))
             });

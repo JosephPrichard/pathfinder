@@ -16,7 +16,7 @@ export function getDefaultSettings(): PathfindingSettings {
         delayInc: 6,
         algorithm: 'a*',
         heuristicKey: 'euclidean',
-        navigatorKey: 'asterisk',
+        navigatorKey: 'plus',
         bidirectional: false
     }
 }
