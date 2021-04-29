@@ -78,10 +78,12 @@ class WeightFg extends React.Component<IProps, IState>
         );
         if(this.state.showNumber) {
             children.push(
-                <text x="50%" y="70%"
-                      dominantBaseline="middle" textAnchor="middle"
+                <text x='50%' y='70%'
+                      dominantBaseline='middle'
+                      textAnchor='middle'
                       fill={'white'}
                       fontSize={'0.8em'}
+                      className={'svg-text'}
                 >
                     {this.props.cost}
                 </text>

@@ -5,18 +5,18 @@ import {Point} from '../core/Components';
  */
 export class HashSet
 {
-    private map: {[key: string]: boolean} = {};
+    private map: {[key: string]: boolean | undefined} = {};
 
     add(key: string) {
         this.map[key] = true;
     }
 
     remove(key: string) {
-        this.map[key] = false;
+        this.map[key] = undefined;
     }
 
     has(key: string) {
-        return this.map[key];
+        return this.map[key] !== undefined;
     }
 
     clear() {

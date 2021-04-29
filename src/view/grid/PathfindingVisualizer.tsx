@@ -45,8 +45,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
 
     constructor(props: IProps) {
         super(props);
-        const w = window.screen.availWidth;
-        const h = window.screen.availHeight;
+        const w = window.screen.availWidth - (window.outerWidth - window.innerWidth);
+        const h = window.screen.availHeight - (window.outerHeight - window.innerHeight);
         const tilesX = Math.floor(w / this.props.tileWidth) + 1;
         const tilesY = Math.floor((h - this.props.topMargin - 30) / this.props.tileWidth) + 1;
         this.state = {
@@ -61,7 +61,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     }
 
     changeTile = (data: TileData) => {
-        //enable weighted mazes
+        //uncomment this to enable weighted mazes
         // this.mazeTile = data;
         this.foreground.current!.changeTile(data);
     }

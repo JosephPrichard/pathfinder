@@ -23,7 +23,7 @@ class BiAStarPathfinder extends Pathfinder
 
     /**
      * Performs aStar algorithm on the grid given an initial and goal point
-     * Always returns the shortest path, and performs well on larger grids
+     * Doesn't always returns the shortest path, but performs well on larger grids
      * @param initial
      * @param goal
      */

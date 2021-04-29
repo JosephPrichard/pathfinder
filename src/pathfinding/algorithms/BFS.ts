@@ -11,7 +11,7 @@ class BFSPathfinder extends Pathfinder
 
     /**
      * Implementation of BFS to find the shortest path from initial to point
-     * Always returns the shortest path, but performs poorly on larger grids
+     * Doesn't always return the shortest path, and performs poorly on larger grids
      * @param initial
      * @param goal
      */

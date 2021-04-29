@@ -13,7 +13,7 @@ export function getDefaultSettings(): PathfindingSettings {
     return {
         visualizeAlg: true,
         showArrows: true,
-        delayInc: 6,
+        delayInc: 8,
         algorithm: 'a*',
         heuristicKey: 'euclidean',
         navigatorKey: 'plus',

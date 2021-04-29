@@ -180,7 +180,7 @@ class PathfindingApp extends React.Component<IProps, IState>
         const mobile = isMobile();
         const tileWidth =  mobile ? 47 : Math.round(window.screen.availWidth / 57);
         if(mobile) {
-            this.settingsManager.changeSpeed(12);
+            this.settingsManager.changeSpeed(16);
         }
         return (
             <div>

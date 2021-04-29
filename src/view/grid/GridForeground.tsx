@@ -219,7 +219,6 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     drawTile = (point: Point) => {
-        console.log(this.tilePointer);
         const grid = this.state.grid.clone();
         if(grid.inBounds(point)) {
             grid.mutateTile({
@@ -400,7 +399,7 @@ class GridForeground extends React.Component<IProps,IState>
                   y2={secondY + offset - offsetY}
                   stroke={ARROW_PATH_COLOR}
                   strokeWidth={2 * this.props.tileWidth/BASE_WIDTH}
-                  className='line-path-arrow'
+                  className='line'
                   markerEnd='url(#arrowhead-path)' />
         );
     }
