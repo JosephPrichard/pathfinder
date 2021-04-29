@@ -7,7 +7,7 @@ import {Node} from '../../pathfinding/algorithms/Node';
 import PathfindingSettings from '../PathfindingSettings';
 import PathfinderBuilder from '../../pathfinding/algorithms/PathfinderBuilder';
 import Pathfinder from '../../pathfinding/algorithms/Pathfinder';
-import {Point, Tile} from '../../pathfinding/core/Components';
+import {createTile, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import {euclidean} from '../../pathfinding/algorithms/Heuristics';
 import VirtualTimer from '../utility/VirtualTimer';
 import TerrainGeneratorBuilder from '../../pathfinding/algorithms/TerrainGeneratorBuilder';
@@ -24,6 +24,7 @@ interface IState {
     tilesY: number,
     time: number,
     length: number,
+    cost: number,
     nodes: number,
     algorithm: string
 }
@@ -40,6 +41,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     private visualTimeouts: VirtualTimer[]  = [];
     private generations: Node[] = [];
 
+    private mazeTile: TileData = createTile(true);
+
     constructor(props: IProps) {
         super(props);
         const w = window.screen.availWidth;
@@ -51,9 +54,16 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
             tilesY: tilesY,
             time: -1,
             length: -1,
+            cost: -1,
             nodes: -1,
             algorithm: ''
         }
+    }
+
+    changeTile = (data: TileData) => {
+        //enable weighted mazes
+        // this.mazeTile = data;
+        this.foreground.current!.changeTile(data);
     }
 
     canShowArrows = () => {
@@ -83,17 +93,6 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     resumePathfinding = () => {
         for(const timeout of this.visualTimeouts) {
             timeout.resume();
-        }
-    }
-
-    jumpToGeneration = (generation: number) => {
-        this.clearPath();
-        const generations = this.generations.slice(generation);
-        if(this.canShowArrows()) {
-            this.addArrowGenerations(generations);
-        }
-        if(this.canShowFrontier()) {
-            this.visualizeGenerations(generations);
         }
     }
 
@@ -202,6 +201,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
             time: t2,
             nodes: pathfinder.getRecentNodes(),
             length: calcLength(foreground.state.initial, path),
+            cost: calcCost(foreground.state.grid.get(foreground.state.initial), path),
             algorithm: pathfinder.getAlgorithmName()
         });
         return path;
@@ -256,6 +256,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                 )
                 .setGeneratorType(mazeType)
                 .setIgnorePoints([foreground.state.initial, foreground.state.goal])
+                .setTileData(this.mazeTile)
                 .build();
             const topLeft = {
                 x: 1, y: 1
@@ -337,7 +338,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     render() {
         return (
             <div>
-                <StatsPanel ref={this.stats} algorithm={this.state.algorithm} length={this.state.length}
+                <StatsPanel ref={this.stats} algorithm={this.state.algorithm}
+                            length={this.state.length} cost={this.state.cost}
                             time={this.state.time} nodes={this.state.nodes}/>
                 <GridBackground ref={this.background} tileWidth={this.props.tileWidth}
                                 tilesX={this.state.tilesX} tilesY={this.state.tilesY}/>
@@ -356,6 +358,17 @@ function calcLength(initial: Point, path: Tile[]) {
     let len = euclidean(initial, path[0].point);
     for (let i = 0; i < path.length - 1; i++) {
         len += euclidean(path[i].point, path[i + 1].point);
+    }
+    return +(len).toFixed(3);
+}
+
+function calcCost(initial: Tile, path: Tile[]) {
+    if(path.length === 0) {
+        return 0;
+    }
+    let len = euclidean(initial.point, path[0].point) * path[0].data.pathCost;
+    for (let i = 0; i < path.length - 1; i++) {
+        len += euclidean(path[i].point, path[i + 1].point) * path[i + 1].data.pathCost;
     }
     return +(len).toFixed(3);
 }

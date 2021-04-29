@@ -1,4 +1,4 @@
-import {Point, Tile} from '../core/Components';
+import {createTile, Point, Tile, TileData} from '../core/Components';
 import {Grid} from '../core/Grid';
 import {HashSet, stringify} from '../structures/Hash';
 
@@ -7,11 +7,17 @@ abstract class TerrainGenerator
     protected readonly width: number;
     protected readonly height: number;
     protected readonly ignore: HashSet;
+    protected readonly data: TileData;
 
-    protected constructor(width: number, height: number, ignore?: Point[]) {
+    protected constructor(width: number, height: number, data?: TileData, ignore?: Point[]) {
         this.width = width;
         this.height = height;
         this.ignore = new HashSet();
+        if(data !== undefined) {
+            this.data = data;
+        } else {
+            this.data = createTile(true);
+        }
         if(ignore !== undefined) {
             for(const i of ignore) {
                 this.ignore.add(stringify(i));
@@ -24,13 +30,17 @@ abstract class TerrainGenerator
      * @param grid
      * @param tile
      */
-    draw(grid: Grid, tile: Tile) {
+    protected draw(grid: Grid, tile: Tile) {
         if(!this.shouldIgnore(tile.point)) {
             grid.mutateTile(tile);
         }
     }
 
-    shouldIgnore(point: Point) {
+    protected getTerrain() {
+        return this.data;
+    }
+
+    protected shouldIgnore(point: Point) {
         return this.ignore.has(stringify(point));
     }
 

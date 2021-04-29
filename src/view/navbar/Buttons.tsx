@@ -9,7 +9,7 @@ interface VProps {
     onResume: ()  => void,
 }
 
-interface SProps {
+interface ButtonProps {
     onClick: ()  => void
 }
 
@@ -101,9 +101,8 @@ export class VisualizeButton extends React.Component<VProps>
     }
 }
 
-export class SettingsButton extends React.Component<SProps>
+export class SettingsButton extends React.Component<ButtonProps>
 {
-
     render() {
         return (
             <button onMouseDown={e => e.preventDefault()}

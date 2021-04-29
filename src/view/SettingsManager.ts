@@ -20,10 +20,6 @@ class SettingsManager
         this.settings.bidirectional = !this.settings.bidirectional;
     }
 
-    changeDiagonals = (checked: boolean) => {
-        this.settings.navigatorKey = checked ? 'asterisk' : 'plus';
-    }
-
     changeSpeed = (value: number) => {
         this.settings.delayInc = value;
     }

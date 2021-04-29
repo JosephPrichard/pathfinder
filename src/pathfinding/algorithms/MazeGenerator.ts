@@ -1,5 +1,5 @@
 import RectGrid, {Grid} from '../core/Grid';
-import {Point, Tile, createTile} from '../core/Components';
+import {Point, Tile, createTile, TileData} from '../core/Components';
 import TerrainGenerator from './TerrainGenerator';
 
 const LIMIT = 2;
@@ -8,8 +8,7 @@ export const NO_SKEW = 0;
 export const VERTICAL_SKEW = 1;
 export const HORIZONTAL_SKEW = 2;
 
-interface Chamber
-{
+interface Chamber {
     topLeft: Point; //min
     bottomRight: Point; //max
 }
@@ -18,8 +17,8 @@ class MazeGenerator extends TerrainGenerator
 {
     private readonly divideWidth: (width: number, height: number) => boolean;
 
-    constructor(width: number, height: number, ignore?: Point[], slant?: number) {
-        super(width, height, ignore);
+    constructor(width: number, height: number, tileData?: TileData, ignore?: Point[], slant?: number) {
+        super(width, height, tileData, ignore);
         if(slant === undefined || slant === NO_SKEW) {
             this.divideWidth = divideWidthNoSkew;
         } else if(slant === VERTICAL_SKEW) {
@@ -58,13 +57,13 @@ class MazeGenerator extends TerrainGenerator
                 point: {
                     x: x, y: topLeft.y - 1
                 },
-                data: createTile(true)
+                data: this.getTerrain()
             });
             this.draw(grid,{
                 point: {
                     x: x, y: bottomRight.y + 1
                 },
-                data: createTile(true)
+                data: this.getTerrain()
             });
         }
         for(let y = topLeft.y - 1; y <= bottomRight.y + 1; y++) {
@@ -72,13 +71,13 @@ class MazeGenerator extends TerrainGenerator
                 point: {
                     x: topLeft.x - 1, y: y
                 },
-                data: createTile(true)
+                data: this.getTerrain()
             });
             this.draw(grid,{
                 point: {
                     x: bottomRight.x + 1, y: y
                 },
-                data: createTile(true)
+                data: this.getTerrain()
             });
         }
         this.divide(grid,{
@@ -98,6 +97,11 @@ class MazeGenerator extends TerrainGenerator
             this.draw(grid, tile);
         }
     }
+
+    private canDrawHole(tile: Tile) {
+        return tile.data.pathCost === 1 && !tile.data.isSolid;
+    }
+
     /**
      * Create a line between a region, with an open hole, in a chamber,
      * and call bisection algorithm on it, and call division algorithms on
@@ -123,14 +127,14 @@ class MazeGenerator extends TerrainGenerator
                         point: {
                             x: randX, y: y
                         },
-                        data: createTile(true)
+                        data: this.getTerrain()
                     });
                 }
                 //create holes in axis wall
                 let edgeBlocked = false;
-                if(!grid.get({
+                if(this.canDrawHole(grid.get({
                     x: randX, y: min.y-1
-                }).data.isSolid) {
+                }))) {
                     toDraw.push({
                         point: {
                             x: randX, y: min.y
@@ -139,9 +143,9 @@ class MazeGenerator extends TerrainGenerator
                     });
                     edgeBlocked = true;
                 }
-                if(!grid.get({
+                if(this.canDrawHole(grid.get({
                     x: randX, y: max.y+1
-                }).data.isSolid) {
+                }))) {
                     toDraw.push({
                         point: {
                             x: randX, y: max.y
@@ -193,14 +197,14 @@ class MazeGenerator extends TerrainGenerator
                         point: {
                             x: x, y: randY
                         },
-                        data: createTile(true)
+                        data: this.getTerrain()
                     });
                 }
                 //create holes in axis wall
                 let edgeBlocked = false;
-                if(!grid.get({
+                if(this.canDrawHole(grid.get({
                     x: min.x-1, y: randY
-                }).data.isSolid) {
+                }))) {
                     toDraw.push({
                         point: {
                             x: min.x, y: randY
@@ -209,9 +213,9 @@ class MazeGenerator extends TerrainGenerator
                     });
                     edgeBlocked = true;
                 }
-                if(!grid.get({
+                if(this.canDrawHole(grid.get({
                     x: max.x+1, y: randY
-                }).data.isSolid) {
+                }))) {
                     toDraw.push({
                         point: {
                             x: max.x, y: randY

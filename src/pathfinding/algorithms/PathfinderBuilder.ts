@@ -1,6 +1,5 @@
 import Navigator from '../core/Navigator';
 import PlusNavigator from '../core/PlusNavigator';
-import AsteriskNavigator from '../core/AsteriskNavigator';
 import {Point} from '../core/Components';
 import {Grid} from '../core/Grid';
 import {chebyshev, euclidean, HeuristicFunc, manhattan, nullHeuristic, octile} from './Heuristics';
@@ -13,7 +12,6 @@ import BiBFSPathfinder from "./BidirectionalBFS";
 
 const CREATE_NAVIGATOR: {[key: string]: ((grid: Grid) => Navigator)} = {
     'plus': (grid: Grid) => new PlusNavigator(grid),
-    'asterisk': (grid: Grid) => new AsteriskNavigator(grid)
 }
 
 const CREATE_HEURISTIC: {[key: string]: (() => HeuristicFunc)} = {

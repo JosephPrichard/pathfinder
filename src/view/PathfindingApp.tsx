@@ -1,7 +1,7 @@
 import React, {RefObject} from 'react';
 import TopBar from './navbar/TopBar';
 import {VisualizeButton, SettingsButton} from './navbar/Buttons';
-import {AlgorithmDropDown, ClearDropDown, MazeDropDown} from './navbar/DropDown';
+import {AlgorithmDropDown, ClearDropDown, MazeDropDown, TilesDropDown} from './navbar/DropDown';
 import DraggablePanel from './utility/DraggablePanel';
 import PathfindingVisualizer from './grid/PathfindingVisualizer';
 import {VisualSettings, SpeedSettings, AlgorithmSettings, HeuristicSettings} from './navbar/SettingPanels';
@@ -26,12 +26,14 @@ interface IState {
 
 class PathfindingApp extends React.Component<IProps, IState>
 {
-    //expose grid to parent to connect to button siblings
-    private grid: RefObject<PathfindingVisualizer> = React.createRef();
+    //expose visualizer to parent to connect to button siblings
+    private visualizer: RefObject<PathfindingVisualizer> = React.createRef();
 
+    //drop down refs needed to invoke behavior between dropdowns
     private algDropDown: RefObject<AlgorithmDropDown> = React.createRef();
     private clrDropDown: RefObject<ClearDropDown> = React.createRef();
     private mazeDropDown: RefObject<MazeDropDown> = React.createRef();
+    private tilesDropDown: RefObject<TilesDropDown> = React.createRef();
 
     private settingsManager: SettingsManager = new SettingsManager();
 
@@ -53,22 +55,32 @@ class PathfindingApp extends React.Component<IProps, IState>
             this.algDropDown.current!.hide();
             this.clrDropDown.current!.hide();
             this.mazeDropDown.current!.hide();
+            this.tilesDropDown.current!.hide();
         });
     }
 
     onClickAlgDrop = () => {
         this.clrDropDown.current!.hide();
         this.mazeDropDown.current!.hide();
+        this.tilesDropDown.current!.hide();
     }
 
     onClickClrDrop = () => {
         this.algDropDown.current!.hide();
         this.mazeDropDown.current!.hide();
+        this.tilesDropDown.current!.hide();
     }
 
     onClickMazeDrop = () => {
         this.clrDropDown.current!.hide();
         this.algDropDown.current!.hide();
+        this.tilesDropDown.current!.hide();
+    }
+
+    onClickTilesDrop = () => {
+        this.clrDropDown.current!.hide();
+        this.algDropDown.current!.hide();
+        this.mazeDropDown.current!.hide();
     }
 
     changeVButtonColor = (visualizing: boolean) => {
@@ -102,59 +114,66 @@ class PathfindingApp extends React.Component<IProps, IState>
         this.setState({
             paused: false
         });
-        this.grid.current!.doDelayedPathfinding();
+        this.visualizer.current!.doDelayedPathfinding();
     }
 
     pausePathfinding = () => {
         this.setState({
             paused: true
         });
-        this.grid.current!.pausePathfinding();
+        this.visualizer.current!.pausePathfinding();
     }
 
     resumePathfinding = () => {
         this.setState({
             paused: false
         });
-        this.grid.current!.resumePathfinding();
+        this.visualizer.current!.resumePathfinding();
     }
 
     clearPath = () => {
-        this.grid.current!.clearPath();
-        this.grid.current!.clearVisualizationChecked();
+        this.visualizer.current!.clearPath();
+        this.visualizer.current!.clearVisualizationChecked();
     }
 
     clearTiles = () => {
         this.clearPath();
-        this.grid.current!.clearTilesChecked();
+        this.visualizer.current!.clearTilesChecked();
     }
 
     resetBoard = () => {
         this.clearPath();
         this.clearTiles();
-        this.grid.current!.resetPoints();
+        this.visualizer.current!.resetPoints();
     }
 
     createMaze = () => {
-        this.grid.current!.createTerrain(MAZE);
+        this.visualizer.current!.createTerrain(MAZE);
     }
 
     createMazeVSkew = () => {
-        this.grid.current!.createTerrain(MAZE_VERTICAL_SKEW);
+        this.visualizer.current!.createTerrain(MAZE_VERTICAL_SKEW);
     }
 
     createMazeHSkew = () => {
-        this.grid.current!.createTerrain(MAZE_HORIZONTAL_SKEW);
+        this.visualizer.current!.createTerrain(MAZE_HORIZONTAL_SKEW);
     }
 
     createRandomTerrain = () => {
-        this.grid.current!.createTerrain(RANDOM_TERRAIN);
+        this.visualizer.current!.createTerrain(RANDOM_TERRAIN);
     }
 
     onChangeHeight = (height: number) => {
         this.setState({
             topMargin: height
-        })
+        });
+    }
+
+    changeTile = (cost: number) => {
+        this.visualizer.current!.changeTile({
+            isSolid: cost === -1,
+            pathCost: cost
+        });
     }
 
     render() {
@@ -180,7 +199,6 @@ class PathfindingApp extends React.Component<IProps, IState>
                     />
                     <AlgorithmSettings disabled={this.state.bidirectionalDisabled}
                                        onChangeBidirectional={this.settingsManager.changeBidirectional}
-                                       onChangeDiagonals={this.settingsManager.changeDiagonals}
                     />
                     <HeuristicSettings disabled={this.state.heuristicDisabled}
                                        onClickManhattan={this.settingsManager.changeManhattan}
@@ -210,6 +228,10 @@ class PathfindingApp extends React.Component<IProps, IState>
                                        onClickPath={this.clearPath}
                                        onClickReset={this.resetBoard}
                         />
+                        <TilesDropDown ref={this.tilesDropDown}
+                                       onClick={this.onClickTilesDrop}
+                                       onClickTileType={this.changeTile}
+                        />
                         <MazeDropDown ref={this.mazeDropDown}
                                       onClick={this.onClickMazeDrop}
                                       onClickMaze={this.createMaze}
@@ -220,7 +242,7 @@ class PathfindingApp extends React.Component<IProps, IState>
                         <SettingsButton onClick={this.toggleSettings}/>
                     </div>
                 </TopBar>
-                <PathfindingVisualizer ref={this.grid}
+                <PathfindingVisualizer ref={this.visualizer}
                                        onChangeVisualizing={this.changeVButtonColor}
                                        topMargin={this.state.topMargin}
                                        settings={this.settingsManager.settings}

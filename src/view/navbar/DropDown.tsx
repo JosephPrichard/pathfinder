@@ -6,10 +6,10 @@ interface AlgProps {
     onChange: (alg: string) => void
 }
 
-interface AlgState {
+interface DropDownTextState {
     up: boolean,
     display: string,
-    algText: string,
+    text: string,
     fade: string
 }
 
@@ -20,7 +20,7 @@ interface ClrProps {
     onClickReset: () => void;
 }
 
-interface DState {
+interface DropDownState {
     up: boolean,
     display: string,
     fade: string
@@ -34,14 +34,23 @@ interface MazeProps {
     onClickRandomTerrain: () => void
 }
 
-export class AlgorithmDropDown extends React.Component<AlgProps, AlgState>
+interface ClickableProps {
+    click: () => void;
+}
+
+interface TProps {
+    onClick: () => void,
+    onClickTileType: (cost: number) => void
+}
+
+export class AlgorithmDropDown extends React.Component<AlgProps, DropDownTextState>
 {
     constructor(props: AlgProps) {
         super(props);
         this.state = {
             up: true,
             display: 'none',
-            algText: 'A* Search',
+            text: 'A* Search',
             fade: 'fade-in'
         };
     }
@@ -83,7 +92,7 @@ export class AlgorithmDropDown extends React.Component<AlgProps, AlgState>
     onChange = (key: string, algText: string) => {
         this.props.onChange(key);
         this.setState({
-            algText: algText
+            text: algText
         });
     }
 
@@ -99,7 +108,7 @@ export class AlgorithmDropDown extends React.Component<AlgProps, AlgState>
                  onClick={(e) => this.toggle(e.nativeEvent)}
             >
                 <div className='alg-drop-down-button drop-down-button'>
-                    <span className='alg-drop-down-text drop-down-text'>{this.state.algText}</span>
+                    <span className='alg-drop-down-text drop-down-text'>{this.state.text}</span>
                     <span className={'alg-arr ' + this.arrowClass()}/>
                 </div>
                 <div style={this.contentStyle()}
@@ -116,7 +125,7 @@ export class AlgorithmDropDown extends React.Component<AlgProps, AlgState>
     }
 }
 
-export class ClearDropDown extends React.Component<ClrProps, DState>
+export class ClearDropDown extends React.Component<ClrProps, DropDownState>
 {
     constructor(props: ClrProps) {
         super(props);
@@ -188,7 +197,7 @@ export class ClearDropDown extends React.Component<ClrProps, DState>
     }
 }
 
-export class MazeDropDown extends React.Component<MazeProps, DState>
+export class MazeDropDown extends React.Component<MazeProps, DropDownState>
 {
     constructor(props: MazeProps) {
         super(props);
@@ -261,8 +270,85 @@ export class MazeDropDown extends React.Component<MazeProps, DState>
     }
 }
 
-interface ClickableProps {
-    click: () => void;
+export class TilesDropDown extends React.Component<TProps, DropDownTextState>
+{
+    constructor(props: TProps) {
+        super(props);
+        this.state = {
+            up: true,
+            display: 'none',
+            fade: 'fade-in',
+            text: 'Wall [∞]'
+        };
+    }
+
+    show = () => {
+        this.setState({
+            up: false,
+            display: 'block',
+        });
+    }
+
+    hide = () => {
+        this.setState({
+            display: 'none',
+            up: true,
+        });
+    }
+
+    toggle = (e: Event) => {
+        e.stopPropagation();
+        this.props.onClick();
+        if(this.isHidden()) {
+            this.show();
+        } else {
+            this.hide();
+        }
+    }
+
+    isHidden = () => {
+        return this.state.display === 'none';
+    }
+
+    contentStyle = () => {
+        return {
+            display: this.state.display
+        }
+    }
+
+    arrowClass = () => {
+        return this.state.up ? 'arrowUpW' : 'arrowDownW';
+    }
+
+    onChange = (cost: number, text: string) => {
+        this.props.onClickTileType(cost);
+        this.setState({
+            text: text
+        }, () => this.props.onClickTileType(cost));
+    }
+
+    render() {
+        return (
+            <div tabIndex={0} className='tiles-drop-down drop-down'
+                 onMouseDown={e => e.preventDefault()}
+                 onKeyPress={(e) => this.toggle(e.nativeEvent)}
+                 onClick={(e) => this.toggle(e.nativeEvent)}
+            >
+                <div className='tiles-drop-down-button drop-down-button'>
+                    <span className='tiles-drop-down-text drop-down-text'>{this.state.text}</span>
+                    <span className={'clr-arr ' + this.arrowClass()}/>
+                </div>
+                <div style={this.contentStyle()}
+                     className={this.state.fade + ' tiles-drop-down-content drop-down-content'}
+                >
+                    <Clickable click={() => this.onChange(-1, 'Wall [∞]')}>Wall [∞]</Clickable>
+                    <Clickable click={() => this.onChange(2, 'Weight [2]')}>Weight [2]</Clickable>
+                    <Clickable click={() => this.onChange(3, 'Weight [3]')}>Weight [3]</Clickable>
+                    <Clickable click={() => this.onChange(5, 'Weight [5]')}>Weight [5]</Clickable>
+                </div>
+            </div>
+        );
+    }
 }
 
 class Clickable extends React.Component<ClickableProps>

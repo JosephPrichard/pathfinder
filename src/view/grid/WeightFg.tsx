@@ -1,25 +1,28 @@
 import React from 'react';
-import './Grid.css';
 import {Point} from '../../pathfinding/core/Components';
+import {ReactComponent as Weight} from '../web-content/weight.svg';
 
 interface IProps {
     tileWidth: number,
     point: Point,
     color: string,
-    doAnimation: boolean
+    doAnimation: boolean,
+    cost: number
 }
 
 interface IState {
-    tileSize: number
+    tileSize: number,
+    showNumber: boolean
 }
 
-class TileFg extends React.Component<IProps, IState>
+class WeightFg extends React.Component<IProps, IState>
 {
     constructor(props: IProps) {
         super(props);
         const size = this.props.doAnimation ?  0 : this.props.tileWidth;
         this.state = {
             tileSize: size,
+            showNumber: !this.props.doAnimation
         }
     }
 
@@ -53,6 +56,9 @@ class TileFg extends React.Component<IProps, IState>
             setTimeout(shrink, time * expansionStep);
             time += 6;
         }
+        setTimeout(() => this.setState({
+            showNumber: true
+        }), expansionDuration);
     }
 
     render() {
@@ -64,14 +70,29 @@ class TileFg extends React.Component<IProps, IState>
             stroke: 'none',
             display: 'block'
         };
-        return (
-            <rect x={left} y={top}
-                  shapeRendering='crispEdges'
-                  width={width} height={width}
-                  style={style} className={'svg-tile'}
+        const children: JSX.Element[] = [];
+        children.push(
+            <Weight width={width} height={width}
+                    style={style} className={'svg-tile'}
             />
+        );
+        if(this.state.showNumber) {
+            children.push(
+                <text x="50%" y="70%"
+                      dominantBaseline="middle" textAnchor="middle"
+                      fill={'white'}
+                      fontSize={'0.8em'}
+                >
+                    {this.props.cost}
+                </text>
+            );
+        }
+        return (
+            <svg x={left} y={top} width={width} height={width}>
+                {children}
+            </svg>
         );
     }
 }
 
-export default TileFg;
+export default WeightFg;

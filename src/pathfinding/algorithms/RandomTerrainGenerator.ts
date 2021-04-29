@@ -1,11 +1,11 @@
 import TerrainGenerator from './TerrainGenerator';
-import {createTile, Point} from '../core/Components';
+import {Point, TileData} from '../core/Components';
 import RectGrid, {Grid} from '../core/Grid';
 
 class RandomTerrainGenerator extends TerrainGenerator
 {
-    constructor(width: number, height: number, ignore?: Point[]) {
-        super(width, height, ignore);
+    constructor(width: number, height: number, tileData?: TileData, ignore?: Point[]) {
+        super(width, height, tileData, ignore);
     }
 
     /**
@@ -36,7 +36,7 @@ class RandomTerrainGenerator extends TerrainGenerator
                         point: {
                             x: x, y: y
                         },
-                        data: createTile(true)
+                        data: this.getTerrain()
                     });
                 }
             }

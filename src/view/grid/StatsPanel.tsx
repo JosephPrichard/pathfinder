@@ -4,8 +4,9 @@ import './Grid.css';
 interface IProps {
     algorithm: string,
     length: number,
+    cost: number,
     time: number,
-    nodes: number,
+    nodes: number
 }
 
 class StatsPanel extends React.Component<IProps>
@@ -23,8 +24,16 @@ class StatsPanel extends React.Component<IProps>
     render() {
         const time = precise(this.props.time);
         const text = this.props.algorithm === '' ? '' :
-            this.props.algorithm + ' visited ' + this.props.nodes + ' nodes in ' +
-            time + ' ms. Path length = ' + this.props.length + '. ';
+            this.props.algorithm +
+            ' visited ' +
+            this.props.nodes +
+            ' nodes in ' +
+            time +
+            ' ms. Path length = ' +
+            this.props.length +
+            '. Path cost = ' +
+            this.props.cost +
+            '. ';
         return(
             <div>
                 <textarea tabIndex={-1} ref={this.textLog} readOnly={true}

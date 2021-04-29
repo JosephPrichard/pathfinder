@@ -1,8 +1,9 @@
 import React, {RefObject} from 'react';
 import './Grid.css';
-import {Point, Tile} from '../../pathfinding/core/Components';
+import {createTile, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import RectGrid, {Grid} from '../../pathfinding/core/Grid';
 import TileFg from './TileFg';
+import WeightFg from './WeightFg';
 
 interface IProps {
     tileWidth: number,
@@ -30,6 +31,8 @@ class GridForeground extends React.Component<IProps,IState>
 {
     private svg: RefObject<SVGSVGElement> = React.createRef();
 
+    private tilePointer: TileData;
+
     private mouseDown0: boolean = false;
     private mouseDown2: boolean = false;
     private draggingInitial: boolean = false;
@@ -50,6 +53,7 @@ class GridForeground extends React.Component<IProps,IState>
         this.width = this.props.tilesX;
         this.height = this.props.tilesY;
         const end = this.calcEndPointInView();
+        this.tilePointer = createTile(true);
         this.state = {
             grid: new RectGrid(this.width, this.height),
             path: [],
@@ -62,6 +66,10 @@ class GridForeground extends React.Component<IProps,IState>
                 y: ((2*(end.y)/3) >> 0) - 1
             }
         }
+    }
+
+    changeTile = (data: TileData) => {
+        this.tilePointer = data;
     }
 
     calcEndPointInView() {
@@ -211,9 +219,13 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     drawTile = (point: Point) => {
+        console.log(this.tilePointer);
         const grid = this.state.grid.clone();
         if(grid.inBounds(point)) {
-            grid.mutateDefault(point, true);
+            grid.mutateTile({
+                point: point,
+                data: this.tilePointer
+            });
         }
         this.setState({
             grid: grid
@@ -400,12 +412,22 @@ class GridForeground extends React.Component<IProps,IState>
                 const point = {
                     x: x, y: y
                 }
+                const cost = this.state.grid.get(point).data.pathCost;
                 if(this.state.grid.isSolid(point)) {
                     tiles.push(
                         <TileFg key={point.x + ',' + point.y} point={point}
                                 doAnimation={this.doTileAnimation}
                                 tileWidth={this.props.tileWidth}
                                 color={SOLID_COLOR}
+                        />
+                    );
+                } else if(cost > 1) {
+                    tiles.push(
+                        <WeightFg key={point.x + ',' + point.y} point={point}
+                                  doAnimation={this.doTileAnimation}
+                                  tileWidth={this.props.tileWidth}
+                                  color={SOLID_COLOR}
+                                  cost={cost}
                         />
                     );
                 }

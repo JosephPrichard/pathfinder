@@ -24,7 +24,6 @@ class DFSPathfinder extends Pathfinder
         const frontier = new Stack<Node>();
         frontier.push(root);
         const visited = new HashSet();
-        visited.add(stringify(initial));
         while(!frontier.isEmpty()) {
             const currentNode = frontier.pop()!;
             const currentPoint = currentNode.tile.point;

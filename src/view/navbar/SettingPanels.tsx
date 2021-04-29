@@ -20,8 +20,7 @@ interface SpeedState {
 }
 
 interface AlgorithmProps {
-    onChangeDiagonals: (checked: boolean) => void,
-    onChangeBidirectional: (checked: boolean) => void
+    onChangeBidirectional: (checked: boolean) => void,
     disabled: boolean
 }
 
@@ -115,10 +114,6 @@ export class AlgorithmSettings extends React.Component<AlgorithmProps>
         return (
             <div>
                 <div className='draggable-content-title'>Algorithm</div>
-                <Checkbox defaultChecked={false} boxStyle='box'
-                          onChange={this.props.onChangeDiagonals}>
-                    Allow Diagonals
-                </Checkbox>
                 <Checkbox defaultChecked={false} boxStyle='box'
                           disabled={this.props.disabled}
                           onChange={this.props.onChangeBidirectional}>

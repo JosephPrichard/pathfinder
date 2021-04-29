@@ -242,12 +242,42 @@
 
 .clr-drop-down-button:hover {
     cursor: pointer;
-    background-color: rgb(247,82,89);
+    background-color: rgb(237,72,79);
 }
 
 .clr-drop-down-button:active {
     cursor: pointer;
     background-color: rgb(217,52,59);
+}
+
+/* */
+
+.tiles-drop-down-text {
+    display: inline-block;
+    width: 90px;
+}
+
+.tiles-drop-down-content {
+    min-width: 140px;
+}
+
+.tiles-drop-down-button {
+    width: 140px;
+    background-color: rgb(135,95,154);
+    /*background-color: rgb(222,120,26);*/
+    color: white;
+}
+
+.tiles-drop-down-button:hover {
+    cursor: pointer;
+    background-color: rgb(145,105,164);
+    /*background-color: rgb(232,130,36);*/
+}
+
+.tiles-drop-down-button:active {
+    cursor: pointer;
+    background-color: rgb(125,85,144);
+    /*background-color: rgb(202,110,16);*/
 }
 
 .red-button {
@@ -358,6 +388,19 @@
 
 .settings-button:active {
     background-color: rgb(62,110,178);
+}
+
+.coin-button {
+    background-color: rgb(135,95,154);
+    color: white;
+}
+
+.coin-button:hover{
+    background-color: rgb(145,105,164);
+}
+
+.coin-button:active {
+    background-color: rgb(125,85,144);
 }
 
 @media only screen and (max-device-width: 550px) {
