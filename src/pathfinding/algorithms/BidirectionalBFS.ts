@@ -1,7 +1,12 @@
 import Pathfinder, {reconstructPath, reconstructPathReversed} from './Pathfinder';
 import {Point, Tile} from '../core/Components';
 import {HashTable, stringify} from '../structures/Hash';
-import {Node} from './Node';
+import {AStarNode, Node} from './Node';
+
+interface ControlStructures {
+    frontier: Node[],
+    visited: HashTable<Node>
+}
 
 class BiBFSPathfinder extends Pathfinder
 {
@@ -47,15 +52,10 @@ class BiBFSPathfinder extends Pathfinder
                     return [grid.get(goal)];
                 }
             }
-            for(const neighbor of this.navigator.neighbors(startCurrentPoint)) {
-                const neighborKey = stringify(neighbor.point);
-                if(!startVisited.has(neighborKey)) {
-                    const neighborNode = new Node(neighbor);
-                    startCurrentNode.addChild(neighborNode);
-                    startFrontier.push(neighborNode);
-                    startVisited.add(neighborKey, neighborNode);
-                }
-            }
+            this.doBFSExpansion({
+                frontier: startFrontier,
+                visited: startVisited
+            }, startCurrentNode);
             //expand endQueue
             const endCurrentNode = endFrontier.shift()!;
             const endCurrentPoint = endCurrentNode.tile.point;
@@ -74,17 +74,25 @@ class BiBFSPathfinder extends Pathfinder
                     return [grid.get(goal)];
                 }
             }
-            for(const neighbor of this.navigator.neighbors(endCurrentPoint)) {
-                const neighborKey = stringify(neighbor.point);
-                if(!endVisited.has(neighborKey)) {
-                    const neighborNode = new Node(neighbor);
-                    endCurrentNode.addChild(neighborNode);
-                    endFrontier.push(neighborNode);
-                    endVisited.add(neighborKey, neighborNode);
-                }
-            }
+            this.doBFSExpansion({
+                frontier: endFrontier,
+                visited: endVisited
+            }, endCurrentNode);
         }
         return [];
+    }
+
+    private doBFSExpansion(structures: ControlStructures, currentNode: Node) {
+        const currentPoint = currentNode.tile.point;
+        for(const neighbor of this.navigator.neighbors(currentPoint)) {
+            const neighborKey = stringify(neighbor.point);
+            if(!structures.visited.has(neighborKey)) {
+                const neighborNode = new Node(neighbor);
+                currentNode.addChild(neighborNode);
+                structures.frontier.push(neighborNode);
+                structures.visited.add(neighborKey, neighborNode);
+            }
+        }
     }
 }
 

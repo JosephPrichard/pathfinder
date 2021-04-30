@@ -26,6 +26,6 @@ export function chebyshev(a: Point, b: Point): number {
     return Math.max(dx, dy);
 }
 
-export function nullHeuristic(a: Point, b: Point): number {
+export function nullHeuristic(): number {
     return 0;
 }

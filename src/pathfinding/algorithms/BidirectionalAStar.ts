@@ -6,6 +6,12 @@ import {AStarNode} from './Node';
 import Navigator from '../core/Navigator';
 import {euclidean, HeuristicFunc} from './Heuristics';
 
+interface ControlStructures {
+    openSet: HashTable<AStarNode>,
+    closedSet: HashSet,
+    openFrontier: Heap<AStarNode>
+}
+
 class BiAStarPathfinder extends Pathfinder
 {
     private readonly heuristic: HeuristicFunc = (a: Point, b: Point) => euclidean(a,b);
@@ -70,23 +76,11 @@ class BiAStarPathfinder extends Pathfinder
                     return [grid.get(goal)];
                 }
             }
-            for (const neighbor of this.navigator.neighbors(startCurrentPoint)) {
-                const neighborPoint = neighbor.point;
-                const neighborKey = stringify(neighborPoint);
-                if(closedSet.has(neighborKey)) {
-                    continue;
-                }
-                const g = startCurrentNode.g + this.stepCost(startCurrentPoint, neighborPoint);
-                const f = g + this.heuristic(neighborPoint, goal);
-                if (!startOpenSet.has(neighborKey) || g < startOpenSet.get(neighborKey)!.g) {
-                    const neighborNode = new AStarNode(
-                        neighbor, g, f
-                    );
-                    startCurrentNode.addChild(neighborNode);
-                    startOpenFrontier.push(neighborNode);
-                    startOpenSet.add(neighborKey, neighborNode);
-                }
-            }
+            this.doAStarExpansion({
+                openFrontier: startOpenFrontier,
+                openSet: startOpenSet,
+                closedSet: closedSet
+            }, startCurrentNode, goal);
             //expand endOpenFrontier
             const endCurrentNode = endOpenFrontier.pop();
             const endCurrentPoint = endCurrentNode.tile.point;
@@ -107,25 +101,34 @@ class BiAStarPathfinder extends Pathfinder
                     return [grid.get(goal)];
                 }
             }
-            for (const neighbor of this.navigator.neighbors(endCurrentPoint)) {
-                const neighborPoint = neighbor.point;
-                const neighborKey = stringify(neighborPoint);
-                if(closedSet.has(neighborKey)) {
-                    continue;
-                }
-                const g = endCurrentNode.g + this.stepCost(endCurrentPoint, neighborPoint);
-                const f = g + this.heuristic(neighborPoint, initial);
-                if (!endOpenSet.has(neighborKey) || g < endOpenSet.get(neighborKey)!.g) {
-                    const neighborNode = new AStarNode(
-                        neighbor, g, f
-                    );
-                    endCurrentNode.addChild(neighborNode);
-                    endOpenFrontier.push(neighborNode);
-                    endOpenSet.add(neighborKey, neighborNode);
-                }
-            }
+            this.doAStarExpansion({
+                openFrontier: endOpenFrontier,
+                openSet: endOpenSet,
+                closedSet: closedSet
+            }, endCurrentNode, initial);
         }
         return [];
+    }
+
+    private doAStarExpansion(structures: ControlStructures, currentNode: AStarNode, endPoint: Point) {
+        const currentPoint = currentNode.tile.point;
+        for (const neighbor of this.navigator.neighbors(currentPoint)) {
+            const neighborPoint = neighbor.point;
+            const neighborKey = stringify(neighborPoint);
+            if(structures.closedSet.has(neighborKey)) {
+                continue;
+            }
+            const g = currentNode.g + this.stepCost(currentPoint, neighborPoint);
+            const f = g + this.heuristic(neighborPoint, endPoint);
+            if (!structures.openSet.has(neighborKey) || g < structures.openSet.get(neighborKey)!.g) {
+                const neighborNode = new AStarNode(
+                    neighbor, g, f
+                );
+                currentNode.addChild(neighborNode);
+                structures.openFrontier.push(neighborNode);
+                structures.openSet.add(neighborKey, neighborNode);
+            }
+        }
     }
 
     /**

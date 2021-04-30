@@ -4,6 +4,7 @@ import RectGrid, {Grid} from '../core/Grid';
 
 class RandomTerrainGenerator extends TerrainGenerator
 {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(width: number, height: number, tileData?: TileData, ignore?: Point[]) {
         super(width, height, tileData, ignore);
     }

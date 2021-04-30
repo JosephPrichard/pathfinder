@@ -1,7 +1,7 @@
 import React, {RefObject} from 'react';
 import TopBar from './navbar/TopBar';
 import {VisualizeButton, SettingsButton} from './navbar/Buttons';
-import {AlgorithmDropDown, ClearDropDown, MazeDropDown, TilesDropDown} from './navbar/DropDown';
+import {AlgorithmDropDown, ClearDropDown, MazeDropDown, TilesDropDown} from './navbar/DropDownComponents';
 import DraggablePanel from './utility/DraggablePanel';
 import PathfindingVisualizer from './grid/PathfindingVisualizer';
 import {VisualSettings, SpeedSettings, AlgorithmSettings, HeuristicSettings} from './navbar/SettingPanels';
@@ -51,7 +51,7 @@ class PathfindingApp extends React.Component<IProps, IState>
     }
 
     componentDidMount() {
-        window.addEventListener('click', e => {
+        window.addEventListener('click', () => {
             this.algDropDown.current!.hide();
             this.clrDropDown.current!.hide();
             this.mazeDropDown.current!.hide();
@@ -188,7 +188,7 @@ class PathfindingApp extends React.Component<IProps, IState>
                                 show={this.state.panelShow}
                                 onClickXButton={this.hideSettings}
                                 width={350}
-                                height={430}
+                                height={405}
                 >
                     <VisualSettings disabled={this.state.arrowsDisabled}
                                     onChangeViz={this.settingsManager.changeVisualize}

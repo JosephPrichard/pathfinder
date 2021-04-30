@@ -2,39 +2,30 @@ import React from 'react';
 import './Grid.css';
 import {Point} from '../../pathfinding/core/Components';
 
-interface IProps {
+export interface TileProps {
     tileWidth: number,
     point: Point,
     color: string,
     doAnimation: boolean
 }
 
-interface IState {
+export interface TileState {
     tileSize: number
 }
 
-class TileFg extends React.Component<IProps, IState>
+abstract class TileFg<IProps extends TileProps, IState extends TileState>
+    extends React.Component<IProps, IState>
 {
-    constructor(props: IProps) {
+    protected constructor(props: IProps) {
         super(props);
-        const size = this.props.doAnimation ?  0 : this.props.tileWidth;
-        this.state = {
-            tileSize: size,
-        }
-    }
-
-    componentDidMount() {
-        if(this.props.doAnimation) {
-            this.applyExpandAnimation();
-        }
     }
 
     /**
      * Animation to expand element from half size to full size over a few milliseconds
      * Can be slow to execute so animations should be enabled with caution
+     * @param expansionDuration in milliseconds
      */
-    applyExpandAnimation = () => {
-        const expansionDuration = 100;
+    protected applyExpandAnimation = (expansionDuration: number) => {
         const expansions = 10;
         const expansionStep = expansionDuration/expansions;
         const overStep = 2;
@@ -55,22 +46,23 @@ class TileFg extends React.Component<IProps, IState>
         }
     }
 
-    render() {
-        const width = this.state.tileSize;
-        const top = this.props.point.y * this.props.tileWidth + (this.props.tileWidth - width)/2;
-        const left = this.props.point.x * this.props.tileWidth + (this.props.tileWidth - width)/2;
-        const style = {
+    protected getStyle() {
+        return {
             fill: this.props.color,
             stroke: 'none',
             display: 'block'
         };
-        return (
-            <rect x={left} y={top}
-                  shapeRendering='crispEdges'
-                  width={width} height={width}
-                  style={style} className={'svg-tile'}
-            />
-        );
+    }
+
+    protected getDimensions() {
+        const width = this.state.tileSize;
+        const top = this.props.point.y * this.props.tileWidth + (this.props.tileWidth - width)/2;
+        const left = this.props.point.x * this.props.tileWidth + (this.props.tileWidth - width)/2;
+        return {
+            width: width,
+            top: top,
+            left: left
+        }
     }
 }
 

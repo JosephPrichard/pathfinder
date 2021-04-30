@@ -2,7 +2,7 @@ import React, {RefObject} from 'react';
 import './Grid.css';
 import {createTile, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import RectGrid, {Grid} from '../../pathfinding/core/Grid';
-import TileFg from './TileFg';
+import SolidFg from './SolidFg';
 import WeightFg from './WeightFg';
 
 interface IProps {
@@ -268,12 +268,7 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     moveInitial = (point: Point) => {
-        if(this.state.grid.inBounds(point)
-            && !this.state.grid.isSolid(point)
-            && !pointsEqual(this.state.goal, point)
-            && !pointsEqual(this.state.initial, point)
-            && !this.disable)
-        {
+        if(this.canMoveEndPoint(point)) {
             this.setState({
                 initial: point
             }, () => this.props.onTilesDragged());
@@ -285,16 +280,23 @@ class GridForeground extends React.Component<IProps,IState>
      * @param point
      */
     moveGoal = (point: Point) => {
-        if(this.state.grid.inBounds(point)
-            && !this.state.grid.isSolid(point)
-            && !pointsEqual(this.state.initial, point)
-            && !pointsEqual(this.state.goal, point)
-            && !this.disable)
-        {
+        if(this.canMoveEndPoint(point)) {
             this.setState({
                 goal: point
             }, () => this.props.onTilesDragged());
         }
+    }
+
+    /**
+     * Checks if we can move any of the end points (goal or initial) to that point
+     * @param point
+     */
+    canMoveEndPoint(point: Point) {
+        return this.state.grid.inBounds(point)
+            && !this.state.grid.isSolid(point)
+            && !pointsEqual(this.state.initial, point)
+            && !pointsEqual(this.state.goal, point)
+            && !this.disable;
     }
 
     /**
@@ -414,10 +416,10 @@ class GridForeground extends React.Component<IProps,IState>
                 const cost = this.state.grid.get(point).data.pathCost;
                 if(this.state.grid.isSolid(point)) {
                     tiles.push(
-                        <TileFg key={point.x + ',' + point.y} point={point}
-                                doAnimation={this.doTileAnimation}
-                                tileWidth={this.props.tileWidth}
-                                color={SOLID_COLOR}
+                        <SolidFg key={point.x + ',' + point.y} point={point}
+                                 doAnimation={this.doTileAnimation}
+                                 tileWidth={this.props.tileWidth}
+                                 color={SOLID_COLOR}
                         />
                     );
                 } else if(cost > 1) {
@@ -436,9 +438,9 @@ class GridForeground extends React.Component<IProps,IState>
     }
 
     private renderEndTile = (point: Point, color: string, key: string) => {
-        return <TileFg key={key} point={point} doAnimation={false}
-                       tileWidth={this.props.tileWidth}
-                       color={color}/>
+        return <SolidFg key={key} point={point} doAnimation={false}
+                        tileWidth={this.props.tileWidth}
+                        color={color}/>
     }
 }
 

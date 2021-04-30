@@ -98,10 +98,6 @@ class MazeGenerator extends TerrainGenerator
         }
     }
 
-    private canDrawHole(tile: Tile) {
-        return tile.data.pathCost === 1 && !tile.data.isSolid;
-    }
-
     /**
      * Create a line between a region, with an open hole, in a chamber,
      * and call bisection algorithm on it, and call division algorithms on
@@ -132,7 +128,7 @@ class MazeGenerator extends TerrainGenerator
                 }
                 //create holes in axis wall
                 let edgeBlocked = false;
-                if(this.canDrawHole(grid.get({
+                if(canDrawHole(grid.get({
                     x: randX, y: min.y-1
                 }))) {
                     toDraw.push({
@@ -143,7 +139,7 @@ class MazeGenerator extends TerrainGenerator
                     });
                     edgeBlocked = true;
                 }
-                if(this.canDrawHole(grid.get({
+                if(canDrawHole(grid.get({
                     x: randX, y: max.y+1
                 }))) {
                     toDraw.push({
@@ -202,7 +198,7 @@ class MazeGenerator extends TerrainGenerator
                 }
                 //create holes in axis wall
                 let edgeBlocked = false;
-                if(this.canDrawHole(grid.get({
+                if(canDrawHole(grid.get({
                     x: min.x-1, y: randY
                 }))) {
                     toDraw.push({
@@ -213,7 +209,7 @@ class MazeGenerator extends TerrainGenerator
                     });
                     edgeBlocked = true;
                 }
-                if(this.canDrawHole(grid.get({
+                if(canDrawHole(grid.get({
                     x: max.x+1, y: randY
                 }))) {
                     toDraw.push({
@@ -278,6 +274,10 @@ function heightOf(chamber: Chamber) {
     return chamber.bottomRight.y - chamber.topLeft.y + 1;
 }
 
+function canDrawHole(tile: Tile) {
+    return tile.data.pathCost === 1 && !tile.data.isSolid;
+}
+
 /**
  * Returns the 'midpoint' to be used
  * @param min
@@ -294,18 +294,6 @@ function getMidPoint(min: number, max: number) {
     } else {
         return getRand(min+1,max-1);
     }
-}
-
-/**
- * Generate a random number between min and max-1 then increment the number
- * if it is larger than or equal to excluded, inclusive for min and max
- * @param min
- * @param max
- * @param excluded
- */
-function getRandEx(min: number, max: number, excluded: number) {
-    let rand = getRand(min, max-1);
-    return rand >= excluded ? ++rand : rand;
 }
 
 /**

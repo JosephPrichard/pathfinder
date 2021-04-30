@@ -46,7 +46,7 @@ class DraggablePanel extends React.Component<IProps, IState>
             this.mouseUp(e);
         });
         //touch
-        document.addEventListener('touchend', e => {
+        document.addEventListener('touchend', () => {
             this.dragging = false;
         });
         document.addEventListener('touchmove', e => {
