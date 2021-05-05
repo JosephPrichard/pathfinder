@@ -18,7 +18,8 @@ class StatsPanel extends React.Component<IProps>
     }
 
     getHeight() {
-        return this.textLog.current!.clientHeight;
+        //top border: 1
+        return this.textLog.current!.clientHeight + 1;
     }
 
     render() {
@@ -35,12 +36,10 @@ class StatsPanel extends React.Component<IProps>
             this.props.cost +
             '. ';
         return(
-            <div>
-                <textarea tabIndex={-1} ref={this.textLog} readOnly={true}
-                          className='stats-text-area no-select'
-                          value={text} unselectable={'on'} onDrop={() => false}
-                />
-            </div>
+            <textarea tabIndex={-1} ref={this.textLog} readOnly={true}
+                      className='stats-text-area no-select'
+                      value={text} unselectable={'on'} onDrop={() => false}
+            />
         );
     }
 }

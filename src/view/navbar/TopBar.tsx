@@ -16,7 +16,7 @@ class TopBar extends React.Component<IProps>
 
     render() {
         return (
-            <div ref={this.bar} className='top-navbar navbar-expand-sm top-navbar'>
+            <div ref={this.bar} className='top-navbar'>
                 {this.props.children}
             </div>
         );

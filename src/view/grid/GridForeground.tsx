@@ -291,7 +291,7 @@ class GridForeground extends React.Component<IProps,IState>
      * Checks if we can move any of the end points (goal or initial) to that point
      * @param point
      */
-    canMoveEndPoint(point: Point) {
+    canMoveEndPoint = (point: Point) => {
         return this.state.grid.inBounds(point)
             && !this.state.grid.isSolid(point)
             && !pointsEqual(this.state.initial, point)

@@ -10,7 +10,7 @@ import Pathfinder from '../../pathfinding/algorithms/Pathfinder';
 import {createTile, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import {euclidean} from '../../pathfinding/algorithms/Heuristics';
 import VirtualTimer from '../utility/VirtualTimer';
-import TerrainGeneratorBuilder from '../../pathfinding/algorithms/TerrainGeneratorBuilder';
+import TerrainGeneratorBuilder, {RANDOM_TERRAIN} from '../../pathfinding/algorithms/TerrainGeneratorBuilder';
 
 interface IProps {
     tileWidth: number,
@@ -240,14 +240,22 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         this.clearVisualization();
         const foreground = this.foreground.current!;
         const end = this.calcEndPointInView();
-        foreground.setState({
+        const newState = (mazeType !== RANDOM_TERRAIN) ? {
             initial: {
-                x: 1, y:1
+                x: 1, y: 1
             },
             goal: {
                 x: end.x-2, y: end.y-2
             }
-        },() => {
+        } : {
+            initial: {
+                x: 1, y: ((end.y-1) / 2) >> 0
+            },
+            goal: {
+                x: end.x-2, y: ((end.y-1) / 2) >> 0
+            }
+        };
+        foreground.setState(newState,() => {
             const prevGrid = foreground.state.grid;
             const generator = new TerrainGeneratorBuilder()
                 .setDimensions(
@@ -340,12 +348,17 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
             <div>
                 <StatsPanel ref={this.stats} algorithm={this.state.algorithm}
                             length={this.state.length} cost={this.state.cost}
-                            time={this.state.time} nodes={this.state.nodes}/>
-                <GridBackground ref={this.background} tileWidth={this.props.tileWidth}
-                                tilesX={this.state.tilesX} tilesY={this.state.tilesY}/>
-                <GridForeground ref={this.foreground} topMargin={this.props.topMargin}
-                                onTilesDragged={this.onTilesDragged} tileWidth={this.props.tileWidth}
-                                tilesX={this.state.tilesX} tilesY={this.state.tilesY}/>
+                            time={this.state.time} nodes={this.state.nodes}
+                />
+                <div>
+                    <GridBackground ref={this.background} tileWidth={this.props.tileWidth}
+                                    tilesX={this.state.tilesX} tilesY={this.state.tilesY}
+                    />
+                    <GridForeground ref={this.foreground} topMargin={this.props.topMargin}
+                                    onTilesDragged={this.onTilesDragged} tileWidth={this.props.tileWidth}
+                                    tilesX={this.state.tilesX} tilesY={this.state.tilesY}
+                    />
+                </div>
             </div>
         );
     }

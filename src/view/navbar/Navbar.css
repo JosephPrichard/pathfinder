@@ -445,3 +445,15 @@
     width: 30px;
     color: black;
 }
+
+@media only screen and (max-width: 1130px) {
+    .tiles-drop-down {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 970px) {
+    .maze-drop-down {
+        display: none;
+    }
+}

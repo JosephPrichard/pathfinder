@@ -1,7 +1,7 @@
 import Pathfinder, {reconstructPath, reconstructPathReversed} from './Pathfinder';
 import {Point, Tile} from '../core/Components';
 import {HashTable, stringify} from '../structures/Hash';
-import {AStarNode, Node} from './Node';
+import {Node} from './Node';
 
 interface ControlStructures {
     frontier: Node[],
