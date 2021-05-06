@@ -8,6 +8,7 @@ import {VisualSettings, SpeedSettings, AlgorithmSettings, HeuristicSettings} fro
 import SettingsManager from './SettingsManager';
 import PathfinderBuilder from '../pathfinding/algorithms/PathfinderBuilder';
 import {MAZE, MAZE_HORIZONTAL_SKEW, MAZE_VERTICAL_SKEW, RANDOM_TERRAIN} from '../pathfinding/algorithms/TerrainGeneratorBuilder';
+import Icon from './web-content/react.png';
 
 interface IProps {}
 
@@ -177,6 +178,8 @@ class PathfindingApp extends React.Component<IProps, IState>
     }
 
     render() {
+        const useIcon = window.innerWidth <= 830;
+        const title = 'Pathfinding Visualizer';
         const mobile = isMobile();
         const tileWidth =  mobile ? 47 : Math.round(window.screen.availWidth / 57);
         if(mobile) {
@@ -210,8 +213,20 @@ class PathfindingApp extends React.Component<IProps, IState>
                     />
                 </DraggablePanel>
                 <TopBar onChangeHeight={this.onChangeHeight}>
-                    <a href='https://github.com/JosephPrichard/PathfinderReact' className='title'>
-                        Pathfinding Visualizer
+                    <a href='https://github.com/JosephPrichard/PathfinderReact' className='title'
+                       style={{
+                           width: useIcon ? '70px' : 'auto',
+                           height: useIcon ? '52px' : '100%'
+
+                       }}
+                    >
+                        {
+                            useIcon ?
+                                <img width={'100%'} height={'100%'}
+                                     className='icon'
+                                     alt={title} src={Icon}/> :
+                                title
+                        }
                     </a>
                     <div className='top-container'>
                         <AlgorithmDropDown ref={this.algDropDown}

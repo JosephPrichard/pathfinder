@@ -20,8 +20,6 @@ interface IProps {
 }
 
 interface IState {
-    tilesX: number,
-    tilesY: number,
     time: number,
     length: number,
     cost: number,
@@ -43,15 +41,16 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
 
     private mazeTile: TileData = createTile(true);
 
+    private tilesX: number;
+    private tilesY: number;
+
     constructor(props: IProps) {
         super(props);
         const w = window.screen.availWidth - (window.outerWidth - window.innerWidth);
         const h = window.screen.availHeight - (window.outerHeight - window.innerHeight);
-        const tilesX = Math.floor(w / this.props.tileWidth) + 1;
-        const tilesY = Math.floor((h - this.props.topMargin - 30) / this.props.tileWidth) + 1;
+        this.tilesX = Math.floor(w / this.props.tileWidth) + 1;
+        this.tilesY = Math.floor((h - this.props.topMargin - 30) / this.props.tileWidth) + 1;
         this.state = {
-            tilesX: tilesX,
-            tilesY: tilesY,
             time: -1,
             length: -1,
             cost: -1,
@@ -288,9 +287,16 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         const yFloor = Math.floor(yEnd);
         const xDecimal = xEnd - xFloor;
         const yDecimal = yEnd - yFloor;
+        let x = xDecimal > 0.05 ? Math.ceil(xEnd) : xFloor;
+        let y = yDecimal > 0.05 ? Math.ceil(yEnd) : yFloor;
+        if(x > this.tilesX) {
+            x = this.tilesX
+        }
+        if(y > this.tilesY) {
+            y = this.tilesY
+        }
         return {
-            x: xDecimal > 0.05 ? Math.ceil(xEnd) : xFloor,
-            y: yDecimal > 0.05 ? Math.ceil(yEnd) : yFloor
+            x: x, y: y
         }
     }
 
@@ -352,11 +358,11 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                 />
                 <div>
                     <GridBackground ref={this.background} tileWidth={this.props.tileWidth}
-                                    tilesX={this.state.tilesX} tilesY={this.state.tilesY}
+                                    tilesX={this.tilesX} tilesY={this.tilesY}
                     />
                     <GridForeground ref={this.foreground} topMargin={this.props.topMargin}
                                     onTilesDragged={this.onTilesDragged} tileWidth={this.props.tileWidth}
-                                    tilesX={this.state.tilesX} tilesY={this.state.tilesY}
+                                    tilesX={this.tilesX} tilesY={this.tilesY}
                     />
                 </div>
             </div>
