@@ -177,6 +177,12 @@ class PathfindingApp extends React.Component<IProps, IState>
         });
     }
 
+    onChangeWOpacity = () => {
+        this.visualizer.current!.setState(prevState => ({
+            weightOpacity: prevState.weightOpacity === 1 ? 0.2 : 1
+        }));
+    }
+
     render() {
         const useIcon = window.innerWidth <= 830;
         const title = 'Pathfinding Visualizer';
@@ -193,11 +199,12 @@ class PathfindingApp extends React.Component<IProps, IState>
                                 show={this.state.panelShow}
                                 onClickXButton={this.hideSettings}
                                 width={350}
-                                height={405}
+                                height={425}
                 >
                     <VisualSettings disabled={this.state.arrowsDisabled}
                                     onChangeViz={this.settingsManager.changeVisualize}
                                     onChangeShowArrows={this.settingsManager.changeShowArrows}
+                                    onChangeWOpacity={this.onChangeWOpacity}
                     />
                     <SpeedSettings onChange={this.settingsManager.changeSpeed}
                                    initialSpeed={this.settingsManager.settings.delayInc}

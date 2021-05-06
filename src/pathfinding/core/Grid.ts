@@ -13,6 +13,7 @@ export interface Grid
     output(console: Console): void;
     getJson(): string;
     walkable(point: Point): boolean;
+    isEmpty(point: Point): boolean;
     clone(): Grid;
 }
 
@@ -128,8 +129,22 @@ class RectGrid implements Grid
         return !this.tiles[point.y][point.x].data.isSolid;
     }
 
+    /**
+     * Determines if a tile isSolid
+     * @param point
+     */
     isSolid(point: Point) {
         return this.tiles[point.y][point.x].data.isSolid;
+    }
+
+    /**
+     * Determines if a tile is "empty"
+     *  Meaning it isn't solid and it has a pathCost of 1
+     * @param point
+     */
+    isEmpty(point: Point): boolean {
+        const data = this.tiles[point.y][point.x].data;
+        return data.pathCost === 1 && !data.isSolid
     }
 
     clone(): Grid {

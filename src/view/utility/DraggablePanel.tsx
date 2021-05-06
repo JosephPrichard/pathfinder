@@ -197,7 +197,18 @@ class DraggablePanel extends React.Component<IProps, IState>
                  onTouchStart={e => this.touchStart(e.nativeEvent)}
             >
                 <div className='draggable-title'>{this.props.title}</div>
-                <div className='x-button' onClick={this.props.onClickXButton}>X</div>
+                <div className='x-button' tabIndex={0}
+                     onKeyPress={this.props.onClickXButton}
+                     onClick={this.props.onClickXButton}
+                     onMouseDown={e => {
+                         e.stopPropagation();
+                         e.preventDefault();
+                     }}
+                >
+                    <div className='x-text'>
+                        X
+                    </div>
+                </div>
             </div>
         );
     }

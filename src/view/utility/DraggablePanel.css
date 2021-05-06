@@ -50,10 +50,34 @@
 
 .x-button {
     color: white;
-    display: inline-block;
-    float: right;
-    padding-right: 20px;
+    position: absolute;
+    top: 50%;
+    left: 93%;
+    transform: translate(-50%, -50%);
     cursor: pointer;
+    border-radius: 50%;
+    background-color: rgb(54,58,64);
+    width: 24px;
+    height: 24px;
+    display: table;
+}
+
+.x-text {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.x-button:hover {
+    background-color: rgb(84,88,94);
+}
+
+.x-button:focus {
+    background-color: rgb(104,108,114);
+}
+
+.x-button:active {
+    background-color: rgb(104,108,114);
 }
 
 .draggable-content-title {

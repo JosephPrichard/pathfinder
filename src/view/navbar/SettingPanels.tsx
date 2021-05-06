@@ -7,6 +7,7 @@ import RadioButtonGroup from '../utility/RadioButtonGroup';
 interface VisualProps {
     onChangeViz: () => void,
     onChangeShowArrows: () => void,
+    onChangeWOpacity: () => void,
     disabled: boolean
 }
 
@@ -50,6 +51,10 @@ export class VisualSettings extends React.Component<VisualProps>
                           onChange={this.props.onChangeShowArrows}
                           disabled={this.props.disabled}>
                     Show Tree
+                </Checkbox>
+                <Checkbox defaultChecked={false} boxStyle='box'
+                          onChange={this.props.onChangeWOpacity}>
+                    Translucent Weights
                 </Checkbox>
             </div>
         );

@@ -3,6 +3,7 @@ import {ReactComponent as Weight} from '../web-content/weight.svg';
 import TileFg, {TileProps, TileState} from './TileFg';
 
 interface IProps extends TileProps{
+    opacity: number
     cost: number
 }
 
@@ -37,6 +38,8 @@ class WeightFg extends TileFg<IProps, IState>
         children.push(
             <Weight width={dimensions.width} height={dimensions.width}
                     style={this.getStyle()} className={'svg-tile'}
+                    opacity={this.props.opacity}
+                    key={1}
             />
         );
         if(this.state.showNumber) {
@@ -47,6 +50,8 @@ class WeightFg extends TileFg<IProps, IState>
                       fill={'white'}
                       fontSize={'0.8em'}
                       className={'svg-text'}
+                      opacity={this.props.opacity + 0.3}
+                      key={2}
                 >
                     {this.props.cost}
                 </text>

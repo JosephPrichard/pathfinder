@@ -24,7 +24,8 @@ interface IState {
     length: number,
     cost: number,
     nodes: number,
-    algorithm: string
+    algorithm: string,
+    weightOpacity: number
 }
 
 class PathfindingVisualizer extends React.Component<IProps,IState>
@@ -41,8 +42,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
 
     private mazeTile: TileData = createTile(true);
 
-    private tilesX: number;
-    private tilesY: number;
+    private readonly tilesX: number;
+    private readonly tilesY: number;
 
     constructor(props: IProps) {
         super(props);
@@ -55,7 +56,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
             length: -1,
             cost: -1,
             nodes: -1,
-            algorithm: ''
+            algorithm: '',
+            weightOpacity: 1
         }
     }
 
@@ -363,6 +365,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                     <GridForeground ref={this.foreground} topMargin={this.props.topMargin}
                                     onTilesDragged={this.onTilesDragged} tileWidth={this.props.tileWidth}
                                     tilesX={this.tilesX} tilesY={this.tilesY}
+                                    weightOpacity={this.state.weightOpacity}
                     />
                 </div>
             </div>

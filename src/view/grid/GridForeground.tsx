@@ -11,6 +11,7 @@ interface IProps {
     tilesY: number,
     onTilesDragged: () => void,
     topMargin: number,
+    weightOpacity: number
 }
 
 interface IState {
@@ -33,8 +34,8 @@ class GridForeground extends React.Component<IProps,IState>
 
     private tilePointer: TileData;
 
-    private mouseDown0: boolean = false;
-    private mouseDown2: boolean = false;
+    private drawing: boolean = false;
+    private erasing: boolean = false;
     private draggingInitial: boolean = false;
     private draggingGoal: boolean = false;
     private disable: boolean = false;
@@ -96,12 +97,11 @@ class GridForeground extends React.Component<IProps,IState>
 
     private mouseUp = (e: MouseEvent) => {
         e.preventDefault();
-        if(e.button === 0) {
+        if(isControlKey(e.button)) {
             this.draggingGoal = false;
             this.draggingInitial = false;
-            this.mouseDown0 = false;
-        } else if(e.button === 2) {
-            this.mouseDown2 = false;
+            this.drawing = false;
+            this.erasing = false;
         }
     }
 
@@ -113,7 +113,7 @@ class GridForeground extends React.Component<IProps,IState>
     private touchStart = (e: TouchEvent) => {
         const touch = e.touches[0] || e.changedTouches[0];
         const bounds = this.getBoundingRect();
-        this.onTouch(touch.clientX - bounds.left, touch.clientY - bounds.top);
+        this.onPress(touch.clientX - bounds.left, touch.clientY - bounds.top, 0);
     }
 
     private touchMove = (e: TouchEvent) => {
@@ -126,8 +126,8 @@ class GridForeground extends React.Component<IProps,IState>
         e.preventDefault();
         this.draggingGoal = false;
         this.draggingInitial = false;
-        this.mouseDown0 = false;
-        this.mouseDown2 = false;
+        this.drawing = false;
+        this.erasing = false;
     }
 
     /**
@@ -138,45 +138,19 @@ class GridForeground extends React.Component<IProps,IState>
      */
     private onPress = (xCoordinate: number, yCoordinate: number, button: number) => {
         const point = this.calculatePoint(xCoordinate,yCoordinate);
-        if(button === 0) {
-            this.mouseDown0 = true;
+        if(isControlKey(button)) {
             if(pointsEqual(point, this.state.initial)) {
                 this.draggingInitial = true;
             } else if(pointsEqual(point, this.state.goal)) {
                 this.draggingGoal = true;
             } else if(!this.disable) {
-                this.drawTile(point);
-            }
-        } else if(button === 2) {
-            this.mouseDown2 = true;
-            if(!pointsEqual(point,this.state.initial) && !pointsEqual(point, this.state.goal) && !this.disable) {
-                this.eraseTile(point);
-            }
-        }
-    }
-
-    /**
-     * Responds to the event thrown at screen coordinates on touch
-     * @param xCoordinate
-     * @param yCoordinate
-     */
-    private onTouch = (xCoordinate: number, yCoordinate: number) => {
-        const point = this.calculatePoint(xCoordinate,yCoordinate);
-        if(pointsEqual(point, this.state.initial)) {
-            this.mouseDown0 = true;
-            this.draggingInitial = true;
-        } else if(pointsEqual(point, this.state.goal)) {
-            this.mouseDown0 = true;
-            this.draggingGoal = true;
-        } else if(!this.state.grid.isSolid(point)) {
-            this.mouseDown0 = true;
-            if(!this.disable) {
-                this.drawTile(point);
-            }
-        } else {
-            this.mouseDown2 = true;
-            if(!pointsEqual(point, this.state.initial) && !pointsEqual(point, this.state.goal) && !this.disable) {
-                this.eraseTile(point);
+                if(this.state.grid.isEmpty(point)) {
+                    this.drawing = true;
+                    this.drawTile(point);
+                } else {
+                    this.erasing = true;
+                    this.eraseTile(point);
+                }
             }
         }
     }
@@ -188,16 +162,16 @@ class GridForeground extends React.Component<IProps,IState>
      */
     private onDrag = (xCoordinate: number, yCoordinate: number) => {
         const point = this.calculatePoint(xCoordinate,yCoordinate);
-        if(this.mouseDown0) {
-            if(this.draggingInitial) {
-                this.moveInitial(point);
-            } else if(this.draggingGoal) {
-                this.moveGoal(point);
-            } else if(!pointsEqual(point,this.state.initial) && !pointsEqual(point, this.state.goal) && !this.disable) {
+        if(this.draggingInitial) {
+            this.moveInitial(point);
+        } else if(this.draggingGoal) {
+            this.moveGoal(point);
+        } else if(!pointsEqual(point, this.state.initial)
+            && !pointsEqual(point, this.state.goal) && !this.disable)
+        {
+            if(this.drawing) {
                 this.drawTile(point);
-            }
-        } else if(this.mouseDown2) {
-            if(!pointsEqual(point, this.state.initial) && !pointsEqual(point, this.state.goal) && !this.disable) {
+            } else if(this.erasing) {
                 this.eraseTile(point);
             }
         }
@@ -429,6 +403,7 @@ class GridForeground extends React.Component<IProps,IState>
                                   tileWidth={this.props.tileWidth}
                                   color={SOLID_COLOR}
                                   cost={cost}
+                                  opacity={this.props.weightOpacity}
                         />
                     );
                 }
@@ -446,6 +421,11 @@ class GridForeground extends React.Component<IProps,IState>
 
 function pointsEqual(point1: Point, point2: Point) {
     return point1.x === point2.x && point1.y === point2.y;
+}
+
+function isControlKey(button: number) {
+    //right or left mouse
+    return button === 0 || button === 2;
 }
 
 export default GridForeground;

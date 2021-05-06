@@ -6,7 +6,7 @@ interface PathfindingSettings
     algorithm: string,
     heuristicKey: string,
     navigatorKey: string,
-    bidirectional: boolean
+    bidirectional: boolean,
 }
 
 export function getDefaultSettings(): PathfindingSettings {
@@ -17,7 +17,7 @@ export function getDefaultSettings(): PathfindingSettings {
         algorithm: 'a*',
         heuristicKey: 'euclidean',
         navigatorKey: 'plus',
-        bidirectional: false
+        bidirectional: false,
     }
 }
 
