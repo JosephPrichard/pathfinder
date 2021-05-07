@@ -155,7 +155,7 @@ export class HeuristicSettings extends React.Component<HeuristicProps>
             <div>
                 <div className='draggable-content-title'>Heuristic</div>
                 <RadioButtonGroup boxStyle='box'
-                                  defaultChecked={1}
+                                  defaultChecked={0}
                                   disabled={this.props.disabled}
                                   onChange={[
                                       this.props.onClickManhattan, this.props.onClickEuclidean,

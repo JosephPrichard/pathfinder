@@ -8,12 +8,16 @@ import {euclidean, HeuristicFunc} from './Heuristics';
 
 class AStarPathfinder extends Pathfinder
 {
-    private readonly heuristic: HeuristicFunc = (a: Point, b: Point) => euclidean(a,b);
+    private readonly heuristicFunc: HeuristicFunc = (a: Point, b: Point) => euclidean(a,b);
+    private readonly p: number; //tie breaker
 
     constructor(navigator: Navigator, func?: HeuristicFunc) {
         super(navigator);
+        const grid = this.getNavigator().getGrid();
+        //minimum cost of taking one step / expected maximum path length
+        this.p = 1/(grid.getWidth() * grid.getHeight());
         if(func !== undefined) {
-            this.heuristic = func;
+            this.heuristicFunc = func;
         }
     }
 
@@ -69,6 +73,16 @@ class AStarPathfinder extends Pathfinder
             }
         }
         return [];
+    }
+
+    /**
+     * Heuristic function used to estimate distance between points a and b
+     * Includes tie breaker to prevent exploring lots of identical paths
+     * @param a
+     * @param b
+     */
+    heuristic(a: Point, b: Point) {
+        return this.heuristicFunc(a, b) * (1 + this.p);
     }
 
     /**

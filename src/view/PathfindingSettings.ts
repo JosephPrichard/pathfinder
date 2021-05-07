@@ -15,7 +15,7 @@ export function getDefaultSettings(): PathfindingSettings {
         showArrows: true,
         delayInc: 8,
         algorithm: 'a*',
-        heuristicKey: 'euclidean',
+        heuristicKey: 'manhattan',
         navigatorKey: 'plus',
         bidirectional: false,
     }
