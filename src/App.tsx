@@ -1,6 +1,9 @@
 import React from 'react';
-import './App.css';
-import PathfindingApp from './view/PathfindingApp';
+import './styles/App.css';
+import './styles/Grid.css';
+import './styles/Utility.css';
+import './styles/Navbar.css';
+import PathfindingApp from './common/components/PathfindingApp';
 
 class App extends React.Component
 {
