@@ -14,11 +14,20 @@
     height: calc(100vh - 75px - 30px);
 }
 
-.grid {
+.arrow-grid {
     z-index: 2;
     position: absolute;
     padding: 0;
     width: 100vw;
+    height: calc(100vh - 75px - 30px);
+    touch-action: none; /* stop overflow-y scrolling on touch */
+}
+
+.endpoint-tiles-table {
+    z-index: 1;
+    position: absolute;
+    padding: 0;
+    width: 110vw;
     height: calc(100vh - 75px - 30px);
     touch-action: none; /* stop overflow-y scrolling on touch */
 }

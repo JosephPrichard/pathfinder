@@ -324,7 +324,11 @@ class GridForeground extends React.Component<IProps,IState>
         // console.time('time');
         return (
             <div>
-                <svg ref={this.svg} xmlns='http://www.w3.org/2000/svg' className='grid'>
+                <div className='endpoint-tiles-table'>
+                    {this.renderEndTile(this.state.initial, INITIAL_COLOR,'initial')}
+                    {this.renderEndTile(this.state.goal, GOAL_COLOR,'goal')}
+                </div>
+                <svg ref={this.svg} xmlns='http://www.w3.org/2000/svg' className='arrow-grid'>
                     <defs>
                         <marker id='arrowhead-path' markerWidth='3' markerHeight='3'
                                 refX='0' refY='1.5' orient='auto'
@@ -347,8 +351,6 @@ class GridForeground extends React.Component<IProps,IState>
                      onTouchCancel={e => this.onEndingEvent(e.nativeEvent)}
                 >
                     {this.renderTilesTable()}
-                    {this.renderEndTile(this.state.initial, INITIAL_COLOR,'initial')}
-                    {this.renderEndTile(this.state.goal, GOAL_COLOR,'goal')}
                 </div>
             </div>
         );

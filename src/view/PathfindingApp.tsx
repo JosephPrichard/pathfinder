@@ -161,7 +161,6 @@ class PathfindingApp extends React.Component<IProps, IState>
         this.visualizer.current!.createTerrain(RANDOM_TERRAIN);
     }
 
-
     changeTile = (cost: number) => {
         this.visualizer.current!.changeTile({
             isSolid: cost === -1,
