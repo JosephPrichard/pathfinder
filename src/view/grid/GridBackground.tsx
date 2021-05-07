@@ -177,7 +177,7 @@ class GridBackground extends React.Component<IProps,IState>
                 <div className='bg'>
                     {this.renderTiles()}
                 </div>
-                <svg xmlns='http://www.w3.org/2000/svg' className='grid'>
+                <svg xmlns='http://www.w3.org/2000/svg' className='bg-grid'>
                     <defs>
                         <marker id='arrowhead' markerWidth='3' markerHeight='3'
                                 refX='0' refY='1.5' orient='auto'

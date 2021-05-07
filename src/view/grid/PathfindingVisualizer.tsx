@@ -15,7 +15,6 @@ import TerrainGeneratorBuilder, {RANDOM_TERRAIN} from '../../pathfinding/algorit
 interface IProps {
     tileWidth: number,
     settings: Readonly<PathfindingSettings>,
-    topMargin: number,
     onChangeVisualizing: (visualizing: boolean) => void;
 }
 
@@ -44,13 +43,15 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
 
     private readonly tilesX: number;
     private readonly tilesY: number;
+    private readonly tileWidth: number
 
     constructor(props: IProps) {
         super(props);
         const w = window.screen.availWidth - (window.outerWidth - window.innerWidth);
         const h = window.screen.availHeight - (window.outerHeight - window.innerHeight);
-        this.tilesX = Math.floor(w / this.props.tileWidth) + 1;
-        this.tilesY = Math.floor((h - this.props.topMargin - 30) / this.props.tileWidth) + 1;
+        this.tileWidth = this.props.tileWidth;
+        this.tilesX = Math.floor(w / this.tileWidth) + 1;
+        this.tilesY = Math.floor((h - 75 - 30) / this.tileWidth) + 1;
         this.state = {
             time: -1,
             length: -1,
@@ -61,9 +62,18 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         }
     }
 
+    shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>) {
+        const prevState = this.state;
+        return prevState.time !== nextState.time ||
+            prevState.length !== nextState.length ||
+            prevState.cost !== nextState.cost ||
+            prevState.nodes !== nextState.nodes ||
+            prevState.algorithm !== nextState.algorithm ||
+            prevState.weightOpacity !== nextState.weightOpacity;
+    }
+
     changeTile = (data: TileData) => {
-        //uncomment this to enable weighted mazes
-        // this.mazeTile = data;
+        this.mazeTile = data; //enables weighted mazes
         this.foreground.current!.changeTile(data);
     }
 
@@ -282,9 +292,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
      * Calculate the end/goal point in view of the screen
      */
     calcEndPointInView = () => {
-        const xEnd = window.innerWidth / this.props.tileWidth;
-        const yEnd = (window.innerHeight - this.props.topMargin
-            - this.stats.current!.getHeight()) / this.props.tileWidth;
+        const xEnd = window.innerWidth / this.tileWidth;
+        const yEnd = (window.innerHeight - 75 - this.stats.current!.getHeight()) / this.tileWidth;
         const xFloor = Math.floor(xEnd);
         const yFloor = Math.floor(yEnd);
         const xDecimal = xEnd - xFloor;
@@ -359,11 +368,11 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                             time={this.state.time} nodes={this.state.nodes}
                 />
                 <div>
-                    <GridBackground ref={this.background} tileWidth={this.props.tileWidth}
+                    <GridBackground ref={this.background} tileWidth={this.tileWidth}
                                     tilesX={this.tilesX} tilesY={this.tilesY}
                     />
-                    <GridForeground ref={this.foreground} topMargin={this.props.topMargin}
-                                    onTilesDragged={this.onTilesDragged} tileWidth={this.props.tileWidth}
+                    <GridForeground ref={this.foreground} topMargin={75}
+                                    onTilesDragged={this.onTilesDragged} tileSize={this.tileWidth}
                                     tilesX={this.tilesX} tilesY={this.tilesY}
                                     weightOpacity={this.state.weightOpacity}
                     />

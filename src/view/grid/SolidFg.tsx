@@ -1,30 +1,32 @@
+import {Point} from '../../pathfinding/core/Components';
 import React from 'react';
-import './Grid.css';
-import TileFg, {TileProps, TileState} from './TileFg';
 
-class SolidFg extends TileFg<TileProps, TileState>
+interface SolidProps {
+    tileSize: number,
+    point: Point,
+    doTileAnimation: boolean
+}
+
+class SolidFg extends React.Component<SolidProps>
 {
-    constructor(props: TileProps) {
-        super(props);
-        const size = this.props.doAnimation ?  0 : this.props.tileWidth;
-        this.state = {
-            tileSize: size
-        }
-    }
+    private readonly doTileAnimation: boolean;
 
-    componentDidMount() {
-        if(this.props.doAnimation) {
-            this.applyExpandAnimation(100);
-        }
+    constructor(props: SolidProps) {
+        super(props)
+        this.doTileAnimation = this.props.doTileAnimation;
     }
 
     render() {
-        const dimensions = this.getDimensions();
         return (
-            <rect x={dimensions.left} y={dimensions.top}
-                  shapeRendering='crispEdges'
-                  width={dimensions.width} height={dimensions.width}
-                  style={this.getStyle()} className={'svg-tile'}
+            <div
+                style={{
+                    position: 'absolute',
+                    left: this.props.point.x * this.props.tileSize,
+                    top: this.props.point.y * this.props.tileSize,
+                    width: this.props.tileSize,
+                    height: this.props.tileSize
+                }}
+                className={this.doTileAnimation ? 'solid-animation' : 'solid'}
             />
         );
     }

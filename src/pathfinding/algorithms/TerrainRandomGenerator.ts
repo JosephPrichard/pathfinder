@@ -2,7 +2,7 @@ import TerrainGenerator from './TerrainGenerator';
 import {Point, TileData} from '../core/Components';
 import RectGrid, {Grid} from '../core/Grid';
 
-class RandomTerrainGenerator extends TerrainGenerator
+class TerrainRandomGenerator extends TerrainGenerator
 {
     // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(width: number, height: number, tileData?: TileData, ignore?: Point[]) {
@@ -55,4 +55,4 @@ function getRand(min: number, max: number) {
     return Math.floor(Math.random() * (max+1-min) + min);
 }
 
-export default RandomTerrainGenerator;
+export default TerrainRandomGenerator;

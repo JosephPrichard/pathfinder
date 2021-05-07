@@ -1,18 +1,9 @@
 import React, {RefObject} from 'react';
 import './Navbar.css'
 
-interface IProps {
-    onChangeHeight: (height: number) => void
-}
-
-class TopBar extends React.Component<IProps>
+class TopBar extends React.Component
 {
     private bar: RefObject<HTMLDivElement> = React.createRef();
-
-    componentDidMount() {
-        window.addEventListener('resize', () => this.props.onChangeHeight(this.bar.current!.offsetHeight));
-        this.props.onChangeHeight(this.bar.current!.offsetHeight);
-    }
 
     render() {
         return (

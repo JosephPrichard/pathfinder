@@ -73,11 +73,11 @@
 }
 
 .x-button:focus {
-    background-color: rgb(104,108,114);
+    background-color: rgb(124,128,134);
 }
 
 .x-button:active {
-    background-color: rgb(104,108,114);
+    background-color: rgb(124,128,134);
 }
 
 .draggable-content-title {

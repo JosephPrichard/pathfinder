@@ -40,6 +40,13 @@ abstract class TerrainGenerator
         return this.data;
     }
 
+    protected getSolid() {
+        return {
+            pathCost: 1,
+            isSolid: true
+        }
+    }
+
     protected shouldIgnore(point: Point) {
         return this.ignore.has(stringify(point));
     }

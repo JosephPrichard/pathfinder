@@ -13,7 +13,7 @@ interface Chamber {
     bottomRight: Point; //max
 }
 
-class MazeGenerator extends TerrainGenerator
+class TerrainMazeGenerator extends TerrainGenerator
 {
     private readonly divideWidth: (width: number, height: number) => boolean;
 
@@ -57,13 +57,13 @@ class MazeGenerator extends TerrainGenerator
                 point: {
                     x: x, y: topLeft.y - 1
                 },
-                data: this.getTerrain()
+                data: this.getSolid()
             });
             this.draw(grid,{
                 point: {
                     x: x, y: bottomRight.y + 1
                 },
-                data: this.getTerrain()
+                data: this.getSolid()
             });
         }
         for(let y = topLeft.y - 1; y <= bottomRight.y + 1; y++) {
@@ -71,13 +71,13 @@ class MazeGenerator extends TerrainGenerator
                 point: {
                     x: topLeft.x - 1, y: y
                 },
-                data: this.getTerrain()
+                data: this.getSolid()
             });
             this.draw(grid,{
                 point: {
                     x: bottomRight.x + 1, y: y
                 },
-                data: this.getTerrain()
+                data: this.getSolid()
             });
         }
         this.divide(grid,{
@@ -305,4 +305,4 @@ function getRand(min: number, max: number) {
     return Math.floor(Math.random() * (max+1-min) + min);
 }
 
-export default MazeGenerator;
+export default TerrainMazeGenerator;

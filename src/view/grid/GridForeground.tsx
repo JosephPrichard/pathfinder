@@ -2,11 +2,12 @@ import React, {RefObject} from 'react';
 import './Grid.css';
 import {createTile, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import RectGrid, {Grid} from '../../pathfinding/core/Grid';
+import TileFg from './TileFg';
 import SolidFg from './SolidFg';
 import WeightFg from './WeightFg';
 
 interface IProps {
-    tileWidth: number,
+    tileSize: number,
     tilesX: number,
     tilesY: number,
     onTilesDragged: () => void,
@@ -21,7 +22,6 @@ interface IState {
     path: Tile[]
 }
 
-const SOLID_COLOR = 'rgb(45, 48, 54)';
 const INITIAL_COLOR = 'rgb(131, 217, 52)';
 const GOAL_COLOR = 'rgb(203, 75, 14)';
 const ARROW_PATH_COLOR = 'rgb(73, 79, 250)';
@@ -74,8 +74,8 @@ class GridForeground extends React.Component<IProps,IState>
     }
 
     calcEndPointInView() {
-        const xEnd = Math.round(window.innerWidth / this.props.tileWidth);
-        const yEnd = Math.round((window.innerHeight - this.props.topMargin - 30) / this.props.tileWidth);
+        const xEnd = Math.round(window.innerWidth / this.props.tileSize);
+        const yEnd = Math.round((window.innerHeight - this.props.topMargin - 30) / this.props.tileSize);
         return {
             x: xEnd, y: yEnd
         }
@@ -300,8 +300,8 @@ class GridForeground extends React.Component<IProps,IState>
      */
     calculatePoint = (xCoordinate: number, yCoordinate: number) => {
         return {
-            x: Math.floor(xCoordinate/this.props.tileWidth),
-            y: Math.floor(yCoordinate/this.props.tileWidth)
+            x: Math.floor(xCoordinate/this.props.tileSize),
+            y: Math.floor(yCoordinate/this.props.tileSize)
         }
     }
 
@@ -320,31 +320,37 @@ class GridForeground extends React.Component<IProps,IState>
     }
 
     render() {
+        // console.timeEnd('time');
+        // console.time('time');
         return (
-            <svg ref={this.svg} xmlns='http://www.w3.org/2000/svg' className='grid'
-                 onContextMenu={e => e.preventDefault()}
-                 onMouseDown={e => this.mouseDown(e.nativeEvent)}
-                 onMouseUp={e => this.mouseUp(e.nativeEvent)}
-                 onMouseMove={e => this.mouseMove(e.nativeEvent)}
-                 onMouseLeave={e => this.onEndingEvent(e.nativeEvent)}
-                 onTouchStart={e => this.touchStart(e.nativeEvent)}
-                 onTouchMoveCapture={e => this.touchMove(e.nativeEvent)}
-                 onTouchEnd={e => this.onEndingEvent(e.nativeEvent)}
-                 onTouchCancel={e => this.onEndingEvent(e.nativeEvent)}
-            >
-                <defs>
-                    <marker id='arrowhead-path' markerWidth='3' markerHeight='3'
-                            refX='0' refY='1.5' orient='auto'
-                            fill={ARROW_PATH_COLOR}
-                    >
-                        <polygon points='0 0, 3 1.5, 0 3'/>
-                    </marker>
-                </defs>
-                {this.renderEndTile(this.state.initial, INITIAL_COLOR,'initial')}
-                {this.renderEndTile(this.state.goal, GOAL_COLOR,'goal')}
-                {this.renderPath()}
-                {this.renderTiles()}
-            </svg>
+            <div>
+                <svg ref={this.svg} xmlns='http://www.w3.org/2000/svg' className='grid'>
+                    <defs>
+                        <marker id='arrowhead-path' markerWidth='3' markerHeight='3'
+                                refX='0' refY='1.5' orient='auto'
+                                fill={ARROW_PATH_COLOR}
+                        >
+                            <polygon points='0 0, 3 1.5, 0 3'/>
+                        </marker>
+                    </defs>
+                    {this.renderPath()}
+                </svg>
+                <div className='tiles-table'
+                     onContextMenu={e => e.preventDefault()}
+                     onMouseDown={e => this.mouseDown(e.nativeEvent)}
+                     onMouseUp={e => this.mouseUp(e.nativeEvent)}
+                     onMouseMove={e => this.mouseMove(e.nativeEvent)}
+                     onMouseLeave={e => this.onEndingEvent(e.nativeEvent)}
+                     onTouchStart={e => this.touchStart(e.nativeEvent)}
+                     onTouchMoveCapture={e => this.touchMove(e.nativeEvent)}
+                     onTouchEnd={e => this.onEndingEvent(e.nativeEvent)}
+                     onTouchCancel={e => this.onEndingEvent(e.nativeEvent)}
+                >
+                    {this.renderTilesTable()}
+                    {this.renderEndTile(this.state.initial, INITIAL_COLOR,'initial')}
+                    {this.renderEndTile(this.state.goal, GOAL_COLOR,'goal')}
+                </div>
+            </div>
         );
     }
 
@@ -359,7 +365,7 @@ class GridForeground extends React.Component<IProps,IState>
     }
 
     private renderPathArrow = (index: number, first: Point, second: Point) => {
-        const width = this.props.tileWidth;
+        const width = this.props.tileSize;
         const offset = width/2;
         const firstX = first.x * width;
         const firstY = first.y * width;
@@ -374,13 +380,13 @@ class GridForeground extends React.Component<IProps,IState>
                   x2={secondX + offset - offsetX}
                   y2={secondY + offset - offsetY}
                   stroke={ARROW_PATH_COLOR}
-                  strokeWidth={2 * this.props.tileWidth/BASE_WIDTH}
+                  strokeWidth={2 * this.props.tileSize/BASE_WIDTH}
                   className='line'
                   markerEnd='url(#arrowhead-path)' />
         );
     }
 
-    private renderTiles = () => {
+    private renderTilesTable = () => {
         const tiles: JSX.Element[] = [];
         for(let y = 0; y < this.height; y++) {
             for(let x = 0; x < this.width; x++) {
@@ -389,23 +395,43 @@ class GridForeground extends React.Component<IProps,IState>
                 }
                 const cost = this.state.grid.get(point).data.pathCost;
                 if(this.state.grid.isSolid(point)) {
+                    //render a solid tile div
                     tiles.push(
-                        <SolidFg key={point.x + ',' + point.y} point={point}
-                                 doAnimation={this.doTileAnimation}
-                                 tileWidth={this.props.tileWidth}
-                                 color={SOLID_COLOR}
+                        <SolidFg key={x + ',' + y}
+                                  point={point}
+                                  tileSize={this.props.tileSize}
+                                  doTileAnimation={this.doTileAnimation}
                         />
                     );
                 } else if(cost > 1) {
+                    //render a weight svg
                     tiles.push(
-                        <WeightFg key={point.x + ',' + point.y} point={point}
-                                  doAnimation={this.doTileAnimation}
-                                  tileWidth={this.props.tileWidth}
-                                  color={SOLID_COLOR}
-                                  cost={cost}
-                                  opacity={this.props.weightOpacity}
+                        <WeightFg key={x + ',' + y}
+                                  point={point}
+                                  tileSize={this.props.tileSize}
+                                  doTileAnimation={this.doTileAnimation}
+                                  weightOpacity={this.props.weightOpacity}
                         />
                     );
+                    //render a div containing the cost as text
+                    tiles.push(
+                        <div key={x + ',' + y + ' text'}
+                             style={{
+                                 left: x * this.props.tileSize,
+                                 top: y * this.props.tileSize,
+                                 width: this.props.tileSize,
+                                 height: this.props.tileSize,
+                                 position: 'absolute',
+                                 color: 'white',
+                                 fontSize: 13,
+                                 paddingTop: this.props.tileSize / 3.80,
+                                 textAlign: 'center',
+                                 cursor: 'default'
+                             }}
+                        >
+                            {cost}
+                        </div>
+                    )
                 }
             }
         }
@@ -413,9 +439,9 @@ class GridForeground extends React.Component<IProps,IState>
     }
 
     private renderEndTile = (point: Point, color: string, key: string) => {
-        return <SolidFg key={key} point={point} doAnimation={false}
-                        tileWidth={this.props.tileWidth}
-                        color={color}/>
+        return <TileFg key={key} point={point}
+                       tileWidth={this.props.tileSize}
+                       color={color}/>
     }
 }
 

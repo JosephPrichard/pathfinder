@@ -19,8 +19,6 @@ interface IState {
 
     panelShow: boolean,
 
-    topMargin: number,
-
     visualizing: boolean,
     paused: boolean
 }
@@ -45,7 +43,6 @@ class PathfindingApp extends React.Component<IProps, IState>
             bidirectionalDisabled: false,
             arrowsDisabled: false,
             panelShow: false,
-            topMargin: 75,
             visualizing: false,
             paused: false
         }
@@ -164,11 +161,6 @@ class PathfindingApp extends React.Component<IProps, IState>
         this.visualizer.current!.createTerrain(RANDOM_TERRAIN);
     }
 
-    onChangeHeight = (height: number) => {
-        this.setState({
-            topMargin: height
-        });
-    }
 
     changeTile = (cost: number) => {
         this.visualizer.current!.changeTile({
@@ -219,7 +211,7 @@ class PathfindingApp extends React.Component<IProps, IState>
                                        onClickOctile={this.settingsManager.changeOctile}
                     />
                 </DraggablePanel>
-                <TopBar onChangeHeight={this.onChangeHeight}>
+                <TopBar>
                     <a href='https://github.com/JosephPrichard/PathfinderReact' className='title'
                        style={{
                            width: useIcon ? '70px' : 'auto',
@@ -268,7 +260,6 @@ class PathfindingApp extends React.Component<IProps, IState>
                 </TopBar>
                 <PathfindingVisualizer ref={this.visualizer}
                                        onChangeVisualizing={this.changeVButtonColor}
-                                       topMargin={this.state.topMargin}
                                        settings={this.settingsManager.settings}
                                        tileWidth={tileWidth}/>
             </div>

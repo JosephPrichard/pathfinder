@@ -1,5 +1,5 @@
-import RandomTerrainGenerator from './RandomTerrainGenerator';
-import MazeGenerator from './MazeGenerator';
+import TerrainRandomGenerator from './TerrainRandomGenerator';
+import TerrainMazeGenerator from './TerrainMazeGenerator';
 import {createTile, Point, TileData} from '../core/Components';
 
 export const MAZE = 0;
@@ -41,9 +41,9 @@ class TerrainGeneratorBuilder
      */
     build() {
        if(this.type >= RANDOM_TERRAIN) {
-           return new RandomTerrainGenerator(this.width, this.height, this.data, this.ignore);
+           return new TerrainRandomGenerator(this.width, this.height, this.data, this.ignore);
        } else {
-           return new MazeGenerator(this.width, this.height, this.data, this.ignore, this.type);
+           return new TerrainMazeGenerator(this.width, this.height, this.data, this.ignore, this.type);
        }
     }
 }

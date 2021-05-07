@@ -6,11 +6,28 @@
     height: calc(100vh - 75px - 30px);
 }
 
+.bg-grid {
+    z-index: 1;
+    position: absolute;
+    padding: 0;
+    width: 100vw;
+    height: calc(100vh - 75px - 30px);
+}
+
 .grid {
     z-index: 2;
     position: absolute;
     padding: 0;
     width: 100vw;
+    height: calc(100vh - 75px - 30px);
+    touch-action: none; /* stop overflow-y scrolling on touch */
+}
+
+.tiles-table {
+    z-index: 3;
+    position: absolute;
+    padding: 0;
+    width: 110vw;
     height: calc(100vh - 75px - 30px);
     touch-action: none; /* stop overflow-y scrolling on touch */
 }
@@ -33,6 +50,16 @@
     white-space: nowrap;
     overflow: hidden;
     color: white;
+}
+
+.tile-fg {
+    border-top-width: 0;
+    border-bottom-width: 1px;
+    border-left-width: 0;
+    border-right-width: 1px;
+    border-style: solid;
+    margin: 0;
+    padding: 0;
 }
 
 .svg-tile {
@@ -78,4 +105,75 @@
     font-size: small;
     display: inline-block;
     margin-right: 15px;
+}
+
+/* tile elements */
+
+.solid {
+    display:inline-block;
+    background-color: rgb(45, 48, 54);
+    transform: scale(1.0);
+}
+
+.solid-animation {
+    animation-name: solidAnimation;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
+    /*animation-delay: 0;*/
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+@keyframes solidAnimation {
+    0% {
+        transform: scale(.3);
+        background-color: rgb(45, 48, 54);
+    }
+
+    50% {
+        transform: scale(1.2);
+        background-color: rgb(45, 48, 54);
+    }
+
+    100% {
+        transform: scale(1.0);
+        background-color: rgb(45, 48, 54);
+    }
+}
+
+.weight {
+    display:inline-block;
+    transform: scale(1.0);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.weight-animation {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    animation-name: weightAnimation;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
+    animation-direction: alternate;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-play-state: running;
+}
+
+@keyframes weightAnimation {
+    0% {
+        transform: scale(.3);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.0);
+    }
 }
