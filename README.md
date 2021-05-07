@@ -109,7 +109,7 @@ const path: Tile[] = pathfinder.findPath(initial, goal);
 
 The AStar algorithm uses the Manhattan distance heuristic by default but you can find other heuristics in ../pathfinding/Heuristics.
 
-Lastly, we can randomly generate mazes with the MazeGenerator class:
+Lastly, we can randomly generate mazes with the TerrainMazeGenerator class:
 ```
 const generator = new TerrainMazeGenerator(width, height);
 ```
