@@ -111,7 +111,7 @@ The AStar algorithm uses the Manhattan distance heuristic by default but you can
 
 Lastly, we can randomly generate mazes with the MazeGenerator class:
 ```
-const generator = new MazeGenerator(width, height);
+const generator = new TerrainMazeGenerator(width, height);
 ```
 
 We can invoke the random generation algorithm (recursive division) like:
