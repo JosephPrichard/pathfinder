@@ -54,7 +54,7 @@
     overflow: hidden;
 
     animation-name: vizAnimation;
-    animation-duration: 0.6s;
+    animation-duration: 0.5s;
     animation-timing-function: linear;
     animation-direction: normal;
     animation-iteration-count: 1;
