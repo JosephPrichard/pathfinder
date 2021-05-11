@@ -31,15 +31,14 @@ npm run deploy
 
 Let's start by creating a grid!
 
-To draw solid tiles on the grid drag the left mouse button accross the grid. If you want to erase a tile, hold the right mouse button instead. 
-If you're on mobile, hold your finger on an empty tile then drag your finger accross the grid to draw. To erase, hold your finger on a solid tile then drag.
+To draw solid tiles on the grid drag the mouse accross empty tiles on the grid. If you want to erase a tile, drag the mouse accross solid tiles instead.
 
 The green tile represents the initial tile and the red tile represents the goal tile for the path. You can move them around by dragging them.
 
 Once you've drawn tiles on your grid you can find a solution by clicking "Visualize!". The application will show which nodes the algorithms searches and then 
 draw the path it found when the visualization is complete. Nodes it already checked and expanded are blue and nodes stored in the "Frontier" are green.
 
-You can pick different algorithms to visualize by changing the selected algorithm in the white drop down menu. Different algorithms will lead to different solutions! A* and Dijikstra are guaranteed to find the shortest path, while the other algorithms are not.
+You can pick different algorithms to visualize by changing the selected algorithm in the white drop down menu. Different algorithms will lead to different solutions! A* and Dijikstra are guaranteed to find the path with the shortest cost, while the other algorithms are not.
 
 You can generate a maze with the yellow button and solve the maze by yet again clicking "Visualize!"
 
