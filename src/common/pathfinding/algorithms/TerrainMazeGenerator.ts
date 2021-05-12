@@ -1,6 +1,6 @@
 import TerrainGenerator from './TerrainGenerator';
 import RectGrid, {Grid} from '../core/Grid';
-import {createTile, Point, Tile, TileData} from '../core/Components';
+import {createTileData, Point, Tile, TileData} from '../core/Components';
 
 const LIMIT = 2;
 
@@ -135,7 +135,7 @@ class TerrainMazeGenerator extends TerrainGenerator
                         point: {
                             x: randX, y: min.y
                         },
-                        data: createTile(false)
+                        data: createTileData(false)
                     });
                     edgeBlocked = true;
                 }
@@ -146,7 +146,7 @@ class TerrainMazeGenerator extends TerrainGenerator
                         point: {
                             x: randX, y: max.y
                         },
-                        data: createTile(false)
+                        data: createTileData(false)
                     });
                     edgeBlocked = true;
                 }
@@ -158,7 +158,7 @@ class TerrainMazeGenerator extends TerrainGenerator
                         point: {
                             x: randX, y: randY
                         },
-                        data: createTile(false)
+                        data: createTileData(false)
                     });
                 }
                 this.drawArr(grid, toDraw);
@@ -205,7 +205,7 @@ class TerrainMazeGenerator extends TerrainGenerator
                         point: {
                             x: min.x, y: randY
                         },
-                        data: createTile(false)
+                        data: createTileData(false)
                     });
                     edgeBlocked = true;
                 }
@@ -216,7 +216,7 @@ class TerrainMazeGenerator extends TerrainGenerator
                         point: {
                             x: max.x, y: randY
                         },
-                        data: createTile(false)
+                        data: createTileData(false)
                     });
                     edgeBlocked = true;
                 }
@@ -228,7 +228,7 @@ class TerrainMazeGenerator extends TerrainGenerator
                         point: {
                             x: randX, y: randY
                         },
-                        data: createTile(false)
+                        data: createTileData(false)
                     });
                 }
                 this.drawArr(grid, toDraw);

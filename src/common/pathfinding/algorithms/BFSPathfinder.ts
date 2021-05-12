@@ -1,11 +1,11 @@
 import Pathfinder, {reconstructPath} from './Pathfinder';
 import {Node} from './Node';
-import {Point, Tile} from '../core/Components';
+import {Point} from '../core/Components';
 import {HashSet, stringify} from '../structures/Hash';
 
 class BFSPathfinder extends Pathfinder
 {
-    getAlgorithmName(): string {
+    getAlgorithmName() {
         return 'Breadth First Search';
     }
 
@@ -15,7 +15,7 @@ class BFSPathfinder extends Pathfinder
      * @param initial
      * @param goal
      */
-    findPath(initial: Point, goal: Point): Tile[] {
+    findPath(initial: Point, goal: Point) {
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
         const frontier: Node[] = []; //fifo, stores nodes on the frontier

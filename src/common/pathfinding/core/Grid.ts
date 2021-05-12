@@ -1,4 +1,4 @@
-import {createTile, Point, Tile, TileData} from './Components';
+import {createTileData, Point, Tile, TileData} from './Components';
 
 export interface Grid
 {
@@ -96,7 +96,7 @@ class RectGrid implements Grid
      */
     mutateDefault(point: Point, solid: boolean) {
         this.mutate(
-            point, createTile(solid)
+            point, createTileData(solid)
         );
     }
 
@@ -142,12 +142,12 @@ class RectGrid implements Grid
      *  Meaning it isn't solid and it has a pathCost of 1
      * @param point
      */
-    isEmpty(point: Point): boolean {
+    isEmpty(point: Point) {
         const data = this.tiles[point.y][point.x].data;
         return data.pathCost === 1 && !data.isSolid
     }
 
-    clone(): Grid {
+    clone() {
         const grid = new RectGrid(this.width, this.height);
         for(let y = 0; y < grid.height; y++) {
             for(let x = 0; x < grid.width; x++) {
@@ -173,7 +173,7 @@ function createEmptyGrid(width: number, height: number) {
                 point: {
                     x: x, y: y
                 },
-                data: createTile(false)
+                data: createTileData(false)
             });
         }
         nodes.push(row);

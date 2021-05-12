@@ -1,5 +1,5 @@
 import React, {RefObject} from 'react';
-import {createTile, Point, Tile, TileData} from '../../pathfinding/core/Components';
+import {createTileData, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import RectGrid, {Grid} from '../../pathfinding/core/Grid';
 import TileFg from './TileFg';
 import SolidFg from './SolidFg';
@@ -55,7 +55,7 @@ class GridForeground extends React.Component<IProps,IState>
         this.width = this.props.tilesX;
         this.height = this.props.tilesY;
         const end = this.calcEndPointInView();
-        this.tilePointer = createTile(true);
+        this.tilePointer = createTileData(true);
         this.state = {
             grid: new RectGrid(this.width, this.height),
             path: [],

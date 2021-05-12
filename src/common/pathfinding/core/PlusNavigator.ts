@@ -11,7 +11,7 @@ class PlusNavigator extends Navigator
      * Adds the neighbors of a point to the left, right, top and down
      * @param point
      */
-    neighbors(point: Point): Tile[] {
+    neighbors(point: Point) {
         const tiles: Tile[] = [];
         if(point.x + UNIT < this.grid.getWidth()) {
             const tile = this.grid.get({

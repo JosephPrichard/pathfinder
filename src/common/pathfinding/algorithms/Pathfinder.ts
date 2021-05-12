@@ -55,7 +55,7 @@ abstract class Pathfinder
  * returns the shortest path in an array
  * @param bottomLeaf bottom of the tree to start from
  */
-export function reconstructPath(bottomLeaf: Node): Tile[] {
+export function reconstructPath(bottomLeaf: Node) {
     return reconstructPathReversed(bottomLeaf).reverse();
 }
 
@@ -64,7 +64,7 @@ export function reconstructPath(bottomLeaf: Node): Tile[] {
  * returns the shortest path in an array
  * @param bottomLeaf bottom of the tree to start from
  */
-export function reconstructPathReversed(bottomLeaf: Node): Tile[] {
+export function reconstructPathReversed(bottomLeaf: Node) {
     const path: Tile[] = [];
     while(bottomLeaf.parent !== null) {
         path.push(bottomLeaf.tile);

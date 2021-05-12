@@ -1,4 +1,4 @@
-import {createTile, Point, Tile, TileData} from '../core/Components';
+import {createTileData, Point, Tile, TileData} from '../core/Components';
 import {Grid} from '../core/Grid';
 import {HashSet, stringify} from '../structures/Hash';
 
@@ -16,7 +16,7 @@ abstract class TerrainGenerator
         if(data !== undefined) {
             this.data = data;
         } else {
-            this.data = createTile(true);
+            this.data = createTileData(true);
         }
         if(ignore !== undefined) {
             for(const i of ignore) {

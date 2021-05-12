@@ -8,7 +8,7 @@ import PathfinderBuilder from '../../pathfinding/algorithms/PathfinderBuilder';
 import Pathfinder from '../../pathfinding/algorithms/Pathfinder';
 import {euclidean} from '../../pathfinding/algorithms/Heuristics';
 import TerrainGeneratorBuilder, {RANDOM_TERRAIN} from '../../pathfinding/algorithms/TerrainGeneratorBuilder';
-import {createTile, Point, Tile, TileData} from '../../pathfinding/core/Components';
+import {createTileData, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import {HashSet, stringify} from '../../pathfinding/structures/Hash';
 import PathfindingSettings from '../../utils/PathfindingSettings';
 import VirtualTimer from '../../utils/VirtualTimer';
@@ -32,7 +32,6 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     //references to expose background and foreground grids to parent
     private background: RefObject<GridBackground> = React.createRef();
     private foreground: RefObject<GridForeground> = React.createRef();
-    private stats: RefObject<StatsPanel> = React.createRef();
 
     private visualized = false;
     private visualizing = false;
@@ -41,7 +40,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     private paused = false;
     private wasPaused = false; //paused before alt tab?
 
-    private mazeTile: TileData = createTile(true);
+    private mazeTile: TileData = createTileData(true);
 
     private readonly tilesX: number;
     private readonly tilesY: number;
@@ -326,7 +325,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
      */
     calcEndPointInView() {
         const xEnd = window.innerWidth / this.tileWidth;
-        const yEnd = (window.innerHeight - 75 - this.stats.current!.getHeight()) / this.tileWidth;
+        const yEnd = (window.innerHeight - 75 - 30) / this.tileWidth;
         const xFloor = Math.floor(xEnd);
         const yFloor = Math.floor(yEnd);
         const xDecimal = xEnd - xFloor;
@@ -401,7 +400,6 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         return (
             <div>
                 <StatsPanel
-                    ref={this.stats}
                     algorithm={this.state.algorithm}
                     length={this.state.length}
                     cost={this.state.cost}

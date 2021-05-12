@@ -33,7 +33,7 @@ export interface Tile
  * Simple function to create a solid tile with path cost of 1
  * @param isSolid
  */
-export function createTile(isSolid: boolean) {
+export function createTileData(isSolid: boolean): TileData {
     return {
         pathCost: 1,
         isSolid: isSolid

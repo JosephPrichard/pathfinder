@@ -1,6 +1,6 @@
 import Pathfinder, {reconstructPath, reconstructPathReversed} from './Pathfinder';
 import {Node} from './Node';
-import {Point, Tile} from '../core/Components';
+import {Point} from '../core/Components';
 import {HashTable, stringify} from '../structures/Hash';
 
 interface ControlStructures {
@@ -10,7 +10,7 @@ interface ControlStructures {
 
 class BiBFSPathfinder extends Pathfinder
 {
-    getAlgorithmName(): string {
+    getAlgorithmName() {
         return 'Bidirectional Breadth First Search';
     }
 
@@ -20,7 +20,7 @@ class BiBFSPathfinder extends Pathfinder
      * @param initial
      * @param goal
      */
-    findPath(initial: Point, goal: Point): Tile[] {
+    findPath(initial: Point, goal: Point) {
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
         const startVisited = new HashTable<Node>();

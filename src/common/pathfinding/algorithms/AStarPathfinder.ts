@@ -1,7 +1,7 @@
 import Pathfinder, {reconstructPath} from './Pathfinder';
 import {euclidean, HeuristicFunc} from './Heuristics';
 import {AStarNode} from './Node';
-import {Point, Tile} from '../core/Components';
+import {Point} from '../core/Components';
 import Navigator from '../core/Navigator';
 import {HashSet, HashTable, stringify} from '../structures/Hash';
 import Heap from '../structures/Heap';
@@ -21,7 +21,7 @@ class AStarPathfinder extends Pathfinder
         }
     }
 
-    getAlgorithmName(): string {
+    getAlgorithmName() {
         return 'A*';
     }
 
@@ -31,7 +31,7 @@ class AStarPathfinder extends Pathfinder
      * @param initial
      * @param goal
      */
-    findPath(initial: Point, goal: Point): Tile[] {
+    findPath(initial: Point, goal: Point) {
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
         const openFrontier = new Heap<AStarNode>(

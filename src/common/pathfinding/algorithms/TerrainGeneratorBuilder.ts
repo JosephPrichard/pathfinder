@@ -1,6 +1,6 @@
 import TerrainRandomGenerator from './TerrainRandomGenerator';
 import TerrainMazeGenerator from './TerrainMazeGenerator';
-import {createTile, Point, TileData} from '../core/Components';
+import {createTileData, Point, TileData} from '../core/Components';
 
 export const MAZE = 0;
 export const MAZE_VERTICAL_SKEW = 1;
@@ -13,7 +13,7 @@ class TerrainGeneratorBuilder
     private height: number = 0;
     private type: number = MAZE;
     private ignore: Point[] = [];
-    private data: TileData = createTile(true);
+    private data: TileData = createTileData(true);
 
     setDimensions(width: number, height: number) {
         this.width = width;
