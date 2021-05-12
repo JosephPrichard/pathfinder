@@ -1,5 +1,4 @@
 import React from 'react';
-import './styles/App.css';
 import './styles/Grid.css';
 import './styles/Utility.css';
 import './styles/Navbar.css';

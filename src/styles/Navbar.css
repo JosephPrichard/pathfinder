@@ -310,18 +310,18 @@
 
 .maze-drop-down-button {
     width: 120px;
-    background-color: rgb(239,193,39);
+    background-color: rgb(219,173,19);
     color: white;
 }
 
 .maze-drop-down-button:hover {
     cursor: pointer;
-    background-color: rgb(249,203,49);
+    background-color: rgb(229,183,29);
 }
 
 .maze-drop-down-button:active {
     cursor: pointer;
-    background-color: rgb(229,183,29);
+    background-color: rgb(209,163,9);
 }
 
 .arrowUp {

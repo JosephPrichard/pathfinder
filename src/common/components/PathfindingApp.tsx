@@ -206,7 +206,14 @@ class PathfindingApp extends React.Component<IProps, IState>
     }
 
     render() {
-        const title = 'Pathfinding Visualizer';
+        const title: string = 'Pathfinding Visualizer';
+        const icon = this.state.useIcon ?
+            <img
+                width={'100%'} height={'100%'}
+                className='icon'
+                alt={title} src={Icon}
+            /> :
+            title;
         return (
             <div>
                 <DraggablePanel
@@ -240,19 +247,11 @@ class PathfindingApp extends React.Component<IProps, IState>
                 <TopBar>
                     <a href='https://github.com/JosephPrichard/PathfinderReact' className='title'
                        style={{
-                           width: this.state.useIcon ? '70px' : 'auto',
-                           height: this.state.useIcon ? '52px' : '100%'
+                           width: this.state.useIcon ? 70 : 'auto',
+                           height: this.state.useIcon ? 52 : '100%'
                        }}
                     >
-                        {
-                            this.state.useIcon ?
-                                <img
-                                    width={'100%'} height={'100%'}
-                                    className='icon'
-                                    alt={title} src={Icon}
-                                /> :
-                                title
-                        }
+                        {icon}
                     </a>
                     <div className='top-container'>
                         <AlgorithmDropDown
