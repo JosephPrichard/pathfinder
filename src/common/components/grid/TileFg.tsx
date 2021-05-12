@@ -9,13 +9,6 @@ interface TileProps {
 
 class TileFg extends React.Component<TileProps>
 {
-    shouldComponentUpdate(nextProps: Readonly<TileProps>) {
-        const prevPoint = this.props.point;
-        const nextPoint = nextProps.point;
-        return prevPoint.y !== nextPoint.y ||
-            prevPoint.x !== nextPoint.x;
-    }
-
     render() {
         const size = this.props.tileWidth
         const top = this.props.point.y * this.props.tileWidth;

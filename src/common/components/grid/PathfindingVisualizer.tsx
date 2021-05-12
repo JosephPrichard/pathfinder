@@ -27,6 +27,10 @@ interface IState {
     algorithm: string
 }
 
+/**
+ * Component to encapsulate and perform all pathfinding operations
+ * Exposes functions to initiate pathfinding or draw terrain
+ */
 class PathfindingVisualizer extends React.Component<IProps,IState>
 {
     //references to expose background and foreground grids to parent
@@ -62,6 +66,9 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         }
     }
 
+    /**
+     * Automatically pause/resume the visualization when user alt tabs
+     */
     componentDidMount() {
         window.addEventListener('blur', () => {
             this.wasPaused = this.isPaused();
@@ -76,6 +83,14 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         });
     }
 
+    /**
+     * Prevents pathfinding visualizer from being updated unless the algorithm stats
+     * have changed (meaning an algorithm was visualized)
+     * Doesn't prevent Foreground and background from being updated automatically
+     * when their state changes
+     * @param nextProps
+     * @param nextState
+     */
     shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>) {
         const prevState = this.state;
         return prevState.time !== nextState.time ||
@@ -321,7 +336,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     }
 
     /**
-     * Calculate the end/goal point in common of the screen
+     * Calculate the end/goal point in view of the screen
+     * Used to calculate the terrain dimensions
      */
     calcEndPointInView() {
         const xEnd = window.innerWidth / this.tileWidth;

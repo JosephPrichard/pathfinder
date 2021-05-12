@@ -7,6 +7,9 @@ interface IProps {
     tilesY: number
 }
 
+/**
+ * A component for a grid with specific width and height proportions
+ */
 class GridStaticTiles extends React.Component<IProps>
 {
     private readonly width: number;

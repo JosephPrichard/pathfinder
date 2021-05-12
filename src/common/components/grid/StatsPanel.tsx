@@ -16,11 +16,6 @@ class StatsPanel extends React.Component<IProps>
         this.textLog.current!.scrollTop = this.textLog.current!.scrollHeight;
     }
 
-    getHeight() {
-        //top border: 1
-        return this.textLog.current!.clientHeight + 1;
-    }
-
     render() {
         const time = precise(this.props.time);
         const text = this.props.algorithm === '' ? '' :

@@ -76,6 +76,11 @@ class PathfindingApp extends React.Component<IProps, IState>
         }
     }
 
+    /**
+     * Binds window listeners.
+     * One listener is to hide drop downs on click anywhere
+     * Other listener is to keep track of screen size to check if we show icon
+     */
     componentDidMount() {
         window.addEventListener('click', () => {
             this.algDropDown.current!.hide();
@@ -93,6 +98,11 @@ class PathfindingApp extends React.Component<IProps, IState>
     useIcon() {
         return window.innerWidth <= 850;
     }
+
+    /**
+     * Called when the drop downs are clicked to prevent more
+     * than one dropdown from being open at a time
+     */
 
     onClickAlgDrop() {
         this.clrDropDown.current!.hide();
@@ -117,6 +127,11 @@ class PathfindingApp extends React.Component<IProps, IState>
         this.algDropDown.current!.hide();
         this.mazeDropDown.current!.hide();
     }
+
+    /**
+     * Utility functions to change overall state of application
+     * Settings, overall appearance, etc
+     */
 
     changeVButtonColor(visualizing: boolean) {
         this.setState({

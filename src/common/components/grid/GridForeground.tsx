@@ -26,6 +26,11 @@ const ARROW_PATH_COLOR = 'rgb(73, 79, 250)';
 
 const BASE_WIDTH = 27;
 
+/**
+ * Represents actual tile contents of the Grid itself
+ * Will re-render itself when given a new Grid
+ * Binds listeners to allow user to "draw" on the grid foreground
+ */
 class GridForeground extends React.Component<IProps,IState>
 {
     private svg: RefObject<SVGSVGElement> = React.createRef();

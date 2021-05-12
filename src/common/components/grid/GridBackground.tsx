@@ -27,6 +27,10 @@ const VIZ_TILE_CLASS = 'tile-viz';
 
 const BASE_WIDTH = 27;
 
+/**
+ * Represents a visualization canvas for the background grid
+ * Can be mutated using functions to change the state of the current visualization
+ */
 class GridBackground extends React.Component<IProps,IState>
 {
     private readonly width: number;
