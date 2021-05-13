@@ -10,12 +10,12 @@ import {euclidean} from '../../pathfinding/algorithms/Heuristics';
 import TerrainGeneratorBuilder, {RANDOM_TERRAIN} from '../../pathfinding/algorithms/TerrainGeneratorBuilder';
 import {createTileData, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import {HashSet, stringify} from '../../pathfinding/structures/Hash';
-import PathfindingSettings from '../../utils/PathfindingSettings';
+import AppSettings from '../../utils/AppSettings';
 import VirtualTimer from '../../utils/VirtualTimer';
 
 interface IProps {
     tileWidth: number,
-    settings: Readonly<PathfindingSettings>,
+    settings: Readonly<AppSettings>,
     onChangeVisualizing: (visualizing: boolean) => void;
 }
 
@@ -93,7 +93,11 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
      */
     shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>) {
         const prevState = this.state;
-        return prevState.time !== nextState.time ||
+        const prevProps = this.props;
+        return prevProps.settings.showArrows !== nextProps.settings.showArrows ||
+            prevProps.settings.showScores !== nextProps.settings.showScores ||
+            prevProps.settings.visualizeAlg !== nextProps.settings.visualizeAlg ||
+            prevState.time !== nextState.time ||
             prevState.length !== nextState.length ||
             prevState.cost !== nextState.cost ||
             prevState.nodes !== nextState.nodes ||
@@ -101,16 +105,11 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     }
 
     changeTile(data: TileData) {
-        this.mazeTile = data; //enables weighted mazes
+        this.mazeTile = data; //enables weighted terrain
         this.foreground.current!.changeTile(data);
     }
 
-    canShowArrows() {
-        const settings = this.props.settings;
-        return settings.showArrows && settings.algorithm !== 'dfs';
-    }
-
-    canShowFrontier() {
+    canShowVisualization() {
         const settings = this.props.settings;
         return settings.visualizeAlg;
     }
@@ -150,12 +149,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         const pathfinder = this.getPathfinder(settings);
         const path = this.findPath(pathfinder);
         this.generations = pathfinder.getRecentGenerations();
-        if(this.canShowArrows()) {
-            this.addArrowGenerations(this.generations);
-        }
-        if(this.canShowFrontier()) {
-            this.visualizeGenerations(this.generations);
-        }
+        this.visualizeGenerations(this.generations);
+        this.addArrowGenerations(this.generations);
         this.drawPath(path);
     }
 
@@ -165,10 +160,13 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
      * If the visualizer is currently visualizing, the visualization stops instead
      */
     doDelayedPathfinding() {
+        const settings = this.props.settings;
+        const background = this.background.current!;
+        background.setLastAlgo(settings.algorithm)
+        background.enableAnimations();
         this.paused = false;
         this.clearVisualization();
         this.clearPath();
-        const settings = this.props.settings;
         this.visualized = false;
         const foreground = this.foreground.current!;
         foreground.toggleDisable();
@@ -180,27 +178,16 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
             const promises: Promise<VirtualTimer>[] = []; //to call function when timeouts finish
             this.visualTimeouts = [];
             const baseIncrement = settings.delayInc;
-            const visualizeAlg = this.canShowFrontier();
-            const showArrows = this.canShowArrows();
-            if(showArrows || visualizeAlg) {
+            const visualizeAlg = this.canShowVisualization();
+            if(visualizeAlg) {
                 let delay = 0;
-                let expand: (generation: Node) => void;
-                if(visualizeAlg && showArrows) {
-                    expand = (generation: Node) => this.visualizeGenerationAndArrows(generation);
-                } else if(visualizeAlg) {
-                    expand = (generation: Node) => this.visualizeGeneration(generation);
-                } else if(showArrows) {
-                    expand = (generation: Node) => this.addArrowGeneration(generation);
-                } else {
-                    expand = () => {};
-                }
                 this.generations = pathfinder.getRecentGenerations();
                 const generationSet = new HashSet(); //to keep track of rediscovered nodes
                 this.generations.forEach((generation) => {
                     const promise = new Promise<VirtualTimer>((resolve) => {
                         //each generation gets a higher timeout
                         const timeout = new VirtualTimer(() => {
-                            expand(generation);
+                            this.visualizeGenerationAndArrows(generation);
                             resolve(timeout);
                         }, delay);
                         this.visualTimeouts.push(timeout);
@@ -220,6 +207,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                 this.visualizing = false;
                 this.visualized = true;
                 this.props.onChangeVisualizing(this.visualizing);
+                background.disableAnimations();
             });
         } else { //stop visualizing if currently visualizing
             for (const timeout of this.visualTimeouts) {
@@ -234,7 +222,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
      * Get the pathfinder for the settings
      * @param settings
      */
-    getPathfinder(settings: PathfindingSettings) {
+    getPathfinder(settings: AppSettings) {
         const algorithmKey = settings.algorithm;
         const algorithm = settings.bidirectional && PathfinderBuilder.hasBidirectional(algorithmKey) ?
             PathfinderBuilder.makeBidirectional(algorithmKey) : algorithmKey;
@@ -430,6 +418,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                     />
                     <GridBackground
                         ref={this.background}
+                        settings={this.props.settings}
                         tileWidth={this.tileWidth}
                         tilesX={this.tilesX}
                         tilesY={this.tilesY}

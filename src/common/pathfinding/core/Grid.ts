@@ -21,7 +21,7 @@ export interface Grid
  * A square grid system that stores nodes in a matrix
  * Uses an x,y system where x corresponds to column of the matrix,
  * and y corresponds to the row of the matrix
- * TileData.ts should be treated like graph nodes
+ * Tile should be treated like graph nodes
  */
 class RectGrid implements Grid
 {
@@ -33,7 +33,6 @@ class RectGrid implements Grid
      * Constructs a grid either with empty or predefined tiles
      * @param width of the grid
      * @param height of grid
-     * will perform a defensive copy to the grid
      */
     constructor(width: number, height: number) {
         this.width = width;

@@ -61,6 +61,9 @@ class BiAStarPathfinder extends Pathfinder
             const startCurrentPoint = startCurrentNode.tile.point;
             const startCurrentPointKey = stringify(startCurrentPoint);
             startOpenSet.remove(startCurrentPointKey);
+            if(closedSet.has(startCurrentPointKey)) {
+                continue;
+            }
             closedSet.add(startCurrentPointKey);
             this.addRecent(startCurrentNode);
             if(endOpenSet.has(startCurrentPointKey)) {
@@ -86,6 +89,9 @@ class BiAStarPathfinder extends Pathfinder
             const endCurrentPoint = endCurrentNode.tile.point;
             const endCurrentPointKey = stringify(endCurrentPoint);
             endOpenSet.remove(endCurrentPointKey);
+            if(closedSet.has(endCurrentPointKey)) {
+                continue;
+            }
             closedSet.add(endCurrentPointKey);
             this.addRecent(endCurrentNode);
             if(startOpenSet.has(endCurrentPointKey)) {

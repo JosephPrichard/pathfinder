@@ -1,22 +1,8 @@
 import React from 'react';
 import {Node} from '../../pathfinding/algorithms/Node';
 import {Point} from '../../pathfinding/core/Components';
-
-interface Arrow {
-    to: Point,
-    from: Point
-}
-
-interface IProps {
-    tileWidth: number,
-    tilesX: number,
-    tilesY: number
-}
-
-interface IState {
-    visualization: string[][],
-    arrows: Arrow[]
-}
+import AppSettings from "../../utils/AppSettings";
+import PathfinderBuilder from "../../pathfinding/algorithms/PathfinderBuilder";
 
 const CLOSED_NODE = 'rgb(198, 237, 238)';
 const OPEN_NODE = 'rgb(191, 248, 159)';
@@ -26,6 +12,30 @@ const TILE_CLASS = 'tile';
 const VIZ_TILE_CLASS = 'tile-viz';
 
 const BASE_WIDTH = 27;
+
+interface Score {
+    f: number,
+    g: number,
+    h: number
+}
+
+interface Arrow {
+    to: Point,
+    from: Point
+}
+
+interface IProps {
+    settings: AppSettings,
+    tileWidth: number,
+    tilesX: number,
+    tilesY: number
+}
+
+interface IState {
+    visualization: string[][],
+    scores: Score[][],
+    arrows: Arrow[]
+}
 
 /**
  * Represents a visualization canvas for the background grid
@@ -37,7 +47,9 @@ class GridBackground extends React.Component<IProps,IState>
     private readonly height: number;
     private readonly tileWidth: number;
 
-    private tileClass: string = VIZ_TILE_CLASS;
+    private tileClass: string = TILE_CLASS;
+
+    private lastAlgo: string = '';
 
     /**
      * Constructs a GridBackground with immutable height and width
@@ -49,16 +61,21 @@ class GridBackground extends React.Component<IProps,IState>
         this.height = this.props.tilesY;
         this.tileWidth = this.props.tileWidth;
         this.state = {
-            visualization: this.createEmptyBg(),
+            visualization: this.createEmptyViz(),
+            scores: this.createEmptyScores(),
             arrows: []
         }
+    }
+
+    setLastAlgo(lastAlgo: string) {
+        this.lastAlgo = lastAlgo;
     }
 
     /**
      * Create a new empty visualization canvas
      */
-    createEmptyBg() {
-        const visualization = [];
+    createEmptyViz() {
+        const visualization: string[][] = [];
         for(let y = 0; y < this.height; y++) {
             const row: string[] = [];
             for(let x = 0; x < this.width; x++) {
@@ -70,11 +87,30 @@ class GridBackground extends React.Component<IProps,IState>
     }
 
     /**
+     * Set scores to be -1
+     */
+    createEmptyScores() {
+        const scores: Score[][] = [];
+        for(let y = 0; y < this.height; y++) {
+            const row: Score[] = [];
+            for(let x = 0; x < this.width; x++) {
+                row.push({
+                    f: -1,
+                    g: -1,
+                    h: -1
+                });
+            }
+            scores.push(row);
+        }
+        return scores;
+    }
+
+    /**
      * Clear the visualization canvas and update UI
      */
     clear() {
         this.setState({
-            visualization: this.createEmptyBg(),
+            visualization: this.createEmptyViz(),
             arrows: []
         });
     }
@@ -84,7 +120,7 @@ class GridBackground extends React.Component<IProps,IState>
      * @param generation
      * @param visualization
      */
-    static doGeneration(generation: Node, visualization: string[][]) {
+    static doVizGeneration(generation: Node, visualization: string[][]) {
         for(const node of generation.children) {
             const point = node.tile.point;
             visualization[point.y][point.x] = OPEN_NODE;
@@ -95,16 +131,43 @@ class GridBackground extends React.Component<IProps,IState>
     }
 
     /**
+     * Perform a generation on a score array
+     * @param generation
+     * @param scores
+     */
+    static doScoreGeneration(generation: Node, scores: Score[][]) {
+        for(const node of generation.children) {
+            const point = node.tile.point;
+            scores[point.y][point.x] = node.score();
+        }
+        const point = generation.tile.point;
+        scores[point.y][point.x] = generation.score();
+        return scores;
+    }
+
+    /**
      * Visualize generation and update UI
      * @param generation
      */
     visualizeGeneration(generation: Node) {
         this.setState(prevState => ({
-            visualization: GridBackground.doGeneration(
+            visualization: GridBackground.doVizGeneration(
                 generation,
                 clone(prevState.visualization)
+            ),
+            scores: GridBackground.doScoreGeneration(
+                generation,
+                clone(prevState.scores)
             )
         }));
+    }
+
+    enableAnimations() {
+        this.tileClass = VIZ_TILE_CLASS;
+    }
+
+    disableAnimations() {
+        this.tileClass = TILE_CLASS;
     }
 
     /**
@@ -112,14 +175,16 @@ class GridBackground extends React.Component<IProps,IState>
      * @param generations
      */
     visualizeGenerations(generations: Node[]) {
-        this.tileClass = TILE_CLASS;
-        const visualization = this.createEmptyBg();
+        const visualization = this.createEmptyViz();
+        const scores = this.createEmptyScores();
         for(const generation of generations) {
-            GridBackground.doGeneration(generation, visualization);
+            GridBackground.doVizGeneration(generation, visualization);
+            GridBackground.doScoreGeneration(generation, scores);
         }
         this.setState({
-            visualization: visualization
-        }, () => this.tileClass = VIZ_TILE_CLASS);
+            visualization: visualization,
+            scores: scores
+        });
     }
 
     /**
@@ -183,9 +248,13 @@ class GridBackground extends React.Component<IProps,IState>
      */
     visualizeGenerationAndArrows(generation: Node) {
         this.setState(prevState => ({
-            visualization: GridBackground.doGeneration(
+            visualization: GridBackground.doVizGeneration(
                 generation,
                 clone(prevState.visualization)
+            ),
+            scores: GridBackground.doScoreGeneration(
+                generation,
+                clone(prevState.scores)
             ),
             arrows: GridBackground.doArrowGeneration(
                 generation,
@@ -200,7 +269,7 @@ class GridBackground extends React.Component<IProps,IState>
         return (
             <div>
                 <div className='bg'>
-                    {this.renderViz()}
+                    {this.props.settings.visualizeAlg ? this.renderViz() : []}
                 </div>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -219,7 +288,12 @@ class GridBackground extends React.Component<IProps,IState>
                             <polygon points='0 0, 3 1.5, 0 3'/>
                         </marker>
                     </defs>
-                    {this.renderArrows()}
+                    {this.props.settings.showArrows &&
+                        this.props.settings.visualizeAlg &&
+                        PathfinderBuilder.usesBreadthTree(this.lastAlgo)?
+                        this.renderArrows() :
+                        []
+                    }
                 </svg>
             </div>
         );
@@ -266,9 +340,10 @@ class GridBackground extends React.Component<IProps,IState>
                     x: x, y: y
                 };
                 const viz = this.state.visualization[point.y][point.x];
+                const score = this.state.scores[point.y][point.x];
                 if(viz !== EMPTY_NODE) {
                     row.push(
-                        this.renderTile(point, viz)
+                        this.renderTile(point, viz, score)
                     );
                 }
             }
@@ -277,7 +352,7 @@ class GridBackground extends React.Component<IProps,IState>
         return tiles;
     }
 
-    renderTile(point: Point, color: string) {
+    renderTile(point: Point, color: string, score: Score) {
         const width = this.tileWidth;
         const top = point.y * width;
         const left = point.x * width;
@@ -286,19 +361,29 @@ class GridBackground extends React.Component<IProps,IState>
             width: width + 'px',
             height: width + 'px',
             top: top,
-            left: left
+            left: left,
+            fontSize: 10 * width/BASE_WIDTH
         };
+        const text = this.props.settings.showScores ?
+            <div key={point.x + ',' + point.y + 'score'}>
+                <div className='f-text'>
+                    {score.f === -1 ? '' : score.f}
+                </div>
+            </div> :
+            ''
         return (
             <div
                 key={point.x + ',' + point.y}
                 style={style}
                 className={this.tileClass}
-            />
+            >
+                {text}
+            </div>
         );
     }
 }
 
-function clone(array: string[][]) {
+function clone<T>(array: T[][]) {
     return array.map(
         (arr) => arr.slice()
     );

@@ -17,6 +17,17 @@ export class Node
         child.parent = this;
         this.children.push(child);
     }
+
+    /**
+     * Some nodes don't have scores. returns -1 if the node is un-scored
+     */
+    score() {
+        return {
+            f: -1,
+            g: -1,
+            h: -1
+        }
+    }
 }
 
 /**
@@ -35,5 +46,16 @@ export class AStarNode extends Node
 
     f() {
         return this.fScore;
+    }
+
+    /**
+     * Gets scores for the node in a readable format
+     */
+    score() {
+        return {
+            f: Math.round(this.f()),
+            g: Math.round(this.g),
+            h: Math.round(this.f() - this.g)
+        }
     }
 }

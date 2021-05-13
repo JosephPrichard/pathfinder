@@ -49,6 +49,9 @@ class AStarPathfinder extends Pathfinder
             const currentPoint = currentNode.tile.point;
             const currentKey = stringify(currentPoint);
             openSet.remove(currentKey);
+            if(closedSet.has(currentKey)) {
+                continue;
+            }
             closedSet.add(currentKey);
             this.addRecent(currentNode);
             if (this.navigator.equals(currentPoint, goal)) {

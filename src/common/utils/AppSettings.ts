@@ -1,4 +1,4 @@
-interface PathfindingSettings
+interface AppSettings
 {
     visualizeAlg: boolean,
     showArrows: boolean,
@@ -7,9 +7,10 @@ interface PathfindingSettings
     heuristicKey: string,
     navigatorKey: string,
     bidirectional: boolean,
+    showScores: boolean
 }
 
-export function getDefaultSettings(): PathfindingSettings {
+export function getDefaultSettings(): AppSettings {
     return {
         visualizeAlg: true,
         showArrows: true,
@@ -18,7 +19,8 @@ export function getDefaultSettings(): PathfindingSettings {
         heuristicKey: 'manhattan',
         navigatorKey: 'plus',
         bidirectional: false,
+        showScores: false
     }
 }
 
-export default PathfindingSettings;
+export default AppSettings;

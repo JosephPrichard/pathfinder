@@ -127,6 +127,18 @@ class PathfinderBuilder
             algorithm === 'best-first';
     }
 
+    static usesWeights(algorithm: string) {
+        return algorithm === 'a*' || algorithm === 'bi-a*' ||
+            algorithm === 'best-first' || algorithm === 'dijkstra' ||
+            algorithm === 'bi-dijkstra';
+    }
+
+    //checks if an algorithm has an even/intelligent expansion
+    //the only algorithm that doesn't expand breadth is dfs
+    static usesBreadthTree(algorithm: string) {
+        return algorithm !== 'dfs';
+    }
+
     static hasBidirectional(algorithm: string) {
         return CREATE_PATHFINDER['bi-' + algorithm] != null;
     }

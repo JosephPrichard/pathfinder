@@ -268,20 +268,17 @@
 .tiles-drop-down-button {
     width: 140px;
     background-color: rgb(135,95,154);
-    /*background-color: rgb(222,120,26);*/
     color: white;
 }
 
 .tiles-drop-down-button:hover {
     cursor: pointer;
     background-color: rgb(145,105,164);
-    /*background-color: rgb(232,130,36);*/
 }
 
 .tiles-drop-down-button:active {
     cursor: pointer;
     background-color: rgb(125,85,144);
-    /*background-color: rgb(202,110,16);*/
 }
 
 .red-button {

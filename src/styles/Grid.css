@@ -55,7 +55,7 @@
 
     animation-name: vizAnimation;
     animation-duration: 0.5s;
-    animation-timing-function: linear;
+    animation-timing-function: ease;
     animation-direction: normal;
     animation-iteration-count: 1;
     animation-fill-mode: none;
@@ -234,4 +234,21 @@
     100% {
         transform: scale(1.0);
     }
+}
+
+.f-text {
+    font-family: Cascadia Mono, serif;
+    color: black;
+}
+
+.g-h-text {
+    font-family: Cascadia Mono, serif;
+    color: rgb(155,95,154);
+    margin-left: 1px;
+}
+
+.h-text {
+    float: right;
+    color: rgb(227,62,69);
+    margin-right: 1px;
 }

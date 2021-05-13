@@ -15,7 +15,6 @@ import {
 } from './navbar/SettingPanels';
 import DraggablePanel from './panel/DraggablePanel';
 import PathfindingVisualizer from './grid/PathfindingVisualizer';
-import SettingsManager from '../utils/SettingsManager';
 import PathfinderBuilder from '../pathfinding/algorithms/PathfinderBuilder';
 import {
     MAZE,
@@ -24,13 +23,17 @@ import {
     RANDOM_TERRAIN
 } from '../pathfinding/algorithms/TerrainGeneratorBuilder';
 import Icon from '../../images/react.png';
+import AppSettings, {getDefaultSettings} from "../utils/AppSettings";
 
 interface IProps {}
 
 interface IState {
+    settings: AppSettings,
+
     heuristicDisabled: boolean,
     bidirectionalDisabled: boolean,
     arrowsDisabled: boolean,
+    scoreDisabled: boolean
 
     panelShow: boolean,
 
@@ -51,29 +54,23 @@ class PathfindingApp extends React.Component<IProps, IState>
     private mazeDropDown: RefObject<MazeDropDown> = React.createRef();
     private tilesDropDown: RefObject<TilesDropDown> = React.createRef();
 
-    private settingsManager: SettingsManager = new SettingsManager();
-
     private readonly tileWidth: number;
 
     constructor(props: IProps) {
         super(props);
-        const speed = this.settingsManager.settings.delayInc;
-        const mobile = isMobile();
-        this.tileWidth =  mobile ? 47 : Math.round(window.screen.availWidth / 57);
-        if(mobile) {
-            this.settingsManager.changeSpeed(speed + 20);
-        } else if(window.screen.availWidth > 2500) {
-            this.settingsManager.changeSpeed(speed + 10);
-        }
         this.state = {
+            settings: getDefaultSettings(),
             heuristicDisabled: false,
             bidirectionalDisabled: false,
             arrowsDisabled: false,
+            scoreDisabled: false,
             panelShow: false,
             visualizing: false,
             paused: false,
             useIcon: this.useIcon()
         }
+        const mobile = isMobile();
+        this.tileWidth =  mobile ? 47 : Math.round(window.screen.availWidth / 57);
     }
 
     /**
@@ -151,15 +148,6 @@ class PathfindingApp extends React.Component<IProps, IState>
         });
     }
 
-    changeAlgo(algorithm: string) {
-        this.setState({
-            heuristicDisabled: !PathfinderBuilder.usesHeuristic(algorithm),
-            bidirectionalDisabled: !PathfinderBuilder.hasBidirectional(algorithm),
-            arrowsDisabled: algorithm === 'dfs'
-        });
-        this.settingsManager.changeAlgo(algorithm);
-    }
-
     doPathfinding() {
         this.setState({
             paused: false
@@ -220,6 +208,104 @@ class PathfindingApp extends React.Component<IProps, IState>
         });
     }
 
+    /**
+     * Functions to modify app's settings
+     */
+
+    changeAlgo(algorithm: string) {
+        this.setState(prevState => ({
+            heuristicDisabled: !PathfinderBuilder.usesHeuristic(algorithm),
+            bidirectionalDisabled: !PathfinderBuilder.hasBidirectional(algorithm),
+            scoreDisabled: !PathfinderBuilder.usesWeights(algorithm),
+            arrowsDisabled: !PathfinderBuilder.usesBreadthTree(algorithm),
+            settings: {
+                ...prevState.settings,
+                algorithm: algorithm
+            }
+        }));
+    }
+
+    changeVisualize() {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                visualizeAlg: !prevState.settings.visualizeAlg
+            }
+        }));
+    }
+
+    changeShowArrows() {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                showArrows: !prevState.settings.showArrows
+            }
+        }));
+    }
+
+    changeShowScores() {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                showScores: !prevState.settings.showScores
+            }
+        }));
+    }
+
+    changeBidirectional() {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                bidirectional: !prevState.settings.bidirectional
+            }
+        }));
+    }
+
+    changeSpeed(value: number) {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                delayInc: value
+            }
+        }));
+    }
+
+    changeManhattan() {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                heuristicKey: 'manhattan'
+            }
+        }));
+    }
+
+    changeEuclidean() {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                heuristicKey: 'euclidean'
+            }
+        }));
+    }
+
+    changeChebyshev() {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                heuristicKey: 'chebyshev'
+            }
+        }));
+    }
+
+    changeOctile() {
+        this.setState(prevState => ({
+            settings: {
+                ...prevState.settings,
+                heuristicKey: 'octile'
+            }
+        }));
+    }
+
     render() {
         const title: string = 'Pathfinding Visualizer';
         const icon = this.state.useIcon ?
@@ -236,27 +322,34 @@ class PathfindingApp extends React.Component<IProps, IState>
                     show={this.state.panelShow}
                     onClickXButton={() => this.hideSettings()}
                     width={350}
-                    height={405}
+                    height={425}
                 >
                     <VisualSettings
-                        disabled={this.state.arrowsDisabled}
-                        onChangeViz={() => this.settingsManager.changeVisualize()}
-                        onChangeShowArrows={() => this.settingsManager.changeShowArrows()}
+                        defaultViz={this.state.settings.visualizeAlg}
+                        defaultShowArrows={this.state.settings.showArrows}
+                        defaultShowScores={this.state.settings.showScores}
+                        disabledTree={this.state.arrowsDisabled}
+                        disabledScore={this.state.scoreDisabled}
+                        onChangeViz={() => this.changeVisualize()}
+                        onChangeShowArrows={() => this.changeShowArrows()}
+                        onChangeShowScores={() => this.changeShowScores()}
                     />
                     <SpeedSettings
-                        onChange={(value: number) => this.settingsManager.changeSpeed(value)}
-                        initialSpeed={this.settingsManager.settings.delayInc}
+                        onChange={(value: number) => this.changeSpeed(value)}
+                        initialSpeed={this.state.settings.delayInc}
                     />
                     <AlgorithmSettings
+                        defaultAlg={this.state.settings.bidirectional}
                         disabled={this.state.bidirectionalDisabled}
-                        onChangeBidirectional={() => this.settingsManager.changeBidirectional()}
+                        onChangeBidirectional={() => this.changeBidirectional()}
                     />
                     <HeuristicSettings
+                        defaultHeuristic={this.state.settings.heuristicKey}
                         disabled={this.state.heuristicDisabled}
-                        onClickManhattan={() => this.settingsManager.changeManhattan()}
-                        onClickEuclidean={() => this.settingsManager.changeEuclidean()}
-                        onClickChebyshev={() => this.settingsManager.changeChebyshev()}
-                        onClickOctile={() => this.settingsManager.changeOctile()}
+                        onClickManhattan={() => this.changeManhattan()}
+                        onClickEuclidean={() => this.changeEuclidean()}
+                        onClickChebyshev={() => this.changeChebyshev()}
+                        onClickOctile={() => this.changeOctile()}
                     />
                 </DraggablePanel>
                 <TopBar>
@@ -307,7 +400,7 @@ class PathfindingApp extends React.Component<IProps, IState>
                 <PathfindingVisualizer
                     ref={this.visualizer}
                     onChangeVisualizing={(viz: boolean) => this.changeVButtonColor(viz)}
-                    settings={this.settingsManager.settings}
+                    settings={this.state.settings}
                     tileWidth={this.tileWidth}/>
             </div>
         );
