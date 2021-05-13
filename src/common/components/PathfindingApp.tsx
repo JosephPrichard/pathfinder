@@ -217,19 +217,9 @@ class PathfindingApp extends React.Component<IProps, IState>
             heuristicDisabled: !PathfinderBuilder.usesHeuristic(algorithm),
             bidirectionalDisabled: !PathfinderBuilder.hasBidirectional(algorithm),
             scoreDisabled: !PathfinderBuilder.usesWeights(algorithm),
-            arrowsDisabled: !PathfinderBuilder.usesBreadthTree(algorithm),
             settings: {
                 ...prevState.settings,
                 algorithm: algorithm
-            }
-        }));
-    }
-
-    changeVisualize() {
-        this.setState(prevState => ({
-            settings: {
-                ...prevState.settings,
-                visualizeAlg: !prevState.settings.visualizeAlg
             }
         }));
     }
@@ -322,15 +312,13 @@ class PathfindingApp extends React.Component<IProps, IState>
                     show={this.state.panelShow}
                     onClickXButton={() => this.hideSettings()}
                     width={350}
-                    height={425}
+                    height={405}
                 >
                     <VisualSettings
-                        defaultViz={this.state.settings.visualizeAlg}
                         defaultShowArrows={this.state.settings.showArrows}
                         defaultShowScores={this.state.settings.showScores}
                         disabledTree={this.state.arrowsDisabled}
                         disabledScore={this.state.scoreDisabled}
-                        onChangeViz={() => this.changeVisualize()}
                         onChangeShowArrows={() => this.changeShowArrows()}
                         onChangeShowScores={() => this.changeShowScores()}
                     />

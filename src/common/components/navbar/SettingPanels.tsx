@@ -4,10 +4,8 @@ import SteppedRangeSlider from '../panel/SteppedRangeSlider';
 import RadioButtonGroup from '../panel/RadioButtonGroup';
 
 interface VisualProps {
-    defaultViz: boolean,
     defaultShowArrows: boolean,
     defaultShowScores: boolean,
-    onChangeViz: () => void,
     onChangeShowArrows: () => void,
     onChangeShowScores: () => void,
     disabledTree: boolean,
@@ -48,13 +46,6 @@ export class VisualSettings extends React.Component<VisualProps>
         return (
             <div>
                 <div className='draggable-content-title'>Visualization</div>
-                <Checkbox
-                    defaultChecked={this.props.defaultViz}
-                    boxStyle='box'
-                    onChange={this.props.onChangeViz}
-                >
-                    Show Visualization
-                </Checkbox>
                 <Checkbox
                     defaultChecked={this.props.defaultShowArrows}
                     boxStyle='box'

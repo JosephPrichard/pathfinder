@@ -1,6 +1,5 @@
 interface AppSettings
 {
-    visualizeAlg: boolean,
     showArrows: boolean,
     delayInc: number,
     algorithm: string,
@@ -12,7 +11,6 @@ interface AppSettings
 
 export function getDefaultSettings(): AppSettings {
     return {
-        visualizeAlg: true,
         showArrows: true,
         delayInc: 25,
         algorithm: 'a*',

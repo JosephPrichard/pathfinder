@@ -96,7 +96,6 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         const prevProps = this.props;
         return prevProps.settings.showArrows !== nextProps.settings.showArrows ||
             prevProps.settings.showScores !== nextProps.settings.showScores ||
-            prevProps.settings.visualizeAlg !== nextProps.settings.visualizeAlg ||
             prevState.time !== nextState.time ||
             prevState.length !== nextState.length ||
             prevState.cost !== nextState.cost ||
@@ -107,11 +106,6 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     changeTile(data: TileData) {
         this.mazeTile = data; //enables weighted terrain
         this.foreground.current!.changeTile(data);
-    }
-
-    canShowVisualization() {
-        const settings = this.props.settings;
-        return settings.visualizeAlg;
     }
 
     isPaused() {
@@ -178,28 +172,25 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
             const promises: Promise<VirtualTimer>[] = []; //to call function when timeouts finish
             this.visualTimeouts = [];
             const baseIncrement = settings.delayInc;
-            const visualizeAlg = this.canShowVisualization();
-            if(visualizeAlg) {
-                let delay = 0;
-                this.generations = pathfinder.getRecentGenerations();
-                const generationSet = new HashSet(); //to keep track of rediscovered nodes
-                this.generations.forEach((generation) => {
-                    const promise = new Promise<VirtualTimer>((resolve) => {
-                        //each generation gets a higher timeout
-                        const timeout = new VirtualTimer(() => {
-                            this.visualizeGenerationAndArrows(generation);
-                            resolve(timeout);
-                        }, delay);
-                        this.visualTimeouts.push(timeout);
-                    });
-                    promises.push(promise);
-                    if(!generationSet.has(stringify(generation.tile.point))) {
-                        //rediscovered nodes shouldn't add a delay to visualization
-                        delay += baseIncrement;
-                    }
-                    generationSet.add(stringify(generation.tile.point));
+            let delay = 0;
+            this.generations = pathfinder.getRecentGenerations();
+            const generationSet = new HashSet(); //to keep track of rediscovered nodes
+            this.generations.forEach((generation) => {
+                const promise = new Promise<VirtualTimer>((resolve) => {
+                    //each generation gets a higher timeout
+                    const timeout = new VirtualTimer(() => {
+                        this.visualizeGenerationAndArrows(generation);
+                        resolve(timeout);
+                    }, delay);
+                    this.visualTimeouts.push(timeout);
                 });
-            }
+                promises.push(promise);
+                if(!generationSet.has(stringify(generation.tile.point))) {
+                    //rediscovered nodes shouldn't add a delay to visualization
+                    delay += baseIncrement;
+                }
+                generationSet.add(stringify(generation.tile.point));
+            });
             //call functions when timeouts finish
             Promise.all(promises).then(() => {
                 this.drawPath(path);

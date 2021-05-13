@@ -269,7 +269,7 @@ class GridBackground extends React.Component<IProps,IState>
         return (
             <div>
                 <div className='bg'>
-                    {this.props.settings.visualizeAlg ? this.renderViz() : []}
+                    {this.renderViz()}
                 </div>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
@@ -288,9 +288,7 @@ class GridBackground extends React.Component<IProps,IState>
                             <polygon points='0 0, 3 1.5, 0 3'/>
                         </marker>
                     </defs>
-                    {this.props.settings.showArrows &&
-                        this.props.settings.visualizeAlg &&
-                        PathfinderBuilder.usesBreadthTree(this.lastAlgo)?
+                    {this.props.settings.showArrows ?
                         this.renderArrows() :
                         []
                     }
