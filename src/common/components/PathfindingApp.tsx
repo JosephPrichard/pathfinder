@@ -12,7 +12,7 @@ import {
     HeuristicSettings, 
     SpeedSettings,
     VisualSettings
-} from './navbar/SettingPanels';
+} from './panel/SettingPanels';
 import DraggablePanel from './panel/DraggablePanel';
 import PathfindingVisualizer from './grid/PathfindingVisualizer';
 import PathfinderBuilder from '../pathfinding/algorithms/PathfinderBuilder';
@@ -24,6 +24,8 @@ import {
 } from '../pathfinding/algorithms/TerrainGeneratorBuilder';
 import Icon from '../../images/react.png';
 import AppSettings, {getDefaultSettings} from "../utils/AppSettings";
+import Tutorial, {KEY_SHOW} from './Tutorial';
+import {getTutorialPages} from './TutorialPages';
 
 interface IProps {}
 
@@ -73,23 +75,22 @@ class PathfindingApp extends React.Component<IProps, IState>
         this.tileWidth =  mobile ? 47 : Math.round(window.screen.availWidth / 57);
     }
 
+    windowOnResize = () => {
+        this.setState({
+            useIcon: this.useIcon()
+        });
+    }
+
     /**
      * Binds window listeners.
-     * One listener is to hide drop downs on click anywhere
-     * Other listener is to keep track of screen size to check if we show icon
+     * Listener is to keep track of screen size to check if we show icon
      */
     componentDidMount() {
-        window.addEventListener('click', () => {
-            this.algDropDown.current!.hide();
-            this.clrDropDown.current!.hide();
-            this.mazeDropDown.current!.hide();
-            this.tilesDropDown.current!.hide();
-        });
-        window.addEventListener('resize', () => {
-            this.setState({
-                useIcon: this.useIcon()
-            })
-        });
+        window.addEventListener('resize', this.windowOnResize);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.windowOnResize);
     }
 
     useIcon() {
@@ -296,6 +297,10 @@ class PathfindingApp extends React.Component<IProps, IState>
         }));
     }
 
+    showTutorial() {
+        localStorage.setItem(KEY_SHOW, 'false');
+    }
+
     render() {
         const title: string = 'Pathfinding Visualizer';
         const icon = this.state.useIcon ?
@@ -307,6 +312,9 @@ class PathfindingApp extends React.Component<IProps, IState>
             title;
         return (
             <div>
+                <Tutorial>
+                    {getTutorialPages()}
+                </Tutorial>
                 <DraggablePanel
                     title='Grid Settings'
                     show={this.state.panelShow}
@@ -341,14 +349,19 @@ class PathfindingApp extends React.Component<IProps, IState>
                     />
                 </DraggablePanel>
                 <TopBar>
-                    <a href='https://github.com/JosephPrichard/PathfinderReact' className='title'
+                    <span className='title'
+                       tabIndex={0}
                        style={{
                            width: this.state.useIcon ? 70 : 'auto',
                            height: this.state.useIcon ? 52 : '100%'
                        }}
+                       onClick={() => {
+                           this.showTutorial();
+                           window.location.reload();
+                       }}
                     >
                         {icon}
-                    </a>
+                    </span>
                     <div className='top-container'>
                         <AlgorithmDropDown
                             ref={this.algDropDown}

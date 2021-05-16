@@ -1,0 +1,155 @@
+.tutorial-panel {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 750px;
+    height: 550px;
+    background-color: rgb(250,250,250);
+    border-radius: 4px;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    z-index: 10;
+}
+
+.tutorial-link {
+    color: rgb(83,186,156);
+}
+
+.tutorial-link:hover {
+    color: rgb(123,226,196);
+}
+
+.tutorial-control-wrapper {
+    padding: 5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tutorial-button {
+    color: white;
+    vertical-align: top;
+    height: 48px;
+    width: 90px;
+    border: 0;
+    padding: 10px;
+    box-shadow: none;
+    border-radius: 6px;
+    margin: 0 10px 0 10px;
+    background-color: rgb(83,186,156);
+}
+
+.wider {
+    padding: 10px 25px;
+}
+
+.tutorial-button:focus {
+    outline: 5px auto -webkit-focus-ring-color;
+}
+
+.tutorial-button:hover {
+    background-color: rgb(103,206,176);
+}
+
+.tutorial-button:active {
+    background-color: rgb(63,166,136);
+}
+
+.content-top-wrapper {
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    height: 50px;
+}
+
+.content-top {
+    margin-left: auto;
+    margin-right: 30px;
+    color: rgb(40,40,40);
+}
+
+.content {
+    width: 100%;
+    height: 400px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.control-buttons {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.x-tutorial-button {
+    color: white;
+    position: absolute;
+    left: 100%;
+    transform: translate(-75%, -25%);
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: rgb(247,102,109);
+    width: 24px;
+    height: 24px;
+    display: table;
+}
+
+.x-tutorial-text {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.x-tutorial-button:hover {
+    background-color: rgb(255,122,129);
+}
+
+.x-tutorial-button:focus {
+    background-color: rgb(227,82,89);
+}
+
+.x-tutorial-button:active {
+    background-color: rgb(227,82,89);
+}
+
+.tutorial-title {
+    color: rgb(40,40,40);
+    font-size: 40px;
+    text-align: center;
+}
+
+.tutorial-text {
+    color: rgb(50,50,50);
+    font-size: 15px;
+    text-align: center;
+}
+
+.tutorial-subtext {
+    margin-top: 30px;
+    color: rgb(50,50,50);
+    font-size: 18px;
+    text-align: center;
+}
+
+.text-row {
+    padding: 5px;
+}
+
+.tutorial-img {
+    padding-top: 40px;
+    display: block;
+    margin: auto;
+}
+
+.tutorial-img-large {
+    padding-top: 15px;
+    display: block;
+    margin: auto;
+}

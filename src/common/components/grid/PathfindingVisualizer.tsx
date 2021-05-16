@@ -66,21 +66,30 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         }
     }
 
+    onWindowBlur = () => {
+        this.wasPaused = this.isPaused();
+        if(!this.wasPaused) {
+            this.pausePathfinding();
+        }
+    }
+
+    onWindowFocus = () => {
+        if(this.isPaused() && !this.wasPaused) {
+            this.resumePathfinding();
+        }
+    }
+
     /**
      * Automatically pause/resume the visualization when user alt tabs
      */
     componentDidMount() {
-        window.addEventListener('blur', () => {
-            this.wasPaused = this.isPaused();
-            if(!this.wasPaused) {
-                this.pausePathfinding();
-            }
-        });
-        window.addEventListener('focus', () => {
-            if(this.isPaused() && !this.wasPaused) {
-                this.resumePathfinding();
-            }
-        });
+        window.addEventListener('blur', this.onWindowBlur);
+        window.addEventListener('focus', this.onWindowFocus);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('blur', this.onWindowBlur);
+        window.removeEventListener('focus', this.onWindowFocus);
     }
 
     /**
@@ -338,6 +347,14 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         }
     }
 
+    calcEndPoint() {
+        const xEnd = Math.round(window.innerWidth / this.tileWidth);
+        const yEnd = Math.round((window.innerHeight - 30 - 75) / this.tileWidth);
+        return {
+            x: xEnd, y: yEnd
+        }
+    }
+
     resetPoints() {
         if(!this.visualizing) {
             this.foreground.current!.resetPoints();
@@ -375,16 +392,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         this.visualized = true;
     }
 
-    visualizeGeneration(generation: Node) {
-        this.background.current!.visualizeGeneration(generation);
-    }
-
     addArrowGenerations(generations: Node[]) {
         this.background.current!.addArrowGenerations(generations);
-    }
-
-    addArrowGeneration(generation: Node) {
-        this.background.current!.addArrowGeneration(generation);
     }
 
     visualizeGenerationAndArrows(generation: Node) {
@@ -416,11 +425,11 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                     />
                     <GridForeground
                         ref={this.foreground}
-                        topMargin={75}
                         onTilesDragged={() => this.onTilesDragged()}
                         tileSize={this.tileWidth}
                         tilesX={this.tilesX}
                         tilesY={this.tilesY}
+                        end={this.calcEndPoint()}
                     />
                 </div>
             </div>

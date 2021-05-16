@@ -111,6 +111,10 @@
     animation-play-state: running;
 }
 
+.tile-fg:hover {
+    filter: brightness(150%);
+}
+
 @keyframes tileFgAnimation {
     0% {
         transform: scale(.5);

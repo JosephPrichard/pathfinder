@@ -1,7 +1,7 @@
 import React from 'react';
-import Checkbox from '../panel/Checkbox';
-import SteppedRangeSlider from '../panel/SteppedRangeSlider';
-import RadioButtonGroup from '../panel/RadioButtonGroup';
+import Checkbox from './Checkbox';
+import SteppedRangeSlider from './SteppedRangeSlider';
+import RadioButtonGroup from './RadioButtonGroup';
 
 interface VisualProps {
     defaultShowArrows: boolean,
@@ -185,14 +185,19 @@ export class HeuristicSettings extends React.Component<HeuristicProps>
                         this.props.onClickChebyshev, this.props.onClickOctile
                     ]}
                 >
-                    {[
-                        <span key='Manhattan'>Manhattan</span>,
-                        <span key='Euclidean'>Euclidean</span>,
-                        <span key='Chebyshev'>Chebyshev</span>,
-                        <span key='Octile<'>Octile</span>
-                    ]}
+                    <span key='Manhattan'>Manhattan</span>
+                    <span key='Euclidean'>Euclidean</span>
+                    <span key='Chebyshev'>Chebyshev</span>
+                    <span key='Octile<'>Octile</span>
                 </RadioButtonGroup>
             </div>
         )
     }
 }
+
+// {[
+//     <span key='Manhattan'>Manhattan</span>,
+//     <span key='Euclidean'>Euclidean</span>,
+//     <span key='Chebyshev'>Chebyshev</span>,
+//     <span key='Octile<'>Octile</span>
+// ]}

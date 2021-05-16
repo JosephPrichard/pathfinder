@@ -10,7 +10,7 @@ interface IProps {
     tilesX: number,
     tilesY: number,
     onTilesDragged: () => void,
-    topMargin: number
+    end: Point
 }
 
 interface IState {
@@ -59,7 +59,7 @@ class GridForeground extends React.Component<IProps,IState>
         super(props);
         this.width = this.props.tilesX;
         this.height = this.props.tilesY;
-        const end = this.calcEndPointInView();
+        const end = this.props.end;
         this.tilePointer = createTileData(true);
         this.state = {
             grid: new RectGrid(this.width, this.height),
@@ -77,14 +77,6 @@ class GridForeground extends React.Component<IProps,IState>
 
     changeTile(data: TileData) {
         this.tilePointer = data;
-    }
-
-    calcEndPointInView() {
-        const xEnd = Math.round(window.innerWidth / this.props.tileSize);
-        const yEnd = Math.round((window.innerHeight - this.props.topMargin - 30) / this.props.tileSize);
-        return {
-            x: xEnd, y: yEnd
-        }
     }
 
     toggleDisable() {
@@ -316,7 +308,7 @@ class GridForeground extends React.Component<IProps,IState>
     resetPoints() {
         this.initialKey++;
         this.goalKey++;
-        const end = this.calcEndPointInView();
+        const end = this.props.end;
         this.setState({
             initial: {
                 x: ((end.x)/3) >> 0,
@@ -330,11 +322,11 @@ class GridForeground extends React.Component<IProps,IState>
     }
 
     render() {
-        // console.timeEnd('time');
-        // console.time('time');
         return (
             <div>
-                <div className='endpoint-tiles-table'>
+                <div className='endpoint-tiles-table'
+                    onMouseDown={() => console.log('test')}
+                >
                     {this.renderEndTile(this.state.initial, INITIAL_COLOR,'initial' + this.initialKey)}
                     {this.renderEndTile(this.state.goal, GOAL_COLOR,'goal' + this.goalKey)}
                 </div>

@@ -2,7 +2,6 @@ import React from 'react';
 import {Node} from '../../pathfinding/algorithms/Node';
 import {Point} from '../../pathfinding/core/Components';
 import AppSettings from "../../utils/AppSettings";
-import PathfinderBuilder from "../../pathfinding/algorithms/PathfinderBuilder";
 
 const CLOSED_NODE = 'rgb(198, 237, 238)';
 const OPEN_NODE = 'rgb(191, 248, 159)';
@@ -264,8 +263,6 @@ class GridBackground extends React.Component<IProps,IState>
     }
 
     render() {
-        // console.timeEnd('time');
-        // console.time('time');
         return (
             <div>
                 <div className='bg'>

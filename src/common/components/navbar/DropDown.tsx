@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface DropDownProps {
-    onClick: () => void,
+    onClick: () => void
 }
 
 export interface DropDownState {
@@ -15,6 +15,22 @@ abstract class DropDown<IProps extends DropDownProps, IState extends DropDownSta
 {
     protected constructor(props: IProps) {
         super(props);
+    }
+
+    windowOnClick = () => {
+        this.hide();
+    }
+
+    /**
+     * Binds window listeners.
+     * Hides the drop down if clicked anywhere else
+     */
+    componentDidMount() {
+        window.addEventListener('click', this.windowOnClick);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('click', this.windowOnClick);
     }
 
     show() {
