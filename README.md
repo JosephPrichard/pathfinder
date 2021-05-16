@@ -4,7 +4,7 @@ Educational grid based pathfinding tool and library.
 
 ## Introduction
 
-This project is an educational Grid based Pathfinding tool written in Typescript that visualizes pathfinding and maze generation algorithms on a web browser! You can find an online demo [here](https://josephprichard.github.io/PathfinderReact).
+This project is an educational Grid based Pathfinding tool written in Typescript that visualizes pathfinding and maze generation algorithms on a web browser! You can find an online demo [here](https://josephprichard.github.io/Pathfinder).
 
 This is is the react version of an older project I made: [here](https://github.com/JosephPrichard/PathfindingVisualizer)
 
@@ -29,7 +29,7 @@ npm run deploy
 
 ## Library
 
-The grid is based around 3 fundamental interfaces contained in ../core/Components
+The grid is based around 3 fundamental interfaces contained in ../pathfinding/core/Components
 
 Point, which represents an x,y location on the grid.
 TileData, which stores the solidity of a tile and the cost to travel to a tile if it isn't solid.
@@ -65,7 +65,7 @@ This project also contains Pathfinders which can find the best path (capable by 
 If we want to initialize a pathfinder we need to pass it a navigator.
 
 A navigator is a class that encapsulates the grid by determining what tiles we can travel to from a given point. The project
-contains two build in navigators, but you can make your own as long as they inherit from the abstract Navigator Class in ../core/Navigator.
+contains two build in navigators, but you can make your own as long as they inherit from the abstract Navigator Class in ../pathfinding/core/Navigator.
 
 If we wanted to initialize the "PlusNavigator" which allows movement in 4 directions (up,left,right,down) we can do so like:
 ```
@@ -89,7 +89,7 @@ const goal = {x: 4, y: 3};
 const path: Tile[] = pathfinder.findPath(initial, goal);
 ```
 
-The AStar algorithm uses the Manhattan distance heuristic by default but you can find other heuristics in ../pathfinding/Heuristics.
+The AStar algorithm uses the Manhattan distance heuristic by default but you can find other heuristics in ../pathfinding/algorithms/Heuristics.
 
 Lastly, we can randomly generate mazes with the TerrainMazeGenerator class:
 ```
