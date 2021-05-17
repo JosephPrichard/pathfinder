@@ -3,8 +3,8 @@ import {Point} from '../../pathfinding/core/Components';
 
 interface IProps {
     tileWidth: number,
-    tilesX: number,
-    tilesY: number
+    width: number,
+    height: number
 }
 
 /**
@@ -12,8 +12,6 @@ interface IProps {
  */
 class GridStaticTiles extends React.Component<IProps>
 {
-    private readonly width: number;
-    private readonly height: number;
     private readonly tileWidth: number;
 
     /**
@@ -22,14 +20,12 @@ class GridStaticTiles extends React.Component<IProps>
      */
     constructor(props: IProps) {
         super(props);
-        this.width = this.props.tilesX;
-        this.height = this.props.tilesY;
         this.tileWidth = this.props.tileWidth;
     }
 
-    //should only render once, and never again
-    componentDidUpdate() {
-        return false;
+    componentDidUpdate(prevProps: IProps) {
+        return this.props.width !== prevProps.width ||
+            this.props.height !== prevProps.height;
     }
 
     render() {
@@ -44,9 +40,9 @@ class GridStaticTiles extends React.Component<IProps>
 
     renderTiles() {
         const tiles: JSX.Element[][] = [];
-        for(let y = 0; y < this.height; y++) {
+        for(let y = 0; y < this.props.height; y++) {
             const row: JSX.Element[] = [];
-            for(let x = 0; x < this.width; x++) {
+            for(let x = 0; x < this.props.width; x++) {
                 const point = {
                     x: x, y: y
                 };

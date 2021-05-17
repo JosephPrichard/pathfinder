@@ -24,7 +24,9 @@ interface IState {
     length: number,
     cost: number,
     nodes: number,
-    algorithm: string
+    algorithm: string,
+    tilesX: number,
+    tilesY: number
 }
 
 /**
@@ -46,24 +48,35 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
 
     private mazeTile: TileData = createTileData(true);
 
-    private readonly tilesX: number;
-    private readonly tilesY: number;
     private readonly tileWidth: number
 
     constructor(props: IProps) {
         super(props);
-        const w = window.screen.availWidth - (window.outerWidth - window.innerWidth);
-        const h = window.screen.availHeight - (window.outerHeight - window.innerHeight);
+        const w = document.documentElement.clientWidth;
+        const h = document.documentElement.clientHeight;
         this.tileWidth = this.props.tileWidth;
-        this.tilesX = Math.floor(w / this.tileWidth) + 1;
-        this.tilesY = Math.floor((h - 75 - 30) / this.tileWidth) + 1;
+        const tilesX = Math.floor(w / this.tileWidth) + 1;
+        const tilesY = Math.floor((h - 75 - 30) / this.tileWidth) + 1;
         this.state = {
             time: -1,
             length: -1,
             cost: -1,
             nodes: -1,
-            algorithm: ''
+            algorithm: '',
+            tilesX: tilesX,
+            tilesY: tilesY
         }
+    }
+
+    onWindowResize = () => {
+        const w = document.documentElement.clientWidth;
+        const h = document.documentElement.clientHeight;
+        const tilesX = Math.floor(w / this.tileWidth) + 1;
+        const tilesY = Math.floor((h - 75 - 30) / this.tileWidth) + 1;
+        this.setState(prevState => ({
+            tilesX: prevState.tilesX < tilesX ? tilesX : prevState.tilesX,
+            tilesY: prevState.tilesY < tilesY ? tilesY : prevState.tilesY
+        }));
     }
 
     onWindowBlur = () => {
@@ -83,6 +96,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
      * Automatically pause/resume the visualization when user alt tabs
      */
     componentDidMount() {
+        window.addEventListener('resize', this.onWindowResize);
         window.addEventListener('blur', this.onWindowBlur);
         window.addEventListener('focus', this.onWindowFocus);
     }
@@ -103,13 +117,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     shouldComponentUpdate(nextProps: Readonly<IProps>, nextState: Readonly<IState>) {
         const prevState = this.state;
         const prevProps = this.props;
-        return prevProps.settings.showArrows !== nextProps.settings.showArrows ||
-            prevProps.settings.showScores !== nextProps.settings.showScores ||
-            prevState.time !== nextState.time ||
-            prevState.length !== nextState.length ||
-            prevState.cost !== nextState.cost ||
-            prevState.nodes !== nextState.nodes ||
-            prevState.algorithm !== nextState.algorithm;
+        return JSON.stringify(prevState) !== JSON.stringify(nextState) ||
+            JSON.stringify(prevProps) !== JSON.stringify(nextProps);
     }
 
     changeTile(data: TileData) {
@@ -165,7 +174,6 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     doDelayedPathfinding() {
         const settings = this.props.settings;
         const background = this.background.current!;
-        background.setLastAlgo(settings.algorithm)
         background.enableAnimations();
         this.paused = false;
         this.clearVisualization();
@@ -328,19 +336,20 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
      * Used to calculate the terrain dimensions
      */
     calcEndPointInView() {
-        const xEnd = window.innerWidth / this.tileWidth;
-        const yEnd = (window.innerHeight - 75 - 30) / this.tileWidth;
+        const end = this.calcEndPoint();
+        const xEnd = end.x;
+        const yEnd = end.y;
         const xFloor = Math.floor(xEnd);
         const yFloor = Math.floor(yEnd);
         const xDecimal = xEnd - xFloor;
         const yDecimal = yEnd - yFloor;
         let x = xDecimal > 0.05 ? Math.ceil(xEnd) : xFloor;
         let y = yDecimal > 0.05 ? Math.ceil(yEnd) : yFloor;
-        if(x > this.tilesX) {
-            x = this.tilesX
+        if(x > this.state.tilesX) {
+            x = this.state.tilesX
         }
-        if(y > this.tilesY) {
-            y = this.tilesY
+        if(y > this.state.tilesY) {
+            y = this.state.tilesY
         }
         return {
             x: x, y: y
@@ -348,8 +357,8 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     }
 
     calcEndPoint() {
-        const xEnd = Math.round(window.innerWidth / this.tileWidth);
-        const yEnd = Math.round((window.innerHeight - 30 - 75) / this.tileWidth);
+        const xEnd = Math.round(document.documentElement.clientWidth / this.tileWidth);
+        const yEnd = Math.round((document.documentElement.clientHeight - 30 - 75) / this.tileWidth);
         return {
             x: xEnd, y: yEnd
         }
@@ -413,22 +422,22 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                 <div>
                     <GridStaticTiles
                         tileWidth={this.tileWidth}
-                        tilesX={this.tilesX}
-                        tilesY={this.tilesY}
+                        width={this.state.tilesX}
+                        height={this.state.tilesY}
                     />
                     <GridBackground
                         ref={this.background}
                         settings={this.props.settings}
                         tileWidth={this.tileWidth}
-                        tilesX={this.tilesX}
-                        tilesY={this.tilesY}
+                        width={this.state.tilesX}
+                        height={this.state.tilesY}
                     />
                     <GridForeground
                         ref={this.foreground}
                         onTilesDragged={() => this.onTilesDragged()}
                         tileSize={this.tileWidth}
-                        tilesX={this.tilesX}
-                        tilesY={this.tilesY}
+                        width={this.state.tilesX}
+                        height={this.state.tilesY}
                         end={this.calcEndPoint()}
                     />
                 </div>

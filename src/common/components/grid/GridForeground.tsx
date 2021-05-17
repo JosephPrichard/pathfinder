@@ -7,8 +7,8 @@ import WeightFg from './WeightFg';
 
 interface IProps {
     tileSize: number,
-    tilesX: number,
-    tilesY: number,
+    width: number,
+    height: number,
     onTilesDragged: () => void,
     end: Point
 }
@@ -45,9 +45,6 @@ class GridForeground extends React.Component<IProps,IState>
 
     private doTileAnimation: boolean = true;
 
-    private readonly width: number;
-    private readonly height: number;
-
     private initialKey: number = 0;
     private goalKey: number = 0;
 
@@ -57,12 +54,10 @@ class GridForeground extends React.Component<IProps,IState>
      */
     constructor(props: IProps) {
         super(props);
-        this.width = this.props.tilesX;
-        this.height = this.props.tilesY;
         const end = this.props.end;
         this.tilePointer = createTileData(true);
         this.state = {
-            grid: new RectGrid(this.width, this.height),
+            grid: new RectGrid(this.props.width, this.props.height),
             path: [],
             initial: {
                 x: ((end.x)/3) >> 0,
@@ -72,6 +67,16 @@ class GridForeground extends React.Component<IProps,IState>
                 x: ((2*(end.x)/3) >> 0) - 1,
                 y: ((2*(end.y)/3) >> 0) - 1
             }
+        }
+    }
+
+    componentDidUpdate(prevProps: IProps) {
+        if(this.props.width !== prevProps.width
+            || this.props.height !== prevProps.height)
+        {
+            this.setState(prevState => ({
+                grid: prevState.grid.cloneNewSize(this.props.width, this.props.height)
+            }));
         }
     }
 
@@ -222,8 +227,8 @@ class GridForeground extends React.Component<IProps,IState>
      */
     clearTiles() {
         const grid = this.state.grid.clone();
-        for(let y = 0; y < this.height; y++) {
-            for(let x = 0; x < this.width; x++) {
+        for(let y = 0; y < this.state.grid.getHeight(); y++) {
+            for(let x = 0; x < this.state.grid.getWidth(); x++) {
                 const point = {
                     x: x, y: y
                 }
@@ -404,8 +409,8 @@ class GridForeground extends React.Component<IProps,IState>
 
     renderTilesTable() {
         const tiles: JSX.Element[] = [];
-        for(let y = 0; y < this.height; y++) {
-            for(let x = 0; x < this.width; x++) {
+        for(let y = 0; y < this.state.grid.getHeight(); y++) {
+            for(let x = 0; x < this.state.grid.getWidth(); x++) {
                 const point = {
                     x: x, y: y
                 }

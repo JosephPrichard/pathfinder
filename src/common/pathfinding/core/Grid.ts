@@ -14,7 +14,8 @@ export interface Grid
     getJson(): string;
     walkable(point: Point): boolean;
     isEmpty(point: Point): boolean;
-    clone(): Grid;
+    clone(): Grid,
+    cloneNewSize(width: number, height: number): Grid;
 }
 
 /**
@@ -154,6 +155,21 @@ class RectGrid implements Grid
                     x: x, y: y
                 }
                 grid.mutateTile(this.get(point));
+            }
+        }
+        return grid;
+    }
+
+    cloneNewSize(width: number, height: number) {
+        const grid = new RectGrid(width, height);
+        for(let y = 0; y < grid.height; y++) {
+            for(let x = 0; x < grid.width; x++) {
+                const point = {
+                    x: x, y: y
+                }
+                if(this.inBounds(point)) {
+                    grid.mutateTile(this.get(point));
+                }
             }
         }
         return grid;

@@ -26,10 +26,11 @@ interface Arrow {
 interface IProps {
     settings: AppSettings,
     tileWidth: number,
-    tilesX: number,
-    tilesY: number
+    width: number,
+    height: number
 }
 
+//scores and visualization are parallel arrays
 interface IState {
     visualization: string[][],
     scores: Score[][],
@@ -42,13 +43,9 @@ interface IState {
  */
 class GridBackground extends React.Component<IProps,IState>
 {
-    private readonly width: number;
-    private readonly height: number;
     private readonly tileWidth: number;
 
     private tileClass: string = TILE_CLASS;
-
-    private lastAlgo: string = '';
 
     /**
      * Constructs a GridBackground with immutable height and width
@@ -56,8 +53,6 @@ class GridBackground extends React.Component<IProps,IState>
      */
     constructor(props: IProps) {
         super(props);
-        this.width = this.props.tilesX;
-        this.height = this.props.tilesY;
         this.tileWidth = this.props.tileWidth;
         this.state = {
             visualization: this.createEmptyViz(),
@@ -66,8 +61,25 @@ class GridBackground extends React.Component<IProps,IState>
         }
     }
 
-    setLastAlgo(lastAlgo: string) {
-        this.lastAlgo = lastAlgo;
+    componentDidUpdate(prevProps: Readonly<IProps>) {
+        if(this.props.width !== prevProps.width
+            || this.props.height !== prevProps.height)
+        {
+            const visualization: string[][] = this.createEmptyViz();
+            const scores: Score[][] = this.createEmptyScores();
+            for(let y = 0; y < this.props.height; y++) {
+                for(let x = 0; x < this.props.width; x++) {
+                    if(y < prevProps.height && x < prevProps.width) {
+                        visualization[y][x] = this.state.visualization[y][x];
+                        scores[y][x] = this.state.scores[y][x];
+                    }
+                }
+            }
+            this.setState({
+                visualization: visualization,
+                scores: scores
+            });
+        }
     }
 
     /**
@@ -75,9 +87,9 @@ class GridBackground extends React.Component<IProps,IState>
      */
     createEmptyViz() {
         const visualization: string[][] = [];
-        for(let y = 0; y < this.height; y++) {
+        for(let y = 0; y < this.props.height; y++) {
             const row: string[] = [];
-            for(let x = 0; x < this.width; x++) {
+            for(let x = 0; x < this.props.width; x++) {
                 row.push(EMPTY_NODE);
             }
             visualization.push(row);
@@ -90,14 +102,10 @@ class GridBackground extends React.Component<IProps,IState>
      */
     createEmptyScores() {
         const scores: Score[][] = [];
-        for(let y = 0; y < this.height; y++) {
+        for(let y = 0; y < this.props.height; y++) {
             const row: Score[] = [];
-            for(let x = 0; x < this.width; x++) {
-                row.push({
-                    f: -1,
-                    g: -1,
-                    h: -1
-                });
+            for(let x = 0; x < this.props.width; x++) {
+                row.push(nullScore());
             }
             scores.push(row);
         }
@@ -328,15 +336,16 @@ class GridBackground extends React.Component<IProps,IState>
 
     renderViz() {
         const tiles: JSX.Element[][] = [];
-        for(let y = 0; y < this.height; y++) {
+        for(let y = 0; y < this.props.height; y++) {
             const row: JSX.Element[] = [];
-            for(let x = 0; x < this.width; x++) {
-                const point = {
-                    x: x, y: y
-                };
-                const viz = this.state.visualization[point.y][point.x];
-                const score = this.state.scores[point.y][point.x];
+            for(let x = 0; x < this.props.width; x++) {
+                const inBounds = (this.state.visualization[y]||[])[x] !== undefined;
+                const viz = inBounds ? this.state.visualization[y][x] : EMPTY_NODE;
+                const score = inBounds ? this.state.scores[y][x] : nullScore();
                 if(viz !== EMPTY_NODE) {
+                    const point = {
+                        x: x, y: y
+                    };
                     row.push(
                         this.renderTile(point, viz, score)
                     );
@@ -359,13 +368,12 @@ class GridBackground extends React.Component<IProps,IState>
             left: left,
             fontSize: 10 * width/BASE_WIDTH
         };
-        const text = this.props.settings.showScores ?
+        const text = this.props.settings.showScores &&
             <div key={point.x + ',' + point.y + 'score'}>
                 <div className='f-text'>
                     {score.f === -1 ? '' : score.f}
                 </div>
-            </div> :
-            ''
+            </div>;
         return (
             <div
                 key={point.x + ',' + point.y}
@@ -386,6 +394,14 @@ function clone<T>(array: T[][]) {
 
 function pointsEqual(point1: Point, point2: Point) {
     return point1.x === point2.x && point1.y === point2.y;
+}
+
+function nullScore() {
+    return {
+        f: -1,
+        g: -1,
+        h: -1
+    }
 }
 
 export default GridBackground;

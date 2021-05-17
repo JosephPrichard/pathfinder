@@ -87,3 +87,51 @@
 .settings-general {
     display: block;
 }
+
+.button-range-wrapper {
+    border-radius: 6px;
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: 2px;
+}
+
+.range-button {
+    vertical-align: top;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    display: inline-block;
+    color: darkblue;
+    width: 30px;
+    height: 30px;
+}
+
+.range-button:hover {
+    border-radius: 6px;
+    background-color: rgb(240,240,240)
+}
+
+.range-button:active {
+    border-radius: 6px;
+    background-color: rgb(230,230,230)
+}
+
+.minus {
+    margin-right: 5px;
+}
+
+.plus {
+    margin-left: 5px;
+}
+
+.range-button:focus {
+    outline: 5px auto darkgrey;
+}
+
+.range-value {
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+    display: inline-block;
+    color: black;
+}

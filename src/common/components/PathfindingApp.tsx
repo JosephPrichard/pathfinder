@@ -402,14 +402,15 @@ class PathfindingApp extends React.Component<IProps, IState>
                     ref={this.visualizer}
                     onChangeVisualizing={(viz: boolean) => this.changeVButtonColor(viz)}
                     settings={this.state.settings}
-                    tileWidth={this.tileWidth}/>
+                    tileWidth={this.tileWidth}
+                />
             </div>
         );
     }
 }
 
 function isMobile() {
-    return /Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
 export default PathfindingApp;

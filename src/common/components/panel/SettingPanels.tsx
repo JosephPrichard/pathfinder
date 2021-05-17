@@ -1,7 +1,7 @@
 import React from 'react';
 import Checkbox from './Checkbox';
-import SteppedRangeSlider from './SteppedRangeSlider';
 import RadioButtonGroup from './RadioButtonGroup';
+import SteppedButtonRange from './SteppedButtonRange';
 
 interface VisualProps {
     defaultShowArrows: boolean,
@@ -15,10 +15,6 @@ interface VisualProps {
 interface SpeedProps {
     onChange: (value: number) => void,
     initialSpeed: number
-}
-
-interface SpeedState {
-    speedText: string
 }
 
 interface AlgorithmProps {
@@ -37,8 +33,8 @@ interface HeuristicProps {
 }
 
 const SPEED_STEP = 5;
-const SPEED_INITIAL = 10;
-const MAX = 20;
+const SPEED_MIN = 10;
+const SPEED_MAX = 110;
 
 export class VisualSettings extends React.Component<VisualProps>
 {
@@ -67,7 +63,7 @@ export class VisualSettings extends React.Component<VisualProps>
     }
 }
 
-export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
+export class SpeedSettings extends React.Component<SpeedProps>
 {
     constructor(props: SpeedProps) {
         super(props);
@@ -82,34 +78,23 @@ export class SpeedSettings extends React.Component<SpeedProps, SpeedState>
      * @param value
      */
     onChangeSpeed(value: number) {
-        const speed = SPEED_INITIAL + SPEED_STEP * value;
-        this.setState({
-            speedText: String(speed)
-        })
-        this.props.onChange(speed);
+        this.props.onChange(value);
     }
 
     render() {
-        const options: JSX.Element[] = [];
-        for(let i = 1; i <= MAX; i++) {
-            options.push(<option key={'option ' + i}>{i}</option>);
-        }
         return (
             <div className='slider-container'>
                 <div className='slider-text'>
-                    Speed: <div className='speed-text'> {this.state.speedText} </div>
+                    Speed
                 </div>
-                <SteppedRangeSlider
-                    min={1}
-                    max={MAX}
-                    step={1}
-                    default={(this.props.initialSpeed - SPEED_INITIAL) / SPEED_STEP}
+                <SteppedButtonRange
+                    min={SPEED_MIN}
+                    max={SPEED_MAX}
+                    step={SPEED_STEP}
+                    default={this.props.initialSpeed}
                     sliderStyle='slider speed-slider'
                     onChange={(value: number) => this.onChangeSpeed(value)}
                 />
-                <datalist id='step-list'>
-                    {options}
-                </datalist>
             </div>
         );
     }
