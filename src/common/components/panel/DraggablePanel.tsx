@@ -35,22 +35,26 @@ class DraggablePanel extends React.Component<IProps, IState>
 
     componentDidMount() {
         //mouse
-        document.addEventListener('mouseup', e => {
-            this.mouseUp(e);
-        });
-        document.addEventListener('mousemove', e => {
-            this.mouseMove(e);
-        });
-        window.addEventListener('mouseleave', e => {
-            this.mouseUp(e);
-        });
+        document.addEventListener('mouseup', this.mouseUp);
+        document.addEventListener('mousemove', this.mouseMove);
+        window.addEventListener('mouseleave', this.mouseUp);
         //touch
-        document.addEventListener('touchend', () => {
-            this.dragging = false;
-        });
-        document.addEventListener('touchmove', e => {
-            this.touchMove(e);
-        });
+        document.addEventListener('touchend', this.stopDrag);
+        document.addEventListener('touchmove', this.touchMove);
+    }
+
+    componentWillUnmount() {
+        //mouse
+        document.removeEventListener('mouseup', this.mouseUp);
+        document.removeEventListener('mousemove', this.mouseMove);
+        window.removeEventListener('mouseleave', this.mouseUp);
+        //touch
+        document.removeEventListener('touchend', this.stopDrag);
+        document.removeEventListener('touchmove', this.touchMove);
+    }
+
+    stopDrag = () => {
+        this.dragging = false;
     }
 
     /**
