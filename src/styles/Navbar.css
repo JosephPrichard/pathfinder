@@ -1,9 +1,3 @@
-.top-container {
-    display: inline-block;
-    vertical-align: center;
-    height: 100%;
-}
-
 .title {
     display: inline-block;
     vertical-align: center;
@@ -13,6 +7,12 @@
     font-size: 28px;
     margin: auto 80px auto 80px;
     white-space: nowrap;
+    font-weight: 600;
+}
+
+.title:hover{
+    color: rgb(112,208,125);
+    cursor: pointer;
 }
 
 .icon {
@@ -35,14 +35,39 @@
 }
 
 .button {
-    vertical-align: top;
+    font-weight: 600;
     height: 48px;
     border: 0;
-    padding: 10px;
-    background: none;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 0;
+    background: transparent;
+    color: white;
     box-shadow: none;
     border-radius: 6px;
+    margin: 0 20px 0 20px;
+}
+
+.special-button {
+    font-weight: 600;
+    vertical-align: top;
+    border: 0;
+    padding: 10px;
+    background: transparent;
+    color: white;
+    box-shadow: none;
+    border-radius: 0;
     margin: 0 10px 0 10px;
+    height: 75px;
+}
+
+.special-button:hover {
+    background-color: rgb(112,208,125);
+}
+
+.special-button:active {
+    background-color: rgb(72,168,85);
 }
 
 .button:focus {
@@ -60,17 +85,17 @@
 }
 
 .viz-button {
-    width: 94px;
+    width: 96px;
 }
 
 .half-viz-button {
-    width: 47px;
+    width: 48px;
 }
 
 .half-button-wrapper {
     display: inline-block;
     vertical-align: top;
-    margin: 0 10px 0 10px;
+    margin: 0 20px 0 20px;
     padding: 0;
 }
 
@@ -96,7 +121,9 @@
 .drop-down {
     position: relative;
     display: inline-block;
-    margin: 0 10px 0 10px;
+    height: 75px;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .drop-down:focus {
@@ -113,13 +140,15 @@
         margin: auto 10px auto 20px;
     }
     .button {
-        margin: 10px;
+        margin-right: 10px;
+        margin-left: 10px;
     }
     .half-button-wrapper {
         margin: 10px;
     }
     .drop-down{
-        margin: 10px;
+        margin-right: 10px;
+        margin-left: 10px;
     }
 }
 
@@ -128,7 +157,8 @@
         padding: 10px;
     }
     .button {
-        margin: 5px;
+        margin-right: 5px;
+        margin-left: 5px;
     }
     .half-button-wrapper {
         margin: 5px;
@@ -137,8 +167,9 @@
         width: 25px;
         height: 25px
     }
-    .drop-down{
-        margin: 5px;
+    .drop-down {
+        margin-right: 5px;
+        margin-left: 5px;
     }
     .title {
         font-size: 24px;
@@ -147,37 +178,58 @@
     }
 }
 
-.title:hover {
-    color: white;
-    cursor: pointer;
-}
-
 .drop-down-text {
     display: inline-block;
-    width: 105px;
-    margin-right: 5px;
 }
 
 .drop-down-button {
+    font-weight: 600;
     display: inline-block;
-    color: black;
-    background-color: white;
-    border-radius: 6px;
-    padding: 10px 10px 10px 15px;
-    width: 155px;
-    height: 48px;
+    color: white;
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0 15px 0 15px;
+    vertical-align: middle;
+    height: 100%;
+}
+
+.drop-down-button-wrapper {
+    margin: auto;
+    display: inline-block;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.drop-down-button-up:hover {
+    background-color: rgb(112,208,125);
+}
+
+@keyframes fadeDownLight {
+    0% {
+        background-color: transparent;
+    }
+    100% {
+        background-color: rgb(112,208,125);
+    }
+}
+
+.drop-down-button-down {
+    background-color: rgb(112,208,125);
 }
 
 .drop-down-content {
     display: none;
     position: absolute;
-    background-color: white;
+    background-color: rgb(54,58,64);
     min-width: 200px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1);
     z-index: 8;
     padding: 5px 0 10px 0;
-    border-radius: 3px;
+    border-radius: 6px;
     font-size: 16px;
+    margin-top: 10px;
 }
 
 .fade-in {
@@ -199,84 +251,44 @@
 }
 
 .drop-down-content div {
-    color: black;
+    color: #E4E6E7;
     padding: 2px 20px 2px;
     text-decoration: none;
     display: block;
+    border-radius: 4px;
 }
 
 .drop-down-content div:hover {
-    background-color: rgb(240,240,240);
+    background-color: rgb(87,183,100);
     cursor: pointer;
 }
 
 .drop-down-content div:active {
-    background-color: rgb(225,225,225);
     cursor: pointer;
 }
 
 .drop-down-button:hover {
     cursor: pointer;
-    background-color: rgb(225,225,225);
 }
 
 .drop-down-button:active {
     cursor: pointer;
-    background-color: rgb(210,210,210);
 }
 
-.alg-drop-down {
-    width: 155px;
-}
-
-.clr-drop-down-text {
-    display: inline-block;
-    width: 60px;
+.drop-down-text {
+    margin-right: 15px;
 }
 
 .clr-drop-down-content {
     min-width: 140px;
 }
 
-.clr-drop-down-button {
-    width: 110px;
-    background-color: rgb(227,62,69);
-    color: white;
-}
-
-.clr-drop-down-button:hover {
-    cursor: pointer;
-    background-color: rgb(237,72,79);
-}
-
-.clr-drop-down-button:active {
-    cursor: pointer;
-    background-color: rgb(217,52,59);
-}
-
-.tiles-drop-down-text {
-    display: inline-block;
-    width: 90px;
-}
-
 .tiles-drop-down-content {
-    min-width: 140px;
+    min-width: 130px;
 }
 
-.tiles-drop-down-button {
-    width: 140px;
-    background-color: rgb(135,95,154);
-    color: white;
-}
-
-.tiles-drop-down-button:hover {
-    cursor: pointer;
-    background-color: rgb(145,105,164);
-}
-
-.tiles-drop-down-button:active {
-    cursor: pointer;
-    background-color: rgb(125,85,144);
+.maze-drop-down-content {
+    min-width: 220px;
 }
 
 .red-button {
@@ -294,33 +306,8 @@
     background-color: rgb(217,52,59);
 }
 
-.maze-drop-down-text {
-    display: inline-block;
-    width: 70px;
-}
-
-.maze-drop-down-content {
-    min-width: 220px;
-}
-
-.maze-drop-down-button {
-    width: 120px;
-    background-color: rgb(219,173,19);
-    color: white;
-}
-
-.maze-drop-down-button:hover {
-    cursor: pointer;
-    background-color: rgb(229,183,29);
-}
-
-.maze-drop-down-button:active {
-    cursor: pointer;
-    background-color: rgb(209,163,9);
-}
-
 .arrowUp {
-    border: solid black;
+    border-style: solid;
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
@@ -331,29 +318,7 @@
 }
 
 .arrowDown {
-    border: solid black;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-    transition-duration: 0.2s;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    -webkit-animation-duration: 500ms;
-}
-
-.arrowUpW {
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    display: inline-block;
-    padding: 3px;
-    transition-duration: 0.2s;
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    -webkit-animation-duration: 500ms;
-}
-
-.arrowDownW {
-    border: solid white;
+    border-style: solid;
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
@@ -364,16 +329,16 @@
 }
 
 .green-button {
-    background-color: rgb(112,182,92);
+    background-color: rgb(87,183,100);
     color: white;
 }
 
 .green-button:hover{
-    background-color: rgb(131,213,104);
+    background-color: rgb(117,213,130);
 }
 
 .green-button:active {
-    background-color: rgb(102,172,82);
+    background-color: rgb(77,173,90);
 }
 
 .settings-button {
@@ -387,19 +352,6 @@
 
 .settings-button:active {
     background-color: rgb(62,110,178);
-}
-
-.coin-button {
-    background-color: rgb(135,95,154);
-    color: white;
-}
-
-.coin-button:hover{
-    background-color: rgb(145,105,164);
-}
-
-.coin-button:active {
-    background-color: rgb(125,85,144);
 }
 
 @media only screen and (max-device-width: 550px) {
@@ -420,29 +372,6 @@
 .box {
     margin-left: 10px;
     margin-right: 10px;
-}
-
-.slider-text {
-    display: inline-block;
-    margin-right: 15px;
-}
-
-.slider-container {
-    display:flex;
-    flex-direction:row;
-    align-items:center;
-    margin-top: 10px;
-    margin-left: 10px;
-}
-
-.slider {
-    width: 50%;
-}
-
-.speed-text {
-    display: inline-block;
-    width: 30px;
-    color: black;
 }
 
 @media only screen and (max-width: 1130px) {

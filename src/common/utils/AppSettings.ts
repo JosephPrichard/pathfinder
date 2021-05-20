@@ -12,7 +12,7 @@ interface AppSettings
 export function getDefaultSettings(): AppSettings {
     return {
         showArrows: true,
-        delayInc: 25,
+        delayInc: 30,
         algorithm: 'a*',
         heuristicKey: 'manhattan',
         navigatorKey: 'plus',

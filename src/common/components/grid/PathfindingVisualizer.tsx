@@ -1,8 +1,8 @@
 import React, {RefObject} from 'react';
-import GridBackground from './GridBackground';
+import GridVisualization from './GridVisualization';
 import GridForeground from './GridForeground';
 import StatsPanel from './StatsPanel';
-import GridStaticTiles from './GridStaticTiles';
+import GridBackground from './GridBackground';
 import {Node} from '../../pathfinding/algorithms/Node';
 import PathfinderBuilder from '../../pathfinding/algorithms/PathfinderBuilder';
 import Pathfinder from '../../pathfinding/algorithms/Pathfinder';
@@ -36,7 +36,7 @@ interface IState {
 class PathfindingVisualizer extends React.Component<IProps,IState>
 {
     //references to expose background and foreground grids to parent
-    private background: RefObject<GridBackground> = React.createRef();
+    private background: RefObject<GridVisualization> = React.createRef();
     private foreground: RefObject<GridForeground> = React.createRef();
 
     private visualized = false;
@@ -102,6 +102,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     }
 
     componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize);
         window.removeEventListener('blur', this.onWindowBlur);
         window.removeEventListener('focus', this.onWindowFocus);
     }
@@ -420,12 +421,12 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
                     nodes={this.state.nodes}
                 />
                 <div>
-                    <GridStaticTiles
+                    <GridBackground
                         tileWidth={this.tileWidth}
                         width={this.state.tilesX}
                         height={this.state.tilesY}
                     />
-                    <GridBackground
+                    <GridVisualization
                         ref={this.background}
                         settings={this.props.settings}
                         tileWidth={this.tileWidth}

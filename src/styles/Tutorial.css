@@ -14,11 +14,11 @@
 }
 
 .tutorial-link {
-    color: rgb(83,186,156);
+    color: rgb(87,183,100);
 }
 
 .tutorial-link:hover {
-    color: rgb(123,226,196);
+    color: rgb(117,213,130);
 }
 
 .tutorial-control-wrapper {
@@ -30,14 +30,15 @@
 .tutorial-button {
     color: white;
     vertical-align: top;
-    height: 48px;
+    height: 43px;
     width: 90px;
     border: 0;
-    padding: 10px;
+    padding: 5px;
     box-shadow: none;
     border-radius: 6px;
     margin: 0 10px 0 10px;
-    background-color: rgb(83,186,156);
+    font-weight: 600;
+    font-size: 18px;
 }
 
 .wider {
@@ -46,14 +47,6 @@
 
 .tutorial-button:focus {
     outline: 5px auto -webkit-focus-ring-color;
-}
-
-.tutorial-button:hover {
-    background-color: rgb(103,206,176);
-}
-
-.tutorial-button:active {
-    background-color: rgb(63,166,136);
 }
 
 .content-top-wrapper {

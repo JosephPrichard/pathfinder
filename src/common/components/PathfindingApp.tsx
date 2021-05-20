@@ -6,7 +6,7 @@ import {
     ClearDropDown,
     MazeDropDown,
     TilesDropDown
-} from './navbar/DropDownComponents';
+} from './navbar/DropDowns';
 import {
     AlgorithmSettings,
     HeuristicSettings, 
@@ -349,54 +349,53 @@ class PathfindingApp extends React.Component<IProps, IState>
                     />
                 </DraggablePanel>
                 <TopBar>
-                    <span className='title'
-                       tabIndex={0}
-                       style={{
-                           width: this.state.useIcon ? 70 : 'auto',
-                           height: this.state.useIcon ? 52 : '100%'
-                       }}
-                       onClick={() => {
-                           this.showTutorial();
-                           window.location.reload();
-                       }}
+                    <div
+                        className='title'
+                        tabIndex={0}
+                        style={{
+                            width: this.state.useIcon ? 70 : 'auto',
+                            height: this.state.useIcon ? 52 : '100%'
+                        }}
+                        onClick={() => {
+                            this.showTutorial();
+                            window.location.reload();
+                        }}
                     >
                         {icon}
-                    </span>
-                    <div className='top-container'>
-                        <AlgorithmDropDown
-                            ref={this.algDropDown}
-                            onClick={() => this.onClickAlgDrop()}
-                            onChange={(alg: string) => this.changeAlgo(alg)}
-                        />
-                        <VisualizeButton
-                            active={this.state.visualizing}
-                            paused={this.state.paused}
-                            onPause={() => this.pausePathfinding()}
-                            onResume={() => this.resumePathfinding()}
-                            onStartStop={() => this.doPathfinding()}
-                        />
-                        <ClearDropDown
-                            ref={this.clrDropDown}
-                            onClick={() => this.onClickClrDrop()}
-                            onClickTiles={() => this.clearTiles()}
-                            onClickPath={() => this.clearPath()}
-                            onClickReset={() => this.resetBoard()}
-                        />
-                        <TilesDropDown
-                            ref={this.tilesDropDown}
-                            onClick={() => this.onClickTilesDrop()}
-                            onClickTileType={(cost: number) => this.changeTile(cost)}
-                        />
-                        <MazeDropDown
-                            ref={this.mazeDropDown}
-                            onClick={() => this.onClickMazeDrop()}
-                            onClickMaze={() => this.createMaze()}
-                            onClickMazeHorizontal={() => this.createMazeHSkew()}
-                            onClickMazeVertical={() => this.createMazeVSkew()}
-                            onClickRandomTerrain={() => this.createRandomTerrain()}
-                        />
-                        <SettingsButton onClick={() => this.toggleSettings()}/>
                     </div>
+                    <AlgorithmDropDown
+                        ref={this.algDropDown}
+                        onClick={() => this.onClickAlgDrop()}
+                        onChange={(alg: string) => this.changeAlgo(alg)}
+                    />
+                    <MazeDropDown
+                        ref={this.mazeDropDown}
+                        onClick={() => this.onClickMazeDrop()}
+                        onClickMaze={() => this.createMaze()}
+                        onClickMazeHorizontal={() => this.createMazeHSkew()}
+                        onClickMazeVertical={() => this.createMazeVSkew()}
+                        onClickRandomTerrain={() => this.createRandomTerrain()}
+                    />
+                    <VisualizeButton
+                        active={this.state.visualizing}
+                        paused={this.state.paused}
+                        onPause={() => this.pausePathfinding()}
+                        onResume={() => this.resumePathfinding()}
+                        onStartStop={() => this.doPathfinding()}
+                    />
+                    <ClearDropDown
+                        ref={this.clrDropDown}
+                        onClick={() => this.onClickClrDrop()}
+                        onClickTiles={() => this.clearTiles()}
+                        onClickPath={() => this.clearPath()}
+                        onClickReset={() => this.resetBoard()}
+                    />
+                    <TilesDropDown
+                        ref={this.tilesDropDown}
+                        onClick={() => this.onClickTilesDrop()}
+                        onClickTileType={(cost: number) => this.changeTile(cost)}
+                    />
+                    <SettingsButton onClick={() => this.toggleSettings()}/>
                 </TopBar>
                 <PathfindingVisualizer
                     ref={this.visualizer}

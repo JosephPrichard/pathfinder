@@ -74,14 +74,14 @@ class Tutorial extends React.Component<IProps,IState>
                 <div className='control-buttons'>
                     <div className='tutorial-control-wrapper'>
                         <button
-                            className='tutorial-button wider'
+                            className='tutorial-button green-button wider'
                             onMouseDown={e => e.preventDefault()}
                             onClick={() => this.prev()}
                         >
                             Prev
                         </button>
                         <button
-                            className='tutorial-button wider'
+                            className='tutorial-button green-button wider'
                             onMouseDown={e => e.preventDefault()}
                             onClick={
                                 !lastPage ?

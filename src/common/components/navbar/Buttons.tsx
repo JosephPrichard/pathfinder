@@ -114,7 +114,7 @@ export class SettingsButton extends React.Component<ButtonProps>
         return (
             <button
                 onMouseDown={e => e.preventDefault()}
-                className='button settings-button'
+                className='special-button'
                 onClick={this.props.onClick}
             >
                 Settings

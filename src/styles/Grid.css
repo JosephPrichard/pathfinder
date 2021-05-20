@@ -241,18 +241,6 @@
 }
 
 .f-text {
-    font-family: Cascadia Mono, serif;
+    padding-left: 1px;
     color: black;
-}
-
-.g-h-text {
-    font-family: Cascadia Mono, serif;
-    color: rgb(155,95,154);
-    margin-left: 1px;
-}
-
-.h-text {
-    float: right;
-    color: rgb(227,62,69);
-    margin-right: 1px;
 }

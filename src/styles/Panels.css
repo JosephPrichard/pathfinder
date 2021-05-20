@@ -131,7 +131,31 @@
 .range-value {
     line-height: 30px;
     height: 30px;
+    width: 25px;
     text-align: center;
     display: inline-block;
+    color: black;
+}
+
+.slider-text {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.slider-container {
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.slider {
+    width: 50%;
+}
+
+.speed-text {
+    display: inline-block;
+    width: 30px;
     color: black;
 }
