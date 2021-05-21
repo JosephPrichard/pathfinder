@@ -5,8 +5,7 @@ interface AppSettings
     algorithm: string,
     heuristicKey: string,
     navigatorKey: string,
-    bidirectional: boolean,
-    showScores: boolean
+    bidirectional: boolean
 }
 
 export function getDefaultSettings(): AppSettings {
@@ -16,8 +15,7 @@ export function getDefaultSettings(): AppSettings {
         algorithm: 'a*',
         heuristicKey: 'manhattan',
         navigatorKey: 'plus',
-        bidirectional: false,
-        showScores: false
+        bidirectional: false
     }
 }
 

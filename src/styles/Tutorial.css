@@ -6,7 +6,7 @@
     width: 750px;
     height: 550px;
     background-color: rgb(250,250,250);
-    border-radius: 4px;
+    border-radius: 12px;
     border-style: solid;
     border-color: black;
     border-width: 1px;
@@ -33,16 +33,18 @@
     height: 43px;
     width: 90px;
     border: 0;
-    padding: 5px;
     box-shadow: none;
     border-radius: 6px;
-    margin: 0 10px 0 10px;
     font-weight: 600;
     font-size: 18px;
 }
 
-.wider {
-    padding: 10px 25px;
+.tutorial-left-button {
+    margin-right: 20px;
+}
+
+.tutorial-right-button {
+    margin-left: 20px;
 }
 
 .tutorial-button:focus {

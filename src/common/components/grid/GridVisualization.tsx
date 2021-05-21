@@ -12,12 +12,6 @@ const VIZ_TILE_CLASS = 'tile-viz';
 
 const BASE_WIDTH = 27;
 
-interface Score {
-    f: number,
-    g: number,
-    h: number
-}
-
 interface Arrow {
     to: Point,
     from: Point
@@ -33,7 +27,6 @@ interface IProps {
 //scores and visualization are parallel arrays
 interface IState {
     visualization: string[][],
-    scores: Score[][],
     arrows: Arrow[]
 }
 
@@ -56,7 +49,6 @@ class GridVisualization extends React.Component<IProps,IState>
         this.tileWidth = this.props.tileWidth;
         this.state = {
             visualization: this.createEmptyViz(),
-            scores: this.createEmptyScores(),
             arrows: []
         }
     }
@@ -66,18 +58,15 @@ class GridVisualization extends React.Component<IProps,IState>
             || this.props.height !== prevProps.height)
         {
             const visualization: string[][] = this.createEmptyViz();
-            const scores: Score[][] = this.createEmptyScores();
             for(let y = 0; y < this.props.height; y++) {
                 for(let x = 0; x < this.props.width; x++) {
                     if(y < prevProps.height && x < prevProps.width) {
                         visualization[y][x] = this.state.visualization[y][x];
-                        scores[y][x] = this.state.scores[y][x];
                     }
                 }
             }
             this.setState({
-                visualization: visualization,
-                scores: scores
+                visualization: visualization
             });
         }
     }
@@ -95,21 +84,6 @@ class GridVisualization extends React.Component<IProps,IState>
             visualization.push(row);
         }
         return visualization;
-    }
-
-    /**
-     * Set scores to be -1
-     */
-    createEmptyScores() {
-        const scores: Score[][] = [];
-        for(let y = 0; y < this.props.height; y++) {
-            const row: Score[] = [];
-            for(let x = 0; x < this.props.width; x++) {
-                row.push(nullScore());
-            }
-            scores.push(row);
-        }
-        return scores;
     }
 
     /**
@@ -138,21 +112,6 @@ class GridVisualization extends React.Component<IProps,IState>
     }
 
     /**
-     * Perform a generation on a score array
-     * @param generation
-     * @param scores
-     */
-    static doScoreGeneration(generation: Node, scores: Score[][]) {
-        for(const node of generation.children) {
-            const point = node.tile.point;
-            scores[point.y][point.x] = node.score();
-        }
-        const point = generation.tile.point;
-        scores[point.y][point.x] = generation.score();
-        return scores;
-    }
-
-    /**
      * Visualize generation and update UI
      * @param generation
      */
@@ -161,10 +120,6 @@ class GridVisualization extends React.Component<IProps,IState>
             visualization: GridVisualization.doVizGeneration(
                 generation,
                 clone(prevState.visualization)
-            ),
-            scores: GridVisualization.doScoreGeneration(
-                generation,
-                clone(prevState.scores)
             )
         }));
     }
@@ -183,14 +138,11 @@ class GridVisualization extends React.Component<IProps,IState>
      */
     visualizeGenerations(generations: Node[]) {
         const visualization = this.createEmptyViz();
-        const scores = this.createEmptyScores();
         for(const generation of generations) {
             GridVisualization.doVizGeneration(generation, visualization);
-            GridVisualization.doScoreGeneration(generation, scores);
         }
         this.setState({
-            visualization: visualization,
-            scores: scores
+            visualization: visualization
         });
     }
 
@@ -258,10 +210,6 @@ class GridVisualization extends React.Component<IProps,IState>
             visualization: GridVisualization.doVizGeneration(
                 generation,
                 clone(prevState.visualization)
-            ),
-            scores: GridVisualization.doScoreGeneration(
-                generation,
-                clone(prevState.scores)
             ),
             arrows: GridVisualization.doArrowGeneration(
                 generation,
@@ -341,13 +289,12 @@ class GridVisualization extends React.Component<IProps,IState>
             for(let x = 0; x < this.props.width; x++) {
                 const inBounds = (this.state.visualization[y]||[])[x] !== undefined;
                 const viz = inBounds ? this.state.visualization[y][x] : EMPTY_NODE;
-                const score = inBounds ? this.state.scores[y][x] : nullScore();
                 if(viz !== EMPTY_NODE) {
                     const point = {
                         x: x, y: y
                     };
                     row.push(
-                        this.renderTile(point, viz, score)
+                        this.renderTile(point, viz)
                     );
                 }
             }
@@ -356,7 +303,7 @@ class GridVisualization extends React.Component<IProps,IState>
         return tiles;
     }
 
-    renderTile(point: Point, color: string, score: Score) {
+    renderTile(point: Point, color: string) {
         const width = this.tileWidth;
         const top = point.y * width;
         const left = point.x * width;
@@ -368,20 +315,12 @@ class GridVisualization extends React.Component<IProps,IState>
             left: left,
             fontSize: 10 * width/BASE_WIDTH
         };
-        const text = this.props.settings.showScores &&
-            <div key={point.x + ',' + point.y + 'score'}>
-                <div className='f-text'>
-                    {score.f === -1 ? '' : score.f}
-                </div>
-            </div>;
         return (
             <div
                 key={point.x + ',' + point.y}
                 style={style}
                 className={this.tileClass}
-            >
-                {text}
-            </div>
+            />
         );
     }
 }

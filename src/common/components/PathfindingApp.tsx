@@ -234,15 +234,6 @@ class PathfindingApp extends React.Component<IProps, IState>
         }));
     }
 
-    changeShowScores() {
-        this.setState(prevState => ({
-            settings: {
-                ...prevState.settings,
-                showScores: !prevState.settings.showScores
-            }
-        }));
-    }
-
     changeBidirectional() {
         this.setState(prevState => ({
             settings: {
@@ -324,11 +315,9 @@ class PathfindingApp extends React.Component<IProps, IState>
                 >
                     <VisualSettings
                         defaultShowArrows={this.state.settings.showArrows}
-                        defaultShowScores={this.state.settings.showScores}
                         disabledTree={this.state.arrowsDisabled}
                         disabledScore={this.state.scoreDisabled}
                         onChangeShowArrows={() => this.changeShowArrows()}
-                        onChangeShowScores={() => this.changeShowScores()}
                     />
                     <SpeedSettings
                         onChange={(value: number) => this.changeSpeed(value)}

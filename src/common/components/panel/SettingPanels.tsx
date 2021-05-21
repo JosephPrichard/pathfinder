@@ -5,9 +5,7 @@ import SteppedButtonRange from './SteppedButtonRange';
 
 interface VisualProps {
     defaultShowArrows: boolean,
-    defaultShowScores: boolean,
     onChangeShowArrows: () => void,
-    onChangeShowScores: () => void,
     disabledTree: boolean,
     disabledScore: boolean
 }
@@ -33,8 +31,8 @@ interface HeuristicProps {
 }
 
 const SPEED_STEP = 5;
-const SPEED_MIN = 10;
-const SPEED_MAX = 110;
+const SPEED_MIN = 15;
+const SPEED_MAX = 200;
 
 export class VisualSettings extends React.Component<VisualProps>
 {
@@ -49,14 +47,6 @@ export class VisualSettings extends React.Component<VisualProps>
                     disabled={this.props.disabledTree}
                 >
                     Show Tree
-                </Checkbox>
-                <Checkbox
-                    defaultChecked={this.props.defaultShowScores}
-                    boxStyle='box'
-                    onChange={this.props.onChangeShowScores}
-                    disabled={this.props.disabledScore}
-                >
-                    Show Scores
                 </Checkbox>
             </div>
         );
@@ -85,7 +75,7 @@ export class SpeedSettings extends React.Component<SpeedProps>
         return (
             <div className='slider-container'>
                 <div className='slider-text'>
-                    Speed
+                    Period
                 </div>
                 <SteppedButtonRange
                     min={SPEED_MIN}
@@ -179,10 +169,3 @@ export class HeuristicSettings extends React.Component<HeuristicProps>
         )
     }
 }
-
-// {[
-//     <span key='Manhattan'>Manhattan</span>,
-//     <span key='Euclidean'>Euclidean</span>,
-//     <span key='Chebyshev'>Chebyshev</span>,
-//     <span key='Octile<'>Octile</span>
-// ]}

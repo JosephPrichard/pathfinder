@@ -292,18 +292,18 @@
 }
 
 .red-button {
-    background-color: rgb(227,62,69);
+    background-color: rgb(217,52,59);
     color: white;
 }
 
 .red-button:hover {
     cursor: pointer;
-    background-color: rgb(247,82,89);
+    background-color: rgb(237,72,79);
 }
 
 .red-button:active {
     cursor: pointer;
-    background-color: rgb(217,52,59);
+    background-color: rgb(207,42,49);
 }
 
 .arrowUp {
