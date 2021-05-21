@@ -46,8 +46,6 @@ interface ClickableProps {
     click: () => void;
 }
 
-const HOVER_ARROW_COLOR = 'rgb(112,208,125)';
-
 class Clickable extends React.Component<ClickableProps>
 {
     render() {

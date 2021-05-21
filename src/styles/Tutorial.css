@@ -4,21 +4,22 @@
     top: 50%;
     transform: translate(-50%, -50%);
     width: 750px;
-    height: 550px;
-    background-color: rgb(250,250,250);
-    border-radius: 12px;
+    height: 580px;
+    background-color: rgb(54,58,64);
+    border-radius: 24px;
     border-style: solid;
-    border-color: black;
-    border-width: 1px;
+    border-color: rgb(100,100,100);
+    border-width: 3px;
     z-index: 10;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 54px 55px, rgba(0, 0, 0, 0.12) 0 -12px 30px, rgba(0, 0, 0, 0.12) 0 4px 6px, rgba(0, 0, 0, 0.17) 0 12px 13px, rgba(0, 0, 0, 0.09) 0 -3px 5px;
 }
 
 .tutorial-link {
-    color: rgb(87,183,100);
+    color: rgb(99,188,220);
 }
 
 .tutorial-link:hover {
-    color: rgb(117,213,130);
+    color: rgb(129,218,250);
 }
 
 .tutorial-control-wrapper {
@@ -40,11 +41,25 @@
 }
 
 .tutorial-left-button {
-    margin-right: 20px;
+    bottom: 42px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-110%);
+}
+
+.tutorial-left-button:active {
+    bottom: 38px;
 }
 
 .tutorial-right-button {
-    margin-left: 20px;
+    bottom: 42px;
+    position: absolute;
+    right: 50%;
+    transform: translateX(110%);
+}
+
+.tutorial-right-button:active {
+    bottom: 38px;
 }
 
 .tutorial-button:focus {
@@ -62,7 +77,7 @@
 .content-top {
     margin-left: auto;
     margin-right: 30px;
-    color: rgb(40,40,40);
+    color: white;
 }
 
 .content {
@@ -102,35 +117,53 @@
     text-align: center;
 }
 
-.x-tutorial-button:hover {
-    background-color: rgb(255,122,129);
+.x-tutorial-button {
+    background-color: rgb(217,52,59);
 }
 
-.x-tutorial-button:focus {
-    background-color: rgb(227,82,89);
+.x-tutorial-button:hover {
+    background-color: rgb(237,72,79);
 }
 
 .x-tutorial-button:active {
-    background-color: rgb(227,82,89);
+    background-color: rgb(207,42,49);
 }
 
 .tutorial-title {
-    color: rgb(40,40,40);
+    color: white;
     font-size: 40px;
     text-align: center;
 }
 
 .tutorial-text {
-    color: rgb(50,50,50);
+    color: whitesmoke;
     font-size: 15px;
     text-align: center;
 }
 
 .tutorial-subtext {
     margin-top: 30px;
-    color: rgb(50,50,50);
+    color: whitesmoke;
+    font-size: 18px;
+    text-align: justify;
+}
+
+.tutorial-subtext-center{
+    margin-top: 30px;
+    color: whitesmoke;
     font-size: 18px;
     text-align: center;
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+.tutorial-subtext-narrow {
+    margin-top: 60px;
+    color: whitesmoke;
+    font-size: 18px;
+    text-align: justify;
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 .text-row {
@@ -138,13 +171,37 @@
 }
 
 .tutorial-img {
-    padding-top: 40px;
     display: block;
     margin: auto;
+    border-radius: 10px;
+    box-sizing: border-box;
 }
 
 .tutorial-img-large {
-    padding-top: 15px;
     display: block;
     margin: auto;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.tutorial-img-wrapper {
+    padding-top: 40px;
+}
+
+.tutorial-img-large-wrapper {
+    padding-top: 15px;
+}
+
+.tut-green-button {
+    background-color: rgb(99,188,220);
+    box-shadow: 0 6px 0 0 rgb(59,148,180), 0 0 0 0 #bbb;
+    color: white;
+}
+
+.tut-green-button:hover{
+    background-color: rgb(129,218,250);
+}
+
+.tut-green-button:active {
+    box-shadow: 0 3px 0 0 rgb(59,148,180), 0 0 0 0 #bbb;
 }

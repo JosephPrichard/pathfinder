@@ -47,6 +47,22 @@ export class HashTable<Value>
         return this.map[key] !== undefined;
     }
 
+    values() {
+        const values: Value[] = [];
+        for(const i in this.map) {
+            if(this.map[i] !== undefined) {
+                values.push(this.map[i]!);
+            }
+        }
+        return values;
+    }
+
+    clone() {
+        const table = new HashTable<Value>();
+        table.map = Object.assign({}, this.map);
+        return table;
+    }
+
     clear() {
         this.map = {};
     }

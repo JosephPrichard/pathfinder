@@ -71,27 +71,25 @@ class Tutorial extends React.Component<IProps,IState>
                 <div className='content'>
                     {children[this.state.page]}
                 </div>
-                <div className='control-buttons'>
-                    <div className='tutorial-control-wrapper'>
-                        <button
-                            className='tutorial-button tutorial-left-button green-button'
-                            onMouseDown={e => e.preventDefault()}
-                            onClick={() => this.prev()}
-                        >
-                            Prev
-                        </button>
-                        <button
-                            className='tutorial-button tutorial-right-button green-button'
-                            onMouseDown={e => e.preventDefault()}
-                            onClick={
-                                !lastPage ?
-                                    () => this.next() :
-                                    () => this.hide()
-                            }
-                        >
-                            {!lastPage ? 'Next' : 'Finish'}
-                        </button>
-                    </div>
+                <div className='tutorial-control-wrapper'>
+                    <button
+                        className='tutorial-button tutorial-left-button tut-green-button'
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={() => this.prev()}
+                    >
+                        Prev
+                    </button>
+                    <button
+                        className='tutorial-button tutorial-right-button tut-green-button'
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={
+                            !lastPage ?
+                                () => this.next() :
+                                () => this.hide()
+                        }
+                    >
+                        {!lastPage ? 'Next' : 'Finish'}
+                    </button>
                 </div>
             </div>
         );

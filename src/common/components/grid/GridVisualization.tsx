@@ -2,6 +2,7 @@ import React from 'react';
 import {Node} from '../../pathfinding/algorithms/Node';
 import {Point} from '../../pathfinding/core/Components';
 import AppSettings from "../../utils/AppSettings";
+import {HashTable, stringify} from '../../pathfinding/structures/Hash';
 
 const CLOSED_NODE = 'rgb(198, 237, 238)';
 const OPEN_NODE = 'rgb(191, 248, 159)';
@@ -27,7 +28,7 @@ interface IProps {
 //scores and visualization are parallel arrays
 interface IState {
     visualization: string[][],
-    arrows: Arrow[]
+    arrows: HashTable<Arrow>
 }
 
 /**
@@ -49,7 +50,7 @@ class GridVisualization extends React.Component<IProps,IState>
         this.tileWidth = this.props.tileWidth;
         this.state = {
             visualization: this.createEmptyViz(),
-            arrows: []
+            arrows: new HashTable()
         }
     }
 
@@ -92,7 +93,7 @@ class GridVisualization extends React.Component<IProps,IState>
     clear() {
         this.setState({
             visualization: this.createEmptyViz(),
-            arrows: []
+            arrows: new HashTable()
         });
     }
 
@@ -151,7 +152,7 @@ class GridVisualization extends React.Component<IProps,IState>
      * @param generation
      * @param arrows
      */
-    static doArrowGeneration(generation: Node, arrows: Arrow[]) {
+    static doArrowGeneration(generation: Node, arrows: HashTable<Arrow>) {
         const point = generation.tile.point;
         for(const node of generation.children) {
             const childPoint = node.tile.point;
@@ -161,15 +162,7 @@ class GridVisualization extends React.Component<IProps,IState>
             };
             //remove a duplicate arrow to indicate replacement
             //in A* for example, we could have re-discovered a better path to a tile
-            for(let i = 0; i < arrows.length; i++) {
-                const a = arrows[i];
-                if(pointsEqual(a.to, newArrow.to)) {
-                    const index = arrows.indexOf(a);
-                    arrows.splice(index, 1);
-                    i--;
-                }
-            }
-            arrows.push(newArrow);
+            arrows.add(stringify(newArrow.to), newArrow);
         }
         return arrows;
     }
@@ -182,7 +175,7 @@ class GridVisualization extends React.Component<IProps,IState>
         this.setState(prevState => ({
             arrows: GridVisualization.doArrowGeneration(
                 generation,
-                prevState.arrows.slice()
+                prevState.arrows.clone()
             )
         }));
     }
@@ -192,7 +185,7 @@ class GridVisualization extends React.Component<IProps,IState>
      * @param generations
      */
     addArrowGenerations(generations: Node[]) {
-        const arrows: Arrow[] = [];
+        const arrows: HashTable<Arrow> = new HashTable();
         for(const generation of generations) {
             GridVisualization.doArrowGeneration(generation, arrows)
         }
@@ -213,7 +206,7 @@ class GridVisualization extends React.Component<IProps,IState>
             ),
             arrows: GridVisualization.doArrowGeneration(
                 generation,
-                prevState.arrows.slice()
+                prevState.arrows.clone()
             )
         }));
     }
@@ -254,9 +247,10 @@ class GridVisualization extends React.Component<IProps,IState>
         const width = this.tileWidth;
         const offset = width/2;
         const arrows: JSX.Element[] = [];
-        for(let i = 0; i < this.state.arrows.length; i++) {
+        const arrowList = this.state.arrows.values();
+        for(let i = 0; i < arrowList.length; i++) {
             //calculate arrow position and dimensions
-            const arrow = this.state.arrows[i];
+            const arrow = arrowList[i];
             const first = arrow.from;
             const second = arrow.to;
             const firstX = first.x * width;
@@ -329,18 +323,6 @@ function clone<T>(array: T[][]) {
     return array.map(
         (arr) => arr.slice()
     );
-}
-
-function pointsEqual(point1: Point, point2: Point) {
-    return point1.x === point2.x && point1.y === point2.y;
-}
-
-function nullScore() {
-    return {
-        f: -1,
-        g: -1,
-        h: -1
-    }
 }
 
 export default GridVisualization;
