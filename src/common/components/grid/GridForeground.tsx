@@ -326,11 +326,17 @@ class GridForeground extends React.Component<IProps,IState>
         });
     }
 
+    /**
+     * Renders the end tiles (initial and goal) behind
+     * Path arrows are rendered on an svg canvas above the end tiles
+     * The tiles Grid containing the rendered tiles from the grid state is displayed on top
+     *  it also is bound to event listeners to allow grid to be drawn/erased on
+     */
     render() {
         return (
             <div>
-                <div className='endpoint-tiles-table'
-                    onMouseDown={() => console.log('test')}
+                <div
+                    className='endpoint-tiles-table'
                 >
                     {this.renderEndTile(this.state.initial, INITIAL_COLOR,'initial' + this.initialKey)}
                     {this.renderEndTile(this.state.goal, GOAL_COLOR,'goal' + this.goalKey)}
@@ -367,12 +373,16 @@ class GridForeground extends React.Component<IProps,IState>
                     onTouchEnd={e => this.onEndingEvent(e.nativeEvent)}
                     onTouchCancel={e => this.onEndingEvent(e.nativeEvent)}
                 >
-                    {this.renderTilesTable()}
+                    {this.renderTilesGrid()}
                 </div>
             </div>
         );
     }
 
+    /**
+     * Renders the solved path out of pathArrows between neighboring tile
+     * Can only be properly displayed in an svg canvas
+     */
     renderPath() {
         const lines: JSX.Element[] = [];
         for(let i = 0; i < this.state.path.length-1; i++) {
@@ -383,6 +393,11 @@ class GridForeground extends React.Component<IProps,IState>
         return lines;
     }
 
+    /**
+     * Renders a single blue arrow between two points to make up the
+     * path that represents the solved path
+     * Can only be properly displayed in an svg canvas
+     */
     renderPathArrow(index: number, first: Point, second: Point) {
         const width = this.props.tileSize;
         const offset = width/2;
@@ -407,7 +422,13 @@ class GridForeground extends React.Component<IProps,IState>
         );
     }
 
-    renderTilesTable() {
+    /**
+     * Iterate through the grid stored in the state and render each tile
+     * Solid tiles are rendered as grey squares
+     * Empty tiles (non solid tiles with a weight/cost of 1)
+     * Weighted tiles with a cost of higher than 1 are rendered with a weight png and a label
+     */
+    renderTilesGrid() {
         const tiles: JSX.Element[] = [];
         for(let y = 0; y < this.state.grid.getHeight(); y++) {
             for(let x = 0; x < this.state.grid.getWidth(); x++) {
@@ -449,6 +470,13 @@ class GridForeground extends React.Component<IProps,IState>
         return tiles;
     }
 
+    /**
+     * Renders the text (cost of the weight) to be overlay on top of the weight
+     *  The point should be the same as the weight the text is for
+     * @param point
+     * @param cost
+     * @param key
+     */
     renderWeightText(point: Point, cost: number, key: string) {
         return (
             <div

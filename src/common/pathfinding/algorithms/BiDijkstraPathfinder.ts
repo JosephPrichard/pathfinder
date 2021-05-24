@@ -1,24 +1,25 @@
 import Pathfinder, {reconstructPath, reconstructPathReversed} from './Pathfinder';
-import {Node} from './Node';
+import {DijkstraNode} from './Node';
 import {Point} from '../core/Components';
 import {HashTable, stringify} from '../structures/Hash';
+import Heap from '../structures/Heap';
 
 interface ControlStructures {
-    frontier: Node[],
-    visited: HashTable<Node>
+    frontier: Heap<DijkstraNode>,
+    closedSet: HashTable<DijkstraNode>
 }
 
-class BiBFSPathfinder extends Pathfinder
+class BiDijkstraPathfinder extends Pathfinder
 {
     getAlgorithmName() {
-        return 'Bidirectional Breadth First Search';
+        return 'Bidirectional Dijkstra';
     }
 
     /**
-     * Implementation of Bidirectional BFS to find the shortest path from initial to point
+     * Implementation of Bidirectional Dijkstra to find the shortest path from initial to point
      *  One frontier is expanded starting from initial node until it reaches goal frontier
      *  Other frontier is expanded starting from goal node until it reaches initial frontier
-     * Doesn't always return the shortest path, and performs poorly on larger grids
+     * Always returns the shortest path, and performs poorly on larger grids
      * @param initial
      * @param goal
      */
@@ -26,24 +27,32 @@ class BiBFSPathfinder extends Pathfinder
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
         //store the nodes visited from start direction + nodes on the start frontier, allows for fast retrieval of node (for reconstruction)
-        const startVisited = new HashTable<Node>();
+        const startVisited = new HashTable<DijkstraNode>();
         //store the nodes visited from end direction + nodes on the end frontier, allows for fast retrieval of node (for reconstruction)
-        const endVisited = new HashTable<Node>();
-        //fifo queue starting from initial point to store points we haven't yet visited
-        const startFrontier: Node[] = [];
-        //fifo queue starting from goal point to store points we haven't yet visited
-        const endFrontier: Node[] = [];
+        const endVisited = new HashTable<DijkstraNode>();
+        //ranks nodes starting from initial point we haven't yet visited by path cost
+        const startFrontier = new Heap<DijkstraNode>(
+            (a, b) => a.g < b.g
+        );
+        //ranks nodes starting from goal point we haven't yet visited by path cost
+        const endFrontier = new Heap<DijkstraNode>(
+            (a, b) => a.g < b.g
+        );
         //add the root to both frontiers and start the algorithm from both directions
-        const initialRoot = new Node(grid.get(initial));
+        const initialRoot = new DijkstraNode(
+            grid.get(initial), 0
+        );
         startFrontier.push(initialRoot);
         startVisited.add(stringify(initial), initialRoot);
-        const goalRoot = new Node(grid.get(goal));
+        const goalRoot = new DijkstraNode(
+            grid.get(goal), 0
+        );
         endFrontier.push(goalRoot);
         endVisited.add(stringify(goal), goalRoot);
         //continues until points have been visited
-        while(startFrontier.length !== 0 && endFrontier.length !== 0) {
-            //expand startQueue
-            const startCurrentNode = startFrontier.shift()!;
+        while(!startFrontier.isEmpty() && !endFrontier.isEmpty()) {
+            //expand startFrontier
+            const startCurrentNode = startFrontier.pop();
             const startCurrentPoint = startCurrentNode.tile.point;
             const startCurrentPointKey = stringify(startCurrentPoint);
             this.addRecent(startCurrentNode);
@@ -63,12 +72,12 @@ class BiBFSPathfinder extends Pathfinder
                     return [grid.get(goal)];
                 }
             }
-            this.doBFSExpansion({
+            this.doDijkstraExpansion({
                 frontier: startFrontier,
-                visited: startVisited
+                closedSet: startVisited
             }, startCurrentNode);
-            //expand endQueue
-            const endCurrentNode = endFrontier.shift()!;
+            //expand endFrontier
+            const endCurrentNode = endFrontier.pop();
             const endCurrentPoint = endCurrentNode.tile.point;
             const endCurrentPointKey = stringify(endCurrentPoint);
             this.addRecent(endCurrentNode);
@@ -88,27 +97,42 @@ class BiBFSPathfinder extends Pathfinder
                     return [grid.get(goal)];
                 }
             }
-            this.doBFSExpansion({
+            this.doDijkstraExpansion({
                 frontier: endFrontier,
-                visited: endVisited
+                closedSet: endVisited
             }, endCurrentNode);
         }
         return [];
     }
 
-    private doBFSExpansion(structures: ControlStructures, currentNode: Node) {
+    private doDijkstraExpansion(structures: ControlStructures, currentNode: DijkstraNode) {
         const currentPoint = currentNode.tile.point;
-        for(const neighbor of this.navigator.neighbors(currentPoint)) {
-            const neighborKey = stringify(neighbor.point);
+        for (const neighbor of this.navigator.neighbors(currentPoint)) {
+            const neighborPoint = neighbor.point;
+            const neighborKey = stringify(neighborPoint);
+            const g = currentNode.g + this.stepCost(currentPoint, neighborPoint);
             //point hasn't been visited, we can add it to frontier
-            if(!structures.visited.has(neighborKey)) {
-                const neighborNode = new Node(neighbor);
+            if (!structures.closedSet.has(neighborKey)) {
+                const neighborNode = new DijkstraNode(
+                    neighbor, g
+                );
                 currentNode.addChild(neighborNode);
                 structures.frontier.push(neighborNode);
-                structures.visited.add(neighborKey, neighborNode);
+                structures.closedSet.add(neighborKey, neighborNode);
             }
         }
     }
+
+    /**
+     * The step-cost function to be used, calculating the cost from
+     * currentPoint to neighborPoint. Uses the stepCost function provided by the
+     * navigator by default but can be overridden
+     * @param currentPoint
+     * @param neighborPoint
+     */
+    stepCost(currentPoint: Point, neighborPoint: Point) {
+        return this.navigator.cost(currentPoint, neighborPoint);
+    }
 }
 
-export default BiBFSPathfinder;
+export default BiDijkstraPathfinder;

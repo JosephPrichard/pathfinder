@@ -1,13 +1,13 @@
 import React, {RefObject} from 'react';
 import GridVisualization from './GridVisualization';
 import GridForeground from './GridForeground';
-import StatsPanel from './StatsPanel';
+import Stats from './Stats';
 import GridBackground from './GridBackground';
 import {Node} from '../../pathfinding/algorithms/Node';
-import PathfinderBuilder from '../../pathfinding/algorithms/PathfinderBuilder';
+import PathfinderBuilder from '../../pathfinding/builders/PathfinderBuilder';
 import Pathfinder from '../../pathfinding/algorithms/Pathfinder';
 import {euclidean} from '../../pathfinding/algorithms/Heuristics';
-import TerrainGeneratorBuilder, {RANDOM_TERRAIN} from '../../pathfinding/algorithms/TerrainGeneratorBuilder';
+import TerrainGeneratorBuilder, {RANDOM_TERRAIN} from '../../pathfinding/builders/TerrainGeneratorBuilder';
 import {createTileData, Point, Tile, TileData} from '../../pathfinding/core/Components';
 import {HashSet, stringify} from '../../pathfinding/structures/Hash';
 import AppSettings from '../../utils/AppSettings';
@@ -108,7 +108,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     }
 
     /**
-     * Prevents pathfinding visualizer from being updated unless the algorithm stats
+     * Prevents pathfinding grid from being updated unless the algorithm stats
      * have changed (meaning an algorithm was visualized)
      * Doesn't prevent Foreground and background from being updated automatically
      * when their state changes
@@ -170,7 +170,7 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
     /**
      * Performs the pathfinding algorithm on the grid and visualizes it with delays between successive
      * node generations
-     * If the visualizer is currently visualizing, the visualization stops instead
+     * If the grid is currently visualizing, the visualization stops instead
      */
     doDelayedPathfinding() {
         const settings = this.props.settings;
@@ -410,10 +410,17 @@ class PathfindingVisualizer extends React.Component<IProps,IState>
         this.background.current!.visualizeGenerationAndArrows(generation);
     }
 
+    /**
+     * Renders the sub components of the visualizer needed to show
+     *  the algorithm stats,
+     *  the grid itself,
+     *  the visualization of the algorithm,
+     *  and the maze the pathfinder solves
+     */
     render() {
         return (
             <div>
-                <StatsPanel
+                <Stats
                     algorithm={this.state.algorithm}
                     length={this.state.length}
                     cost={this.state.cost}

@@ -1,8 +1,8 @@
 import React from 'react';
-import './styles/Grid.css';
-import './styles/Panels.css';
-import './styles/Navbar.css';
-import './styles/Tutorial.css'
+import './styles/Grid.scss';
+import './styles/Panels.scss';
+import './styles/Navbar.scss';
+import './styles/Tutorial.scss'
 import PathfindingApp from './common/components/PathfindingApp';
 
 class App extends React.Component

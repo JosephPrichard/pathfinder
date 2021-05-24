@@ -19,18 +19,27 @@ class Tutorial extends React.Component<IProps,IState>
         }
     }
 
+    /**
+     * Hide the tutorial and set key in local storage to true to prevent it from being shown again
+     */
     hide() {
         this.setState({
             show: false
         }, () => localStorage.setItem(KEY_SHOW, 'true'));
     }
 
+    /**
+     * Display the child one index to the left
+     */
     prev() {
         this.setState(prevState => ({
             page: prevState.page - 1 >= 0 ? prevState.page - 1 : prevState.page
         }));
     }
 
+    /**
+     * Display the child one index to the right
+     */
     next() {
         const children = React.Children.toArray(this.props.children);
         this.setState(prevState => ({
@@ -38,14 +47,25 @@ class Tutorial extends React.Component<IProps,IState>
         }));
     }
 
+    /**
+     * Checks if hide was called before by checking if hide() has been called before
+     */
+    showPanel() {
+        return localStorage.getItem(KEY_SHOW) !== 'true';
+    }
+
+    /**
+     * Tutorial page will only be visible if tutorial hasn't been hidden before
+     * Render's the page-th child in the panel
+     * If the page is the final page, the next button is replaced with a finish button
+     */
     render() {
         const children = React.Children.toArray(this.props.children);
-        const showPanel = localStorage.getItem(KEY_SHOW) !== 'true';
         const lastPage = this.state.page + 1 === children.length;
         return(
             <div
                 style={{
-                    display: showPanel && this.state.show ? 'block' : 'none'
+                    display: this.showPanel() && this.state.show ? 'block' : 'none'
                 }}
                 className='tutorial-panel'
             >
@@ -73,14 +93,14 @@ class Tutorial extends React.Component<IProps,IState>
                 </div>
                 <div className='tutorial-control-wrapper'>
                     <button
-                        className='tutorial-button tutorial-left-button tut-green-button'
+                        className='tutorial-button tutorial-left-button tut-blue-button'
                         onMouseDown={e => e.preventDefault()}
                         onClick={() => this.prev()}
                     >
                         Prev
                     </button>
                     <button
-                        className='tutorial-button tutorial-right-button tut-green-button'
+                        className='tutorial-button tutorial-right-button tut-blue-button'
                         onMouseDown={e => e.preventDefault()}
                         onClick={
                             !lastPage ?

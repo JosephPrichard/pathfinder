@@ -1,6 +1,5 @@
 import Navigator from '../core/Navigator';
 import PlusNavigator from '../core/PlusNavigator';
-import {Point} from '../core/Components';
 import {Grid} from '../core/Grid';
 import {
     chebyshev,
@@ -9,13 +8,16 @@ import {
     manhattan,
     nullHeuristic,
     octile
-} from './Heuristics';
-import Pathfinder from './Pathfinder';
-import AStarPathfinder from './AStarPathfinder';
-import BFSPathfinder from './BFSPathfinder';
-import DFSPathfinder from './DFSPathfinder';
-import BiAStarPathfinder from './BiAStarPathfinder';
-import BiBFSPathfinder from "./BiBFSPathfinder";
+} from '../algorithms/Heuristics';
+import Pathfinder from '../algorithms/Pathfinder';
+import AStarPathfinder from '../algorithms/AStarPathfinder';
+import BFSPathfinder from '../algorithms/BFSPathfinder';
+import DFSPathfinder from '../algorithms/DFSPathfinder';
+import BiAStarPathfinder from '../algorithms/BiAStarPathfinder';
+import BiBFSPathfinder from "../algorithms/BiBFSPathfinder";
+import BestFirstPathfinder from '../algorithms/BestFirstPathfinder';
+import DijkstraPathfinder from '../algorithms/DijkstraPathfinder';
+import BiDijkstraPathfinder from '../algorithms/BiDijkstraPathfinder';
 
 const CREATE_NAVIGATOR: {[key: string]: ((grid: Grid) => Navigator)} = {
     'plus': (grid: Grid) => new PlusNavigator(grid),
@@ -30,45 +32,14 @@ const CREATE_HEURISTIC: {[key: string]: (() => HeuristicFunc)} = {
 }
 
 const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: HeuristicFunc) => Pathfinder)} = {
-    'dijkstra': (navigator) => {
-        return new (class DijkstraPathfinder extends AStarPathfinder {
-            getAlgorithmName() {
-                return 'Dijkstra';
-            }
-        })(navigator, nullHeuristic);
-    },
-    'best-first': (navigator, heuristic) => {
-        return new (class BestFirstPathfinder extends AStarPathfinder {
-            stepCost(currentPoint: Point, neighborPoint: Point) {
-                return 0;
-            }
-            getAlgorithmName() {
-                return 'Best-First Search';
-            }
-        })(navigator, heuristic);
-    },
-    'a*': (navigator, heuristic) => {
-        return new AStarPathfinder(navigator, heuristic);
-    },
-    'bfs': (navigator) => {
-        return new BFSPathfinder(navigator);
-    },
-    'dfs': (navigator) => {
-        return new DFSPathfinder(navigator);
-    },
-    'bi-a*': (navigator, heuristic) => {
-        return new BiAStarPathfinder(navigator, heuristic);
-    },
-    'bi-dijkstra': (navigator) => {
-        return new (class BiDijkstraPathfinder extends BiAStarPathfinder {
-            getAlgorithmName() {
-                return 'Bidirectional Dijkstra';
-            }
-        })(navigator, nullHeuristic);
-    },
-    'bi-bfs': (navigator) => {
-        return new BiBFSPathfinder(navigator);
-    }
+    'dijkstra': (navigator) => new DijkstraPathfinder(navigator),
+    'best-first': (navigator, heuristic) => new BestFirstPathfinder(navigator, heuristic),
+    'a*': (navigator, heuristic) => new AStarPathfinder(navigator, heuristic),
+    'bfs': (navigator) => new BFSPathfinder(navigator),
+    'dfs': (navigator) => new DFSPathfinder(navigator),
+    'bi-a*': (navigator, heuristic) => new BiAStarPathfinder(navigator, heuristic),
+    'bi-dijkstra': (navigator) => new BiDijkstraPathfinder(navigator),
+    'bi-bfs': (navigator) => new BiBFSPathfinder(navigator)
 }
 
 class PathfinderBuilder

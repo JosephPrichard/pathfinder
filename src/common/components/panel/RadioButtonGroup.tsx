@@ -44,6 +44,9 @@ class RadioButtonGroup extends React.Component<IProps, IState>
         }, () => this.props.onChange[index]());
     }
 
+    /**
+     * Render a radio button for each child
+     */
     render() {
         const children = React.Children.toArray(this.props.children);
         const radioButtons: JSX.Element[] = [];

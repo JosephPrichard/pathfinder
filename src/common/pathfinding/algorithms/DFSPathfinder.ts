@@ -21,20 +21,25 @@ class DFSPathfinder extends Pathfinder
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
         const root = new Node(grid.get(initial));
+        //lifo stack as control structure for frontier
         const frontier = new Stack<Node>();
-        frontier.push(root);
+        //stores points we have already visited so we don't visit them again
         const visited = new HashSet();
+        //add the root to the frontier and start the algorithm
+        frontier.push(root);
         while(!frontier.isEmpty()) {
             const currentNode = frontier.pop()!;
             const currentPoint = currentNode.tile.point;
             visited.add(stringify(currentPoint));
             this.addRecent(currentNode);
+            //check if we're found the solution
             if(this.navigator.equals(currentPoint, goal)) {
                 return reconstructPath(currentNode);
             }
-            const neighbors = this.navigator.neighbors(currentPoint).reverse();
-            for(const neighbor of neighbors){
+            //neighbors are added in reverse order for a more coherent visualization
+            for(const neighbor of this.navigator.neighbors(currentPoint).reverse()) {
                 const neighborKey = stringify(neighbor.point);
+                //point hasn't been visited, we can add it to frontier
                 if(!visited.has(neighborKey)) {
                     const neighborNode = new Node(neighbor);
                     currentNode.addChild(neighborNode);
@@ -42,6 +47,7 @@ class DFSPathfinder extends Pathfinder
                 }
             }
         }
+        //checked all possible paths: no solution was found
         return [];
     }
 }

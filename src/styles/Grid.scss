@@ -1,0 +1,197 @@
+@import "Variables";
+
+@mixin canvas($zIndex) {
+    z-index: $zIndex;
+    position: absolute;
+    padding: 0;
+    width: 100vw;
+    height: calc(100vh - 75px - 30px);
+}
+
+.bg {
+    @include canvas(0);
+}
+
+.bg-grid {
+    @include canvas(1);
+}
+
+.arrow-grid {
+    @include canvas(2);
+    touch-action: none; /* stop overflow-y scrolling on touch */
+}
+
+.endpoint-tiles-table {
+    @include canvas(1);
+    touch-action: none; /* stop overflow-y scrolling on touch */
+}
+
+.tiles-table {
+    @include canvas(3);
+    touch-action: none; /* stop overflow-y scrolling on touch */
+}
+
+.line {
+    position: absolute;
+}
+
+@mixin expandAnimation($duration, $name, $function, $fill-mode) {
+    animation-name: $name;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    animation-duration: $duration;
+    animation-timing-function: $function;
+    animation-direction: normal;
+    animation-iteration-count: 1;
+    animation-fill-mode: $fill-mode;
+    animation-play-state: running;
+}
+
+@keyframes popOut {
+    0% {
+        transform: scale(.3);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1.0);
+    }
+}
+
+@keyframes expandFromHalf {
+    0% {
+        transform: scale(.5);
+    }
+    100% {
+        transform: scale(1.0);
+    }
+}
+
+@keyframes vizAnimation {
+    0% {
+        transform: scale(.1);
+    }
+    100% {
+        transform: scale(1.0);
+    }
+}
+
+.tile-viz {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    border-color: rgb(190,216,246);
+    border-top-width: 0;
+    border-bottom-width: 1px;
+    border-left-width: 0;
+    border-right-width: 1px;
+    border-style: solid;
+    @include expandAnimation(0.5s, vizAnimation, ease, none);
+}
+
+.tile {
+    border-color: rgb(190,216,246);
+    border-top-width: 0;
+    border-bottom-width: 1px;
+    border-left-width: 0;
+    border-right-width: 1px;
+    border-style: solid;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    color: white;
+}
+
+.tile-fg {
+    border-top-width: 0;
+    border-bottom-width: 1px;
+    border-left-width: 0;
+    border-right-width: 1px;
+    border-style: solid;
+    margin: 0;
+    padding: 0;
+    @include expandAnimation(0.3s, expandFromHalf, ease-out, forwards)
+}
+
+.svg-tile {
+    pointer-events: none;
+}
+
+.svg-text {
+    pointer-events: none;
+    cursor: default;
+}
+
+.stats-text-area {
+    vertical-align: top;
+    height: 30px;
+    background-color: black;
+    color: white;
+    width: 100%;
+    padding-left: 20px;
+    resize: none;
+
+    line-height: 1.6;
+
+    -ms-overflow-style: none;
+
+    border-color: $lightGreyBorder;
+    border-width: 0;
+    border-top-width: 1px;
+    overflow: hidden;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+@media only screen and (max-device-width: 468px) {
+    .stats-text-area {
+        font-size: 11px;
+    }
+}
+
+.info-text {
+    font-size: small;
+    display: inline-block;
+    margin-right: 15px;
+}
+
+/* tile elements */
+
+.solid {
+    display:inline-block;
+    background-color: $tileSolid;
+    transform: scale(1.0);
+}
+
+.solid-animation {
+    background-color: $tileSolid;
+    @include expandAnimation(0.3s, popOut, ease-out, forwards);
+}
+
+.weight {
+    display:inline-block;
+    transform: scale(1.0);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.weight-animation {
+    @include expandAnimation(0.3s, popOut, ease-out, forwards);
+}
+
+.f-text {
+    padding-left: 1px;
+    color: black;
+}

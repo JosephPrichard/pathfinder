@@ -34,37 +34,46 @@ class AStarPathfinder extends Pathfinder
     findPath(initial: Point, goal: Point) {
         this.clearRecentSearch();
         const grid = this.navigator.getGrid();
+        //ranks nodes we haven't yet visited by f-score
         const openFrontier = new Heap<AStarNode>(
             (a, b) => a.f() < b.f()
         );
+        //stores points we have already visited so we don't visit them again
         const closedSet = new HashSet();
+        //stores the contents of the frontier to allow for fast retrieval of f-score
         const openSet = new HashTable<number>();
+        //add the root to the frontier and start the algorithm
         const root = new AStarNode(
             grid.get(initial), 0, 0
         );
         openFrontier.push(root);
         openSet.add(stringify(initial), root.g);
+        //continues until points have been visited
         while (!openFrontier.isEmpty()) {
             const currentNode = openFrontier.pop();
             const currentPoint = currentNode.tile.point;
             const currentKey = stringify(currentPoint);
             openSet.remove(currentKey);
+            //a point may be popped off the frontier again if it was re-evaluated, pre-eval nodes should be ignored
             if(closedSet.has(currentKey)) {
                 continue;
             }
             closedSet.add(currentKey);
             this.addRecent(currentNode);
+            //check if we're found the solution
             if (this.navigator.equals(currentPoint, goal)) {
                 return reconstructPath(currentNode);
             }
             for (const neighbor of this.navigator.neighbors(currentPoint)) {
                 const neighborPoint = neighbor.point;
                 const neighborKey = stringify(neighborPoint);
+                //point has already been visited
                 if(closedSet.has(neighborKey)) {
                     continue;
                 }
                 const g = currentNode.g + this.stepCost(currentPoint, neighborPoint);
                 const f = g + this.heuristic(neighborPoint, goal);
+                //re-evaluation: a point that is already in the openSet may be added again if the path to get there was less expensive
                 if (!openSet.has(neighborKey) || g < openSet.get(neighborKey)!) {
                     const neighborNode = new AStarNode(
                         neighbor, g, f
@@ -75,6 +84,7 @@ class AStarPathfinder extends Pathfinder
                 }
             }
         }
+        //checked all possible paths: no solution was found
         return [];
     }
 

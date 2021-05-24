@@ -1,3 +1,6 @@
+@import "Variables";
+@import "Utils";
+
 .title {
     display: inline-block;
     vertical-align: center;
@@ -8,11 +11,10 @@
     margin: auto 80px auto 80px;
     white-space: nowrap;
     font-weight: 600;
-}
-
-.title:hover{
-    color: rgb(112,208,125);
-    cursor: pointer;
+    &:hover {
+        color: $lightGreen;
+        cursor: pointer;
+    }
 }
 
 .icon {
@@ -31,7 +33,7 @@
     width: 100vw;
     min-height: 75px;
     height: auto;
-    background-color: rgb(54,58,64);
+    background-color: $navBar;
 }
 
 .button {
@@ -47,6 +49,9 @@
     box-shadow: none;
     border-radius: 6px;
     margin: 0 20px 0 20px;
+    &:focus {
+        outline: 5px auto -webkit-focus-ring-color;
+    }
 }
 
 .special-button {
@@ -60,18 +65,12 @@
     border-radius: 0;
     margin: 0 10px 0 10px;
     height: 75px;
-}
-
-.special-button:hover {
-    background-color: rgb(112,208,125);
-}
-
-.special-button:active {
-    background-color: rgb(72,168,85);
-}
-
-.button:focus {
-    outline: 5px auto -webkit-focus-ring-color;
+    &:hover {
+        background-color: $lightGreen;
+    }
+    &:active {
+        background-color: $darkGreen;
+    }
 }
 
 .center {
@@ -191,45 +190,50 @@
     padding: 0 15px 0 15px;
     vertical-align: middle;
     height: 100%;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 .drop-down-button-wrapper {
     margin: auto;
     display: inline-block;
     position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
+    @include center();
 }
 
-.drop-down-button-up:hover {
-    background-color: rgb(112,208,125);
-}
-
-@keyframes fadeDownLight {
-    0% {
-        background-color: transparent;
-    }
-    100% {
-        background-color: rgb(112,208,125);
+.drop-down-button-up{
+    &:hover {
+        background-color: $lightGreen;
     }
 }
 
 .drop-down-button-down {
-    background-color: rgb(112,208,125);
+    background-color: $lightGreen;
 }
 
 .drop-down-content {
     display: none;
     position: absolute;
-    background-color: rgb(54,58,64);
+    background-color: $navBar;
     min-width: 200px;
-    box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+    box-shadow: $navBarShadow 0 8px 24px;
     z-index: 8;
     padding: 5px 0 10px 0;
     border-radius: 6px;
     font-size: 16px;
     margin-top: 10px;
+    div {
+        color: #E4E6E7;
+        padding: 2px 20px 2px;
+        text-decoration: none;
+        display: block;
+        border-radius: 4px;
+        &:hover {
+            background-color: $bgGreen;
+            cursor: pointer;
+        }
+    }
 }
 
 .fade-in {
@@ -250,31 +254,6 @@
     to   { opacity: 0; }
 }
 
-.drop-down-content div {
-    color: #E4E6E7;
-    padding: 2px 20px 2px;
-    text-decoration: none;
-    display: block;
-    border-radius: 4px;
-}
-
-.drop-down-content div:hover {
-    background-color: rgb(87,183,100);
-    cursor: pointer;
-}
-
-.drop-down-content div:active {
-    cursor: pointer;
-}
-
-.drop-down-button:hover {
-    cursor: pointer;
-}
-
-.drop-down-button:active {
-    cursor: pointer;
-}
-
 .drop-down-text {
     margin-right: 15px;
 }
@@ -292,18 +271,23 @@
 }
 
 .red-button {
-    background-color: rgb(217,52,59);
+    background-color: $darkRed;
     color: white;
+    &:hover {
+        cursor: pointer;
+        background-color: lighten($darkRed, 8%);
+    }
+    &:active {
+        cursor: pointer;
+        background-color: darken($darkRed, 8%);
+    }
 }
 
-.red-button:hover {
-    cursor: pointer;
-    background-color: rgb(237,72,79);
-}
-
-.red-button:active {
-    cursor: pointer;
-    background-color: rgb(207,42,49);
+@mixin rotate($degrees, $transition-duration, $animation-duration) {
+    transition-duration: $transition-duration;
+    transform: rotate($degrees);
+    -webkit-transform: rotate($degrees);
+    -webkit-animation-duration: $animation-duration;
 }
 
 .arrowUp {
@@ -311,10 +295,7 @@
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
-    transition-duration: 0.2s;
-    transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);
-    -webkit-animation-duration: 500ms;
+    @include rotate(-135deg, 0.2s, 500ms);
 }
 
 .arrowDown {
@@ -322,36 +303,18 @@
     border-width: 0 3px 3px 0;
     display: inline-block;
     padding: 3px;
-    transition-duration: 0.2s;
-    transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-    -webkit-animation-duration: 500ms;
+    @include rotate(45deg, 0.2s, 500ms);
 }
 
 .green-button {
-    background-color: rgb(87,183,100);
+    background-color: $bgGreen;
     color: white;
-}
-
-.green-button:hover{
-    background-color: rgb(117,213,130);
-}
-
-.green-button:active {
-    background-color: rgb(77,173,90);
-}
-
-.settings-button {
-    background-color: rgb(72,120,188);
-    color: white;
-}
-
-.settings-button:hover{
-    background-color: rgb(82,130,198);
-}
-
-.settings-button:active {
-    background-color: rgb(62,110,178);
+    &:hover{
+        background-color: lighten($bgGreen, 10%);
+    }
+    &:active {
+        background-color: darken($bgGreen, 8%);
+    }
 }
 
 @media only screen and (max-device-width: 550px) {

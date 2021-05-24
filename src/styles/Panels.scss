@@ -1,3 +1,5 @@
+@import "Variables";
+
 .draggable-container {
     position: absolute;
     height: auto;
@@ -32,7 +34,7 @@
 .draggable {
     position: absolute;
     cursor: move;
-    background-color: rgb(54,58,64);
+    background-color: $navBar;
     min-height: 35px;
     z-index: 5;
     padding: 5px 0 5px;
@@ -42,10 +44,10 @@
 .draggable-content {
     position: absolute;
     padding: 40px 40px 0 20px;
-    background-color: rgba(255,255,255,0.9);
+    background-color: $draggableContentBg;
     border-radius: 8px;
     z-index: 4;
-    box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0;
+    box-shadow: $draggableContentShadow 0 7px 29px 0;
 }
 
 .x-button {
@@ -56,28 +58,25 @@
     transform: translate(-50%, -50%);
     cursor: pointer;
     border-radius: 50%;
-    background-color: rgb(54,58,64);
+    background-color: transparent;
     width: 24px;
     height: 24px;
     display: table;
+    &:hover {
+        background-color: $lightGrey;
+    }
+    &:focus {
+        background-color: lighten($lightGrey, 8%);
+    }
+    &:active {
+        background-color: lighten($lightGrey, 8%);
+    }
 }
 
 .x-text {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
-}
-
-.x-button:hover {
-    background-color: rgb(84,88,94);
-}
-
-.x-button:focus {
-    background-color: rgb(124,128,134);
-}
-
-.x-button:active {
-    background-color: rgb(124,128,134);
 }
 
 .draggable-content-title {
@@ -104,16 +103,17 @@
     color: darkblue;
     width: 30px;
     height: 30px;
-}
-
-.range-button:hover {
-    border-radius: 6px;
-    background-color: rgb(240,240,240)
-}
-
-.range-button:active {
-    border-radius: 6px;
-    background-color: rgb(230,230,230)
+    &:hover {
+        border-radius: 6px;
+        background-color: $darkerWhite;
+    }
+    &:active {
+        border-radius: 6px;
+        background-color: darken($darkerWhite, 5%);
+    }
+    &:focus {
+        outline: 5px auto darkgrey;
+    }
 }
 
 .minus {
@@ -122,10 +122,6 @@
 
 .plus {
     margin-left: 5px;
-}
-
-.range-button:focus {
-    outline: 5px auto darkgrey;
 }
 
 .range-value {

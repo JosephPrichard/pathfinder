@@ -25,7 +25,7 @@ class Checkbox extends React.Component<IProps,IState>
     }
 
     /**
-     * Trigger callback and change checkbox state
+     * Trigger callback and toggle checkbox checked state
      */
     onChange() {
         this.setState(prevState => ({

@@ -17,17 +17,6 @@ export class Node
         child.parent = this;
         this.children.push(child);
     }
-
-    /**
-     * Some nodes don't have scores. returns -1 if the node is un-scored
-     */
-    score() {
-        return {
-            f: -1,
-            g: -1,
-            h: -1
-        }
-    }
 }
 
 /**
@@ -47,15 +36,30 @@ export class AStarNode extends Node
     f() {
         return this.fScore;
     }
+}
 
-    /**
-     * Gets scores for the node in a readable format
-     */
-    score() {
-        return {
-            f: Math.round(this.f()),
-            g: Math.round(this.g),
-            h: Math.round(this.f() - this.g)
-        }
+/**
+ * Represents an heuristic weighted Best First search tree node
+ */
+export class BestFirstNode extends Node
+{
+    readonly h: number; //heuristic
+
+    constructor(tile: Tile, h: number) {
+        super(tile);
+        this.h = h;
+    }
+}
+
+/**
+ * Represents an heuristic weighted Dijkstra tree node
+ */
+export class DijkstraNode extends Node
+{
+    readonly g: number; //path cost
+
+    constructor(tile: Tile, g: number) {
+        super(tile);
+        this.g = g;
     }
 }

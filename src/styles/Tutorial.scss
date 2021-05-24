@@ -1,25 +1,25 @@
+@import "Variables";
+@import "Utils";
+
 .tutorial-panel {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    @include center();
     width: 750px;
     height: 580px;
-    background-color: rgb(54,58,64);
+    background-color: $navBar;
     border-radius: 24px;
     border-style: solid;
-    border-color: rgb(100,100,100);
+    border-color: $lightGreyBorder;
     border-width: 3px;
     z-index: 10;
-    box-shadow: rgba(0, 0, 0, 0.25) 0 54px 55px, rgba(0, 0, 0, 0.12) 0 -12px 30px, rgba(0, 0, 0, 0.12) 0 4px 6px, rgba(0, 0, 0, 0.17) 0 12px 13px, rgba(0, 0, 0, 0.09) 0 -3px 5px;
+    @include strongShadow();
 }
 
 .tutorial-link {
-    color: rgb(99,188,220);
-}
-
-.tutorial-link:hover {
-    color: rgb(129,218,250);
+    color: $bgLightBlue;
+    &:hover {
+        color: lighten($bgLightBlue, 10%);
+    }
 }
 
 .tutorial-control-wrapper {
@@ -38,39 +38,38 @@
     border-radius: 6px;
     font-weight: 600;
     font-size: 18px;
+    &:focus {
+        outline: 5px auto -webkit-focus-ring-color;
+    }
+}
+
+@mixin tutorial-side-button($translate) {
+    bottom: 42px;
+    position: absolute;
+    transform: translateX($translate);
 }
 
 .tutorial-left-button {
-    bottom: 42px;
-    position: absolute;
+    @include tutorial-side-button(-110%);
     left: 50%;
-    transform: translateX(-110%);
-}
-
-.tutorial-left-button:active {
-    bottom: 38px;
+    &:active {
+        bottom: 38px;
+    }
 }
 
 .tutorial-right-button {
-    bottom: 42px;
-    position: absolute;
+    @include tutorial-side-button(110%);
     right: 50%;
-    transform: translateX(110%);
-}
-
-.tutorial-right-button:active {
-    bottom: 38px;
-}
-
-.tutorial-button:focus {
-    outline: 5px auto -webkit-focus-ring-color;
+    &:active {
+        bottom: 38px;
+    }
+    &:focus {
+        outline: 5px auto -webkit-focus-ring-color;
+    }
 }
 
 .content-top-wrapper {
-    display: flex;
-    display: -webkit-flex;
-    align-items: center;
-    -webkit-align-items: center;
+    @include centerFlex();
     height: 50px;
 }
 
@@ -90,10 +89,7 @@
 .control-buttons {
     width: 100%;
     height: 100px;
-    display: flex;
-    display: -webkit-flex;
-    align-items: center;
-    -webkit-align-items: center;
+    @include centerFlex();
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -105,28 +101,22 @@
     transform: translate(-75%, -25%);
     cursor: pointer;
     border-radius: 50%;
-    background-color: rgb(247,102,109);
+    background-color: $darkRed;
     width: 24px;
     height: 24px;
     display: table;
+    &:hover {
+        background-color: lighten($darkRed, 8%);
+    }
+    &:active {
+        background-color: darken($darkRed, 8%);
+    }
 }
 
 .x-tutorial-text {
     display: table-cell;
     vertical-align: middle;
     text-align: center;
-}
-
-.x-tutorial-button {
-    background-color: rgb(217,52,59);
-}
-
-.x-tutorial-button:hover {
-    background-color: rgb(237,72,79);
-}
-
-.x-tutorial-button:active {
-    background-color: rgb(207,42,49);
 }
 
 .tutorial-title {
@@ -141,29 +131,29 @@
     text-align: center;
 }
 
-.tutorial-subtext {
-    margin-top: 30px;
+@mixin subText($margin) {
     color: whitesmoke;
     font-size: 18px;
+    margin-left: $margin;
+    margin-right: $margin;
+}
+
+.tutorial-subtext {
+    margin-top: 30px;
+    @include subText(0%);
     text-align: justify;
 }
 
-.tutorial-subtext-center{
+.tutorial-subtext-center {
     margin-top: 30px;
-    color: whitesmoke;
-    font-size: 18px;
     text-align: center;
-    margin-left: 15%;
-    margin-right: 15%;
+    @include subText(15%);
 }
 
 .tutorial-subtext-narrow {
     margin-top: 60px;
-    color: whitesmoke;
-    font-size: 18px;
     text-align: justify;
-    margin-left: 15%;
-    margin-right: 15%;
+    @include subText(15%);
 }
 
 .text-row {
@@ -171,13 +161,6 @@
 }
 
 .tutorial-img {
-    display: block;
-    margin: auto;
-    border-radius: 10px;
-    box-sizing: border-box;
-}
-
-.tutorial-img-large {
     display: block;
     margin: auto;
     border-radius: 10px;
@@ -192,16 +175,14 @@
     padding-top: 15px;
 }
 
-.tut-green-button {
-    background-color: rgb(99,188,220);
-    box-shadow: 0 6px 0 0 rgb(59,148,180), 0 0 0 0 #bbb;
+.tut-blue-button {
+    background-color: $bgLightBlue;
+    box-shadow: 0 6px 0 0 $shadowLightBlue, 0 0 0 0 #bbb;
     color: white;
-}
-
-.tut-green-button:hover{
-    background-color: rgb(129,218,250);
-}
-
-.tut-green-button:active {
-    box-shadow: 0 3px 0 0 rgb(59,148,180), 0 0 0 0 #bbb;
+    &:hover {
+        background-color: lighten($bgLightBlue, 8%)
+    }
+    &:active {
+        box-shadow: 0 3px 0 0 $shadowLightBlue, 0 0 0 0 #bbb;
+    }
 }

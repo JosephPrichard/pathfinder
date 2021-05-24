@@ -116,20 +116,34 @@ class DropDown extends React.Component<DropDownProps, DropDownState>
         return this.state.display === 'none';
     }
 
+    /**
+     * Gets the style that will determine if the dropdown content should be displayed or not
+     */
     contentStyle() {
         return {
             display: this.state.display
         }
     }
 
+    /**
+     * Gets the css class determining if the arrow should be facing up or down
+     *  If the dropdown is extended the arrow faces down, otherwise it faces up
+     */
     arrowClass() {
         return this.state.up ? 'arrowUp' : 'arrowDown';
     }
 
+    /**
+     * Gets the css class that highlights the dropdown if the dropdown is extended
+     */
     getHighlightClass() {
         return !this.state.up ? 'drop-down-button-down drop-down-button-up' : 'drop-down-button-up'
     }
 
+    /**
+     * Renders the dropdown button, and its arrow
+     * The children will be rendered in the dropdown content
+     */
     render() {
         const className = this.props.dropDownClass === undefined ? '' : this.props.dropDownClass;
         const contentClassName = this.props.dropDownContentClass === undefined ? '' : this.props.dropDownContentClass;

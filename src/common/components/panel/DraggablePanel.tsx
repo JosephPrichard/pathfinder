@@ -177,6 +177,10 @@ class DraggablePanel extends React.Component<IProps, IState>
         }
     }
 
+    /**
+     * Renders the draggable component on top with the
+     *  children as the content within the panel
+     */
     render() {
         return (
             <div
@@ -198,6 +202,9 @@ class DraggablePanel extends React.Component<IProps, IState>
         );
     }
 
+    /**
+     * Renders the draggable component of the panel (just the top)
+     */
     renderDraggable() {
         return (
             <div

@@ -28,7 +28,7 @@ interface IProps {
 //scores and visualization are parallel arrays
 interface IState {
     visualization: string[][],
-    arrows: HashTable<Arrow>
+    arrows: HashTable<Arrow> //arrows are uniquely defined by where they point to
 }
 
 /**
@@ -54,6 +54,12 @@ class GridVisualization extends React.Component<IProps,IState>
         }
     }
 
+    /**
+     * Checks if new width and height props have been passed in
+     * If so, the Grid must be resized by coping the visualization a new 2d array
+     * with a different size (some elements will be empty or cut off)
+     * @param prevProps
+     */
     componentDidUpdate(prevProps: Readonly<IProps>) {
         if(this.props.width !== prevProps.width
             || this.props.height !== prevProps.height)
@@ -211,6 +217,10 @@ class GridVisualization extends React.Component<IProps,IState>
         }));
     }
 
+    /**
+     * Renders the visualization in the background with the arrows in front
+     * Arrows may or may not be rendered
+     */
     render() {
         return (
             <div>
@@ -243,6 +253,10 @@ class GridVisualization extends React.Component<IProps,IState>
         );
     }
 
+    /**
+     * Renders the arrows showing the tree of the visualization
+     * Can only be properly displayed in the svg canvas with the arrowhead marker
+     */
     renderArrows() {
         const width = this.tileWidth;
         const offset = width/2;
@@ -276,6 +290,13 @@ class GridVisualization extends React.Component<IProps,IState>
         return arrows;
     }
 
+    /**
+     * Renders the visualization as a 2d array of jsx elements
+     * It is possible for the height and width props to be out of sync with the
+     *  visualization array if the resize called after new props are passed in hasn't
+     *  finished before render is called again.
+     *  If this happens, any any out of bound visualizations are just empty
+     */
     renderViz() {
         const tiles: JSX.Element[][] = [];
         for(let y = 0; y < this.props.height; y++) {
@@ -297,6 +318,11 @@ class GridVisualization extends React.Component<IProps,IState>
         return tiles;
     }
 
+    /**
+     * Renders a single tile, that may be animated depending on the state
+     * @param point
+     * @param color
+     */
     renderTile(point: Point, color: string) {
         const width = this.tileWidth;
         const top = point.y * width;

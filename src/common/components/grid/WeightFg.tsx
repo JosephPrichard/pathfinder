@@ -1,6 +1,6 @@
 import React from 'react';
 import {Point} from '../../pathfinding/core/Components';
-import Weight from '../../../images/weight.svg';
+import Weight from '../../../assets/weight.svg';
 
 interface WeightProps {
     tileSize: number,

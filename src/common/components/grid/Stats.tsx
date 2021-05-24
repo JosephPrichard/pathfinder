@@ -8,7 +8,7 @@ interface IProps {
     nodes: number
 }
 
-class StatsPanel extends React.Component<IProps>
+class Stats extends React.Component<IProps>
 {
     private readonly textLog: RefObject<HTMLTextAreaElement> = React.createRef();
 
@@ -19,16 +19,8 @@ class StatsPanel extends React.Component<IProps>
     render() {
         const time = precise(this.props.time);
         const text = this.props.algorithm === '' ? '' :
-            this.props.algorithm +
-            ' visited ' +
-            this.props.nodes +
-            ' nodes in ' +
-            time +
-            ' ms. Path length = ' +
-            this.props.length +
-            '. Path cost = ' +
-            this.props.cost +
-            '. ';
+            `${this.props.algorithm} visited ${this.props.nodes} nodes in ${time} ms. ` +
+            `Path length = ${this.props.length}. Path cost = ${this.props.cost}.`;
         return(
             <textarea
                 tabIndex={-1}
@@ -47,4 +39,4 @@ function precise(x: number) {
     return x.toFixed(2);
 }
 
-export default StatsPanel;
+export default Stats;

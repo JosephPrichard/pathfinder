@@ -1,5 +1,5 @@
-import TerrainRandomGenerator from './TerrainRandomGenerator';
-import TerrainMazeGenerator from './TerrainMazeGenerator';
+import TerrainRandomGenerator from '../algorithms/TerrainRandomGenerator';
+import TerrainMazeGenerator from '../algorithms/TerrainMazeGenerator';
 import {createTileData, Point, TileData} from '../core/Components';
 
 export const MAZE = 0;
