@@ -1,3 +1,7 @@
+/*!
+ * Copyright (c) Joseph Prichard 2022.
+ */
+
 @import "Variables";
 @import "Utils";
 
@@ -230,7 +234,7 @@
         display: block;
         border-radius: 4px;
         &:hover {
-            background-color: $bgGreen;
+            background-color: $lightGrey;
             cursor: pointer;
         }
     }
@@ -275,11 +279,11 @@
     color: white;
     &:hover {
         cursor: pointer;
-        background-color: lighten($darkRed, 8%);
+        background-color: lighten($darkRed, 5%);
     }
     &:active {
         cursor: pointer;
-        background-color: darken($darkRed, 8%);
+        background-color: darken($darkRed, 3%);
     }
 }
 
@@ -310,10 +314,10 @@
     background-color: $bgGreen;
     color: white;
     &:hover{
-        background-color: lighten($bgGreen, 10%);
+        background-color: lighten($bgGreen, 5%);
     }
     &:active {
-        background-color: darken($bgGreen, 8%);
+        background-color: darken($bgGreen, 3%);
     }
 }
 

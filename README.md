@@ -27,6 +27,8 @@ npm run deploy
 
 ## Library
 
+This project also contains a standalone library for pathfinding on a 2D grid.
+
 The grid is based around 3 fundamental interfaces contained in ../pathfinding/core/Components
 
 Point, which represents an x,y location on the grid.
