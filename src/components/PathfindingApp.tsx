@@ -76,7 +76,7 @@ class PathfindingApp extends React.Component<IProps, IState>
             useIcon: this.useIcon()
         }
         const mobile = isMobile();
-        this.tileWidth =  mobile ? 47 : Math.round(window.screen.availWidth / 57);
+        this.tileWidth =  mobile ? 47 : 26;
     }
 
     windowOnResize = () => {
