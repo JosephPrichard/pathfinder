@@ -1,12 +1,10 @@
 # Pathfinder
 
-Educational grid based pathfinding tool and library powered by react.
+Educational grid based pathfinding website and library powered by react.
 
 ## Introduction
 
 This project is an educational Grid based Pathfinding tool written in Typescript that visualizes pathfinding and maze generation algorithms on a web browser! You can find an online demo [here](https://josephprichard.github.io/Pathfinder).
-
-This is is the react version of an older project I made: [here](https://github.com/JosephPrichard/PathfindingVisualizer)
 
 ## Build Process
 
