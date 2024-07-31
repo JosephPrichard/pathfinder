@@ -2,7 +2,7 @@
 
 A website to visualize graph traversal algorithms and maze generation algorithms written using Typescript and React. Contains implementations of A*, Dijkstra, BFS, and DFS with bidirectional variants. Uses the recursive division algorithm to generate mazes with more horizontally or vertically biased variations. 
 
-You can find an online demo [here](https://josephprichard.github.io/Pathfinder)!
+You can find an online demo [here](https://josephprichard.github.io/pathfinder)!
 
 ### The Algorithms
 
