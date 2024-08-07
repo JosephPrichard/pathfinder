@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-interface IProps {
+interface Props {
     min: number,
     max: number,
     default: number,
@@ -13,32 +13,29 @@ interface IProps {
     onChange: (val: number) => void
 }
 
-interface IState {
+interface State {
     value: number
 }
 
 const HOLD_DELAY = 120;
 
-class SteppedButtonRange extends React.Component<IProps, IState>
+class SteppedButtonRange extends React.Component<Props, State>
 {
     private interval: NodeJS.Timeout | undefined;
-    private callback: (() => void) | undefined; //set to either plus or minus
+    private callback: (() => void) | undefined; // set to either plus or minus
 
     private wasClicked: boolean = false;
 
-    //tracks how many times the button has changed its value while being held down
+    // tracks how many times the button has changed its value while being held down
     private intervals: number = 0;
 
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             value: this.props.default
         }
     }
 
-    /**
-     * Reduces the buttons value and invokes the onChange event
-     */
     minus() {
         this.setState(prevState => ({
             value: prevState.value - this.props.step >= this.props.min ?
@@ -46,12 +43,6 @@ class SteppedButtonRange extends React.Component<IProps, IState>
         }), () => this.props.onChange(this.state.value));
     }
 
-    /**
-     * Called when the minus button is clicked
-     * Schedules the minus event to be called every few ms
-     *  to simulate the minus button being "held down"
-     * @param e
-     */
     onMinus(e: Event) {
         e.preventDefault();
         this.wasClicked = true;
@@ -62,9 +53,6 @@ class SteppedButtonRange extends React.Component<IProps, IState>
         this.interval = setInterval(this.callback, HOLD_DELAY);
     }
 
-    /**
-     * Increases the buttons value and invokes the onChange event
-     */
     plus() {
         this.setState(prevState => ({
             value: prevState.value + this.props.step <= this.props.max ?
@@ -72,12 +60,6 @@ class SteppedButtonRange extends React.Component<IProps, IState>
         }), () => this.props.onChange(this.state.value));
     }
 
-    /**
-     * Called when the plus button is clicked
-     * Schedules the plus event to be called every few ms
-     *  to simulate the plus button being "held down"
-     * @param e
-     */
     onPlus(e: Event) {
         e.preventDefault();
         this.wasClicked = true;
@@ -88,11 +70,6 @@ class SteppedButtonRange extends React.Component<IProps, IState>
         this.interval = setInterval(this.callback, HOLD_DELAY);
     }
 
-    /**
-     * Cancels all timeouts to prevent the delayed increase/decrease of the value,
-     * If the button was recently clicked and hasn't yet changed its value at least once,
-     *  the callback to be scheduled (either plus or minus) will be invoked
-     */
     cancel() {
         if(this.intervals === 0 && this.wasClicked) {
             (this.callback as () => void)();
@@ -102,11 +79,6 @@ class SteppedButtonRange extends React.Component<IProps, IState>
         this.wasClicked = false;
     }
 
-    /**
-     * Renders the minus button on the left,
-     * The value of the button in the middle,
-     * and the plus button on the right
-     */
     render() {
         return (
             <div className='button-range-wrapper'>

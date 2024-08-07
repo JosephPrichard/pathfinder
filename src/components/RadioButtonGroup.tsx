@@ -4,24 +4,24 @@
 
 import React from 'react';
 
-interface IProps {
+interface Props {
     boxStyle: string,
     defaultChecked: number,
     disabled: boolean,
     onChange: (() => void)[]
 }
 
-interface IState {
+interface State {
     checked: boolean[];
 }
 
-class RadioButtonGroup extends React.Component<IProps, IState>
+class RadioButtonGroup extends React.Component<Props, State>
 {
     static defaultProps = {
         disabled: false
     };
 
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
         const checked: boolean[] = [];
         for(let i = 0; i < this.props.onChange.length; i++) {
@@ -32,12 +32,6 @@ class RadioButtonGroup extends React.Component<IProps, IState>
         }
     }
 
-    /**
-     * Set all radio buttons to checked aside from the index
-     * of the one that was changed
-     * Trigger callback
-     * @param index
-     */
     onChange(index: number) {
         const checked: boolean[] = [];
         for(let i = 0; i < this.props.onChange.length; i++) {
@@ -48,9 +42,6 @@ class RadioButtonGroup extends React.Component<IProps, IState>
         }, () => this.props.onChange[index]());
     }
 
-    /**
-     * Render a radio button for each child
-     */
     render() {
         const children = React.Children.toArray(this.props.children);
         const radioButtons: JSX.Element[] = [];

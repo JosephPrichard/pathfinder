@@ -4,7 +4,7 @@
 
 import React, {RefObject} from 'react';
 
-interface IProps {
+interface Props {
     algorithm: string,
     length: number,
     cost: number,
@@ -12,7 +12,7 @@ interface IProps {
     nodes: number
 }
 
-class Stats extends React.Component<IProps>
+class Stats extends React.Component<Props>
 {
     private readonly textLog: RefObject<HTMLTextAreaElement> = React.createRef();
 

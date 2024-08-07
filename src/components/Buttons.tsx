@@ -4,7 +4,7 @@
 
 import React from 'react';
 
-interface VProps {
+interface VizButtonProps {
     active: boolean,
     paused: boolean,
     onStartStop: ()  => void,
@@ -20,7 +20,7 @@ const SYMBOL_COLOR = 'rgb(230,230,230)';
 const OFFSET = 14;
 const DIMENSION = 47 - 2 * OFFSET;
 
-export class VisualizeButton extends React.Component<VProps>
+export class VisualizeButton extends React.Component<VizButtonProps>
 {
     getStopSymbol() {
         return (
@@ -64,14 +64,6 @@ export class VisualizeButton extends React.Component<VProps>
         );
     }
 
-    /**
-     * If button is "Active" two red half buttons should be rendered
-     *  One has the stop symbol, the other has either pause or resume symbol
-     *      (depends on if button state is paused)
-     *  stop button invokes onStartStop event, pause resume each invoke respective events
-     * Otherwise, a single green button should be rendered
-     *  invokes the onStartStop event
-     */
     render() {
         if(this.props.active) {
             return (

@@ -3,13 +3,12 @@
  */
 
 import React, {RefObject} from 'react';
-import {createTileData, Point, Tile, TileData} from '../../pathfinding/core/Components';
-import RectGrid, {Grid} from '../../pathfinding/core/Grid';
 import TileFg from './TileFg';
 import SolidFg from './SolidFg';
 import WeightFg from './WeightFg';
+import { createTileData, Grid, Point, RectGrid, Tile, TileData } from '../pathfinding/Core';
 
-interface IProps {
+interface Props {
     tileSize: number,
     width: number,
     height: number,
@@ -17,7 +16,7 @@ interface IProps {
     end: Point
 }
 
-interface IState {
+interface State {
     grid: Grid,
     initial: Point,
     goal: Point,
@@ -30,12 +29,7 @@ const ARROW_PATH_COLOR = 'rgb(73, 79, 250)';
 
 const BASE_WIDTH = 27;
 
-/**
- * Represents actual tile contents of the Grid itself
- * Will re-render itself when given a new Grid
- * Binds listeners to allow user to "draw" on the grid foreground
- */
-class GridForeground extends React.Component<IProps,IState>
+class GridForeground extends React.Component<Props, State>
 {
     private svg: RefObject<SVGSVGElement> = React.createRef();
 
@@ -52,11 +46,7 @@ class GridForeground extends React.Component<IProps,IState>
     private initialKey: number = 0;
     private goalKey: number = 0;
 
-    /**
-     * Constructs a GridForeground with immutable height and width
-     * @param props
-     */
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
         const end = this.props.end;
         this.tilePointer = createTileData(true);
@@ -64,17 +54,17 @@ class GridForeground extends React.Component<IProps,IState>
             grid: new RectGrid(this.props.width, this.props.height),
             path: [],
             initial: {
-                x: ((end.x)/3) >> 0,
-                y: ((end.y)/3) >> 0
+                x: (end.x / 3) >> 0,
+                y: (end.y / 3) >> 0
             },
             goal: {
-                x: ((2*(end.x)/3) >> 0) - 1,
-                y: ((2*(end.y)/3) >> 0) - 1
+                x: ((2 * end.x / 3) >> 0) - 1,
+                y: ((2 * end.y / 3) >> 0) - 1
             }
         }
     }
 
-    componentDidUpdate(prevProps: IProps) {
+    componentDidUpdate(prevProps: Props) {
         if(this.props.width !== prevProps.width
             || this.props.height !== prevProps.height)
         {
@@ -137,12 +127,6 @@ class GridForeground extends React.Component<IProps,IState>
         this.erasing = false;
     }
 
-    /**
-     * Responds to the event thrown at screen coordinates on press
-     * @param xCoordinate
-     * @param yCoordinate
-     * @param button
-     */
     onPress(xCoordinate: number, yCoordinate: number, button: number) {
         const point = this.calculatePoint(xCoordinate,yCoordinate);
         if(isControlKey(button)) {
@@ -162,11 +146,6 @@ class GridForeground extends React.Component<IProps,IState>
         }
     }
 
-    /**
-     * Responds to the event thrown at screen coordinates on drag/move
-     * @param xCoordinate
-     * @param yCoordinate
-     */
     onDrag(xCoordinate: number, yCoordinate: number) {
         const point = this.calculatePoint(xCoordinate,yCoordinate);
         if(this.draggingInitial) {
@@ -184,10 +163,6 @@ class GridForeground extends React.Component<IProps,IState>
         }
     }
 
-    /**
-     * Draw an entire new grid on the foreground with disabled animations
-     * @param grid
-     */
     drawGrid(grid: Grid) {
         this.doTileAnimation = false;
         this.setState({
@@ -195,10 +170,6 @@ class GridForeground extends React.Component<IProps,IState>
         }, () => this.doTileAnimation = true)
     }
 
-    /**
-     * Draw tile at point
-     * @param point
-     */
     drawTile(point: Point) {
         const grid = this.state.grid.clone();
         if(grid.inBounds(point)) {
@@ -212,10 +183,6 @@ class GridForeground extends React.Component<IProps,IState>
         });
     }
 
-    /**
-     * Checks if a node is visualized, then changes the tile to empty if it isn't
-     * @param point
-     */
     eraseTile(point: Point) {
         const grid = this.state.grid.clone();
         if(grid.inBounds(point)) {
@@ -226,9 +193,6 @@ class GridForeground extends React.Component<IProps,IState>
         });
     }
 
-    /**
-     * Clear grid in state
-     */
     clearTiles() {
         const grid = this.state.grid.clone();
         for(let y = 0; y < this.state.grid.getHeight(); y++) {
@@ -244,10 +208,6 @@ class GridForeground extends React.Component<IProps,IState>
         });
     }
 
-    /**
-     * Moves initial to a new point
-     * @param point
-     */
     moveInitial(point: Point) {
         if(this.canMoveEndPoint(point)) {
             this.initialKey++;
@@ -257,10 +217,6 @@ class GridForeground extends React.Component<IProps,IState>
         }
     }
 
-    /**
-     * Moves goal to a new point
-     * @param point
-     */
     moveGoal(point: Point) {
         if(this.canMoveEndPoint(point)) {
             this.goalKey++;
@@ -270,10 +226,6 @@ class GridForeground extends React.Component<IProps,IState>
         }
     }
 
-    /**
-     * Checks if we can move any of the end points (goal or initial) to that point
-     * @param point
-     */
     canMoveEndPoint(point: Point) {
         return this.state.grid.inBounds(point)
             && this.state.grid.isEmpty(point)
@@ -282,31 +234,18 @@ class GridForeground extends React.Component<IProps,IState>
             && !this.disable;
     }
 
-    /**
-     * Draw a path onto the grid
-     * @param path
-     */
     drawPath(path: Tile[]) {
         this.setState({
             path: path.slice()
         });
     }
 
-    /**
-     * Erase path from the grid
-     */
     erasePath() {
         this.setState({
             path: []
         });
     }
 
-    /**
-     * Converts real screen x,y coordinates into
-     * a 2d point position on the grid
-     * @param xCoordinate
-     * @param yCoordinate
-     */
     calculatePoint(xCoordinate: number, yCoordinate: number) {
         return {
             x: Math.floor(xCoordinate/this.props.tileSize),
@@ -330,12 +269,6 @@ class GridForeground extends React.Component<IProps,IState>
         });
     }
 
-    /**
-     * Renders the end tiles (initial and goal) behind
-     * Path arrows are rendered on an svg canvas above the end tiles
-     * The tiles Grid containing the rendered tiles from the grid state is displayed on top
-     *  it also is bound to event listeners to allow grid to be drawn/erased on
-     */
     render() {
         return (
             <div>
@@ -383,10 +316,6 @@ class GridForeground extends React.Component<IProps,IState>
         );
     }
 
-    /**
-     * Renders the solved path out of pathArrows between neighboring tile
-     * Can only be properly displayed in an svg canvas
-     */
     renderPath() {
         const lines: JSX.Element[] = [];
         for(let i = 0; i < this.state.path.length-1; i++) {
@@ -397,11 +326,6 @@ class GridForeground extends React.Component<IProps,IState>
         return lines;
     }
 
-    /**
-     * Renders a single blue arrow between two points to make up the
-     * path that represents the solved path
-     * Can only be properly displayed in an svg canvas
-     */
     renderPathArrow(index: number, first: Point, second: Point) {
         const width = this.props.tileSize;
         const offset = width/2;
@@ -426,12 +350,6 @@ class GridForeground extends React.Component<IProps,IState>
         );
     }
 
-    /**
-     * Iterate through the grid stored in the state and render each tile
-     * Solid tiles are rendered as grey squares
-     * Empty tiles (non solid tiles with a weight/cost of 1)
-     * Weighted tiles with a cost of higher than 1 are rendered with a weight png and a label
-     */
     renderTilesGrid() {
         const tiles: JSX.Element[] = [];
         for(let y = 0; y < this.state.grid.getHeight(); y++) {
@@ -474,13 +392,6 @@ class GridForeground extends React.Component<IProps,IState>
         return tiles;
     }
 
-    /**
-     * Renders the text (cost of the weight) to be overlay on top of the weight
-     *  The point should be the same as the weight the text is for
-     * @param point
-     * @param cost
-     * @param key
-     */
     renderWeightText(point: Point, cost: number, key: string) {
         return (
             <div
@@ -520,7 +431,7 @@ function pointsEqual(point1: Point, point2: Point) {
 }
 
 function isControlKey(button: number) {
-    //right or left mouse
+    // right or left mouse
     return button === 0 || button === 2;
 }
 

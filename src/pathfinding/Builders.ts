@@ -1,48 +1,34 @@
-/*
- * Copyright (c) Joseph Prichard 2022.
- */
+import {Navigator, PlusNavigator, Grid, createTileData, Point, TileData } from "./Core";
+import { TerrainMazeGenerator, TerrainRandomGenerator } from "./Generators";
+import { Pathfinder, AStarPathfinder, BestFirstPathfinder, BiBFSPathfinder, HeuristicFunc, Heuristics, DFSPathfinder, DijkstraPathfinder } from "./Pathfinders";
 
-import Navigator from '../core/Navigator';
-import PlusNavigator from '../core/PlusNavigator';
-import {Grid} from '../core/Grid';
-import {
-    chebyshev,
-    euclidean,
-    HeuristicFunc,
-    manhattan,
-    nullHeuristic,
-    octile
-} from '../algorithms/Heuristics';
-import Pathfinder from '../algorithms/Pathfinder';
-import AStarPathfinder from '../algorithms/AStarPathfinder';
-import BFSPathfinder from '../algorithms/BFSPathfinder';
-import DFSPathfinder from '../algorithms/DFSPathfinder';
-import BiBFSPathfinder from "../algorithms/BiBFSPathfinder";
-import BestFirstPathfinder from '../algorithms/BestFirstPathfinder';
-import DijkstraPathfinder from '../algorithms/DijkstraPathfinder';
+export const MAZE = 0;
+export const MAZE_VERTICAL_SKEW = 1;
+export const MAZE_HORIZONTAL_SKEW = 2;
+export const RANDOM_TERRAIN = 3;
 
 const CREATE_NAVIGATOR: {[key: string]: ((grid: Grid) => Navigator)} = {
     'plus': (grid: Grid) => new PlusNavigator(grid),
-}
+};
 
 const CREATE_HEURISTIC: {[key: string]: (() => HeuristicFunc)} = {
-    'manhattan': () => manhattan,
-    'euclidean': () => euclidean,
-    'chebyshev': () => chebyshev,
-    'octile': () => octile,
-    'null': () => nullHeuristic
-}
+    'manhattan': () => Heuristics.manhattan,
+    'euclidean': () => Heuristics.euclidean,
+    'chebyshev': () => Heuristics.chebyshev,
+    'octile': () => Heuristics.octile,
+    'null': () => Heuristics.nullHeuristic
+};
 
 const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: HeuristicFunc) => Pathfinder)} = {
     'dijkstra': (navigator) => new DijkstraPathfinder(navigator),
     'best-first': (navigator, heuristic) => new BestFirstPathfinder(navigator, heuristic),
     'a*': (navigator, heuristic) => new AStarPathfinder(navigator, heuristic),
-    'bfs': (navigator) => new BFSPathfinder(navigator),
+    'bfs': (navigator) => new BiBFSPathfinder(navigator),
     'dfs': (navigator) => new DFSPathfinder(navigator),
     'bi-bfs': (navigator) => new BiBFSPathfinder(navigator)
-}
+};
 
-class PathfinderBuilder
+export class PathfinderBuilder
 {
     private navigator: string = 'plus';
     private algorithm: string = 'a*';
@@ -83,9 +69,6 @@ class PathfinderBuilder
         return this;
     }
 
-    /**
-     * Builds a pathfinder with a navigator with the set algorithm, heuristic, and navigator
-     */
     build() {
         const createHeuristic = CREATE_HEURISTIC[this.heuristic];
         const createNavigator = CREATE_NAVIGATOR[this.navigator];
@@ -111,5 +94,42 @@ class PathfinderBuilder
     }
 }
 
-export default PathfinderBuilder;
+class TerrainGeneratorBuilder
+{
+    private width: number = 0;
+    private height: number = 0;
+    private type: number = MAZE;
+    private ignore: Point[] = [];
+    private data: TileData = createTileData(true);
 
+    setDimensions(width: number, height: number) {
+        this.width = width;
+        this.height = height;
+        return this;
+    }
+
+    setGeneratorType(type: number) {
+        this.type = type;
+        return this;
+    }
+
+    setIgnorePoints(ignore: Point[]) {
+        this.ignore = ignore.slice();
+        return this;
+    }
+
+    setTileData(data: TileData) {
+        this.data = data;
+        return this;
+    }
+
+    build() {
+        if(this.type >= RANDOM_TERRAIN) {
+            return new TerrainRandomGenerator(this.width, this.height, this.data, this.ignore);
+        } else {
+            return new TerrainMazeGenerator(this.width, this.height, this.data, this.ignore, this.type);
+        }
+    }
+}
+
+export default TerrainGeneratorBuilder;

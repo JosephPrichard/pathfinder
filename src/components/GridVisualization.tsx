@@ -3,10 +3,10 @@
  */
 
 import React from 'react';
-import {Node} from '../../pathfinding/algorithms/Node';
-import {Point} from '../../pathfinding/core/Components';
-import AppSettings from "../../utils/AppSettings";
-import {PointTable} from '../../pathfinding/structures/Hash';
+import AppSettings from "../utils/AppSettings";
+import { PointTable } from '../pathfinding/Structures';
+import { Point } from '../pathfinding/Core';
+import { PathNode } from '../pathfinding/Pathfinders';
 
 const CLOSED_NODE = 'rgb(198, 237, 238)';
 const OPEN_NODE = 'rgb(191, 248, 159)';
@@ -22,35 +22,27 @@ interface Arrow {
     from: Point
 }
 
-interface IProps {
+interface Props {
     settings: AppSettings,
     tileWidth: number,
     width: number,
     height: number
 }
 
-//scores and visualization are parallel arrays
-interface IState {
+// scores and visualization are parallel arrays
+interface State {
     visualization: string[][],
-    arrows: PointTable<Arrow> //arrows are uniquely defined by where they point to
+    arrows: PointTable<Arrow> // arrows are uniquely defined by where they point to
 }
 
-/**
- * Represents a visualization canvas for the background grid
- * Can be mutated using functions to change the state of the current visualization
- */
-class GridVisualization extends React.Component<IProps,IState>
+class GridVisualization extends React.Component<Props, State>
 {
     private readonly tileWidth: number;
     private tileClass: string = TILE_CLASS;
     private readonly width: number;
     private readonly height: number;
 
-    /**
-     * Constructs a GridVisualization with immutable height and width
-     * @param props
-     */
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
         this.tileWidth = this.props.tileWidth;
         this.width = props.width;
@@ -61,16 +53,8 @@ class GridVisualization extends React.Component<IProps,IState>
         }
     }
 
-    /**
-     * Checks if new width and height props have been passed in
-     * If so, the Grid must be resized by coping the visualization a new 2d array
-     * with a different size (some elements will be empty or cut off)
-     * @param prevProps
-     */
-    componentDidUpdate(prevProps: Readonly<IProps>) {
-        if(this.props.width !== prevProps.width
-            || this.props.height !== prevProps.height)
-        {
+    componentDidUpdate(prevProps: Readonly<Props>) {
+        if(this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
             const visualization: string[][] = this.createEmptyViz();
             for(let y = 0; y < this.props.height; y++) {
                 for(let x = 0; x < this.props.width; x++) {
@@ -79,15 +63,10 @@ class GridVisualization extends React.Component<IProps,IState>
                     }
                 }
             }
-            this.setState({
-                visualization: visualization
-            });
+            this.setState({ visualization });
         }
     }
 
-    /**
-     * Create a new empty visualization canvas
-     */
     createEmptyViz() {
         const visualization: string[][] = [];
         for(let y = 0; y < this.props.height; y++) {
@@ -100,9 +79,6 @@ class GridVisualization extends React.Component<IProps,IState>
         return visualization;
     }
 
-    /**
-     * Clear the visualization canvas and update UI
-     */
     clear() {
         this.setState({
             visualization: this.createEmptyViz(),
@@ -110,12 +86,7 @@ class GridVisualization extends React.Component<IProps,IState>
         });
     }
 
-    /**
-     * Perform a generation on a visualization array
-     * @param generation
-     * @param visualization
-     */
-    static doVizGeneration(generation: Node, visualization: string[][]) {
+    static doVizGeneration(generation: PathNode, visualization: string[][]) {
         for(const node of generation.children) {
             const point = node.tile.point;
             visualization[point.y][point.x] = OPEN_NODE;
@@ -125,11 +96,7 @@ class GridVisualization extends React.Component<IProps,IState>
         return visualization;
     }
 
-    /**
-     * Visualize generation and update UI
-     * @param generation
-     */
-    visualizeGeneration(generation: Node) {
+    visualizeGeneration(generation: PathNode) {
         this.setState(prevState => ({
             visualization: GridVisualization.doVizGeneration(
                 generation,
@@ -146,11 +113,7 @@ class GridVisualization extends React.Component<IProps,IState>
         this.tileClass = TILE_CLASS;
     }
 
-    /**
-     * Visualize generation array and update UI
-     * @param generations
-     */
-    visualizeGenerations(generations: Node[]) {
+    visualizeGenerations(generations: PathNode[]) {
         const visualization = this.createEmptyViz();
         for(const generation of generations) {
             GridVisualization.doVizGeneration(generation, visualization);
@@ -160,12 +123,7 @@ class GridVisualization extends React.Component<IProps,IState>
         });
     }
 
-    /**
-     * Perform an arrow generation on an arrow array
-     * @param generation
-     * @param arrows
-     */
-    static doArrowGeneration(generation: Node, arrows: PointTable<Arrow>) {
+    static doArrowGeneration(generation: PathNode, arrows: PointTable<Arrow>) {
         const point = generation.tile.point;
         for(const node of generation.children) {
             const childPoint = node.tile.point;
@@ -173,18 +131,14 @@ class GridVisualization extends React.Component<IProps,IState>
                 from: point,
                 to: childPoint,
             };
-            //remove a duplicate arrow to indicate replacement
-            //in A* for example, we could have re-discovered a better path to a tile
+            // remove a duplicate arrow to indicate replacement
+            // in A* for example, we could have re-discovered a better path to a tile
             arrows.add(newArrow.to, newArrow);
         }
         return arrows;
     }
 
-    /**
-     * Add arrow generation without updating UI
-     * @param generation
-     */
-    addArrowGeneration(generation: Node) {
+    addArrowGeneration(generation: PathNode) {
         this.setState(prevState => ({
             arrows: GridVisualization.doArrowGeneration(
                 generation,
@@ -193,11 +147,7 @@ class GridVisualization extends React.Component<IProps,IState>
         }));
     }
 
-    /**
-     * Add arrow generations and update UI
-     * @param generations
-     */
-    addArrowGenerations(generations: Node[]) {
+    addArrowGenerations(generations: PathNode[]) {
         const arrows: PointTable<Arrow> = new PointTable(this.width, this.height);
         for(const generation of generations) {
             GridVisualization.doArrowGeneration(generation, arrows)
@@ -207,11 +157,7 @@ class GridVisualization extends React.Component<IProps,IState>
         });
     }
 
-    /**
-     * Visualize both generation and arrows and update UI
-     * @param generation
-     */
-    visualizeGenerationAndArrows(generation: Node) {
+    visualizeGenerationAndArrows(generation: PathNode) {
         this.setState(prevState => ({
             visualization: GridVisualization.doVizGeneration(
                 generation,
@@ -224,10 +170,6 @@ class GridVisualization extends React.Component<IProps,IState>
         }));
     }
 
-    /**
-     * Renders the visualization in the background with the arrows in front
-     * Arrows may or may not be rendered
-     */
     render() {
         return (
             <div>
@@ -260,17 +202,13 @@ class GridVisualization extends React.Component<IProps,IState>
         );
     }
 
-    /**
-     * Renders the arrows showing the tree of the visualization
-     * Can only be properly displayed in the svg canvas with the arrowhead marker
-     */
     renderArrows() {
         const width = this.tileWidth;
         const offset = width/2;
         const arrows: JSX.Element[] = [];
         const arrowList = this.state.arrows.values();
         for(let i = 0; i < arrowList.length; i++) {
-            //calculate arrow position and dimensions
+            // calculate arrow position and dimensions
             const arrow = arrowList[i];
             const first = arrow.from;
             const second = arrow.to;
@@ -297,13 +235,6 @@ class GridVisualization extends React.Component<IProps,IState>
         return arrows;
     }
 
-    /**
-     * Renders the visualization as a 2d array of jsx elements
-     * It is possible for the height and width props to be out of sync with the
-     *  visualization array if the resize called after new props are passed in hasn't
-     *  finished before render is called again.
-     *  If this happens, any any out of bound visualizations are just empty
-     */
     renderViz() {
         const tiles: JSX.Element[][] = [];
         for(let y = 0; y < this.props.height; y++) {
@@ -325,11 +256,6 @@ class GridVisualization extends React.Component<IProps,IState>
         return tiles;
     }
 
-    /**
-     * Renders a single tile, that may be animated depending on the state
-     * @param point
-     * @param color
-     */
     renderTile(point: Point, color: string) {
         const width = this.tileWidth;
         const top = point.y * width;

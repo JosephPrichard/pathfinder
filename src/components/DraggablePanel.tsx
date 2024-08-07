@@ -4,7 +4,7 @@
 
 import React, {RefObject} from 'react';
 
-interface IProps {
+interface Props {
     title: string,
     show: boolean,
     onClickXButton: () => void,
@@ -12,12 +12,12 @@ interface IProps {
     height: number
 }
 
-interface IState {
+interface State {
     top: number,
     left: number
 }
 
-class DraggablePanel extends React.Component<IProps, IState>
+class DraggablePanel extends React.Component<Props, State>
 {
     //refs are used to access native DOM
     private draggable: RefObject<HTMLDivElement> = React.createRef();
@@ -29,7 +29,7 @@ class DraggablePanel extends React.Component<IProps, IState>
     private prevX = 0;
     private prevY = 0;
 
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             top: -1,

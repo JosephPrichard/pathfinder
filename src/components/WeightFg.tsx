@@ -3,19 +3,20 @@
  */
 
 import React from 'react';
-import {Point} from '../../pathfinding/core/Components';
+import Weight from '../assets/weight.svg';
+import { Point } from '../pathfinding/Core';
 
-interface SolidProps {
+interface Props {
     tileSize: number,
     point: Point,
     doTileAnimation: boolean
 }
 
-class SolidFg extends React.Component<SolidProps>
+class WeightFg extends React.Component<Props>
 {
     private readonly doTileAnimation: boolean;
 
-    constructor(props: SolidProps) {
+    constructor(props: Props) {
         super(props)
         this.doTileAnimation = this.props.doTileAnimation;
     }
@@ -24,16 +25,17 @@ class SolidFg extends React.Component<SolidProps>
         return (
             <div
                 style={{
-                    position: 'absolute',
                     left: this.props.point.x * this.props.tileSize,
                     top: this.props.point.y * this.props.tileSize,
                     width: this.props.tileSize,
-                    height: this.props.tileSize
+                    height: this.props.tileSize,
+                    backgroundImage: `url(${Weight})`,
+                    position: 'absolute'
                 }}
-                className={this.doTileAnimation ? 'solid-animation' : 'solid'}
+                className={this.doTileAnimation ? 'weight-animation' : 'weight'}
             />
         );
     }
 }
 
-export default SolidFg;
+export default WeightFg;

@@ -3,15 +3,15 @@
  */
 
 import React from 'react';
-import {Point} from '../../pathfinding/core/Components';
+import { Point } from '../pathfinding/Core';
 
-interface TileProps {
+interface Props {
     tileWidth: number,
     point: Point,
     color: string,
 }
 
-class TileFg extends React.Component<TileProps>
+class TileFg extends React.Component<Props>
 {
     render() {
         const size = this.props.tileWidth

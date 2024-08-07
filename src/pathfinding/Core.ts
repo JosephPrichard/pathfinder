@@ -1,8 +1,29 @@
-/*
- * Copyright (c) Joseph Prichard 2022.
- */
+export const UNIT = 1; // number of tiles we can move at once
 
-import {createTileData, Point, Tile, TileData} from './Components';
+export interface Point
+{
+    readonly x: number;
+    readonly y: number;
+}
+
+export interface TileData
+{
+    readonly pathCost: number;
+    readonly isSolid: boolean;
+}
+
+export interface Tile
+{
+    data: TileData;
+    readonly point: Point;
+}
+
+export function createTileData(isSolid: boolean): TileData {
+    return {
+        pathCost: 1,
+        isSolid: isSolid
+    }
+}
 
 export interface Grid
 {
@@ -22,23 +43,12 @@ export interface Grid
     cloneNewSize(width: number, height: number): Grid;
 }
 
-/**
- * A square grid system that stores nodes in a matrix
- * Uses an x,y system where x corresponds to column of the matrix,
- * and y corresponds to the row of the matrix
- * Tile should be treated like graph nodes
- */
-class RectGrid implements Grid
+export class RectGrid implements Grid
 {
     private readonly tiles: Tile[][];
     private readonly width: number;
     private readonly height: number;
 
-    /**
-     * Constructs a grid either with empty or predefined tiles
-     * @param width of the grid
-     * @param height of grid
-     */
     constructor(width: number, height: number) {
         this.width = width;
         this.height = height;
@@ -53,22 +63,10 @@ class RectGrid implements Grid
         return this.height;
     }
 
-    /**
-     * Checks if a given point is in bounds
-     * Other functions assume arguments are in bounds, this should be used
-     * if there is reasonable doubt about whether a point is in bounds
-     * @param point, to check
-     */
     inBounds(point: Point) {
         return point.x >= 0 && point.x < this.width && point.y >= 0 && point.y < this.height;
     }
 
-    /**
-     * Retrieves a defensive tile for a position
-     * Defensive copy prevents this object from being mutated without calling
-     * a mutate function
-     * @param point, point to get
-     */
     get(point: Point) {
         return {
             point: this.tiles[point.y][point.x].point,
@@ -76,38 +74,20 @@ class RectGrid implements Grid
         }
     }
 
-    /**
-     * Mutates a position's tile to solid or non solid
-     * @param point, point to mutate
-     * @param data to mutate to
-     */
     mutate(point: Point, data: TileData) {
         this.tiles[point.y][point.x].data = data;
     }
 
-    /**
-     * Mutates a a tile by point
-     * @param tile to mutate
-     */
     mutateTile(tile: Tile) {
         this.tiles[tile.point.y][tile.point.x].data = tile.data;
     }
 
-    /**
-     * Mutate tile at point
-     * @param point to mutate at
-     * @param solid to determine what default tile to create
-     */
     mutateDefault(point: Point, solid: boolean) {
         this.mutate(
             point, createTileData(solid)
         );
     }
 
-    /**
-     * Outputs the grid to a console
-     * @param console
-     */
     output(console: Console) {
         for(let y = 0; y < this.height; y++) {
             let str = '';
@@ -118,34 +98,18 @@ class RectGrid implements Grid
         }
     }
 
-    /**
-     * Returns json of tiles
-     */
     getJson() {
         return JSON.stringify(this.tiles);
     }
 
-    /**
-     * Determines if a tile can be walked on
-     * @param point
-     */
     walkable(point: Point) {
         return !this.tiles[point.y][point.x].data.isSolid;
     }
 
-    /**
-     * Determines if a tile isSolid
-     * @param point
-     */
     isSolid(point: Point) {
         return this.tiles[point.y][point.x].data.isSolid;
     }
 
-    /**
-     * Determines if a tile is "empty"
-     *  Meaning it isn't solid and it has a pathCost of 1
-     * @param point
-     */
     isEmpty(point: Point) {
         const data = this.tiles[point.y][point.x].data;
         return data.pathCost === 1 && !data.isSolid
@@ -180,9 +144,7 @@ class RectGrid implements Grid
     }
 }
 
-/**
- * Creates a 2d matrix of empty nodes
- */
+
 function createEmptyGrid(width: number, height: number) {
     const nodes: Tile[][] = [];
     for(let y = 0; y < height; y++) {
@@ -200,4 +162,71 @@ function createEmptyGrid(width: number, height: number) {
     return nodes;
 }
 
-export default RectGrid;
+export abstract class Navigator
+{
+    protected readonly grid: Grid;
+
+    constructor(grid: Grid) {
+        this.grid = grid;
+    }
+
+    getGrid() {
+        return this.grid;
+    }
+
+    equals(a: Point, b: Point) {
+        return a.x === b.x && a.y === b.y;
+    }
+
+    abstract cost(a: Point, b: Point): number;
+
+    abstract neighbors(point: Point): Tile[];
+
+    abstract getType(): string;
+}
+
+// we only have one navigator right now, since the diagonal navigator was removed
+export class PlusNavigator extends Navigator
+{
+    neighbors(point: Point) {
+        const tiles: Tile[] = [];
+        if(point.x + UNIT < this.grid.getWidth()) {
+            const tile = this.grid.get({ x: point.x + UNIT, y: point.y });
+
+            if(!tile.data.isSolid) {
+                tiles.push(tile);
+            }
+        }
+        if(point.y + UNIT < this.grid.getHeight()) {
+            const tile = this.grid.get({ x: point.x, y: point.y + UNIT });
+
+            if(!tile.data.isSolid) {
+                tiles.push(tile);
+            }
+        }
+        if(point.x - UNIT >= 0) {
+            const tile = this.grid.get({ x: point.x - UNIT, y: point.y });
+
+            if(!tile.data.isSolid) {
+                tiles.push(tile);
+            }
+        }
+        if(point.y - UNIT >= 0) {
+            const tile = this.grid.get({ x: point.x, y: point.y - UNIT });
+
+            if(!tile.data.isSolid) {
+                tiles.push(tile);
+            }
+        }
+        return tiles;
+    }
+
+    // a is unused, because some kinds of navifators need both points to calculate a cost, but not for a plus movement
+    cost(a: Point, b: Point) {
+        return this.grid.get(b).data.pathCost;
+    }
+
+    getType() {
+        return 'plus';
+    }
+}

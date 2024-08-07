@@ -4,24 +4,24 @@
 
 import React from 'react';
 
-interface IProps {
+interface Props {
     boxStyle: string,
     defaultChecked: boolean,
     disabled?: boolean,
     onChange: (checked: boolean) => void
 }
 
-interface IState {
+interface State {
     checked: boolean
 }
 
-class Checkbox extends React.Component<IProps,IState>
+class Checkbox extends React.Component<Props, State>
 {
     public static defaultProps = {
         disabled: false
     };
 
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             checked: this.props.defaultChecked

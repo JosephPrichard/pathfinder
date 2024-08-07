@@ -3,31 +3,24 @@
  */
 
 import React from 'react';
-import {Point} from '../../pathfinding/core/Components';
+import { Point } from '../pathfinding/Core';
 
-interface IProps {
+interface Props {
     tileWidth: number,
     width: number,
     height: number
 }
 
-/**
- * A component for a grid with specific width and height proportions
- */
-class GridBackground extends React.Component<IProps>
+class GridBackground extends React.Component<Props>
 {
     private readonly tileWidth: number;
 
-    /**
-     * Constructs a GridVisualization with immutable height and width
-     * @param props
-     */
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
         this.tileWidth = this.props.tileWidth;
     }
 
-    componentDidUpdate(prevProps: IProps) {
+    componentDidUpdate(prevProps: Props) {
         return this.props.width !== prevProps.width ||
             this.props.height !== prevProps.height;
     }

@@ -3,37 +3,31 @@
  */
 
 import React, {RefObject} from 'react';
-import TopBar from './navbar/TopBar';
-import {SettingsButton, VisualizeButton} from './navbar/Buttons';
+import TopBar from './TopBar';
+import {SettingsButton, VisualizeButton} from './Buttons';
 import {
     AlgorithmDropDown,
     ClearDropDown,
     MazeDropDown,
     TilesDropDown
-} from './navbar/DropDowns';
+} from './DropDowns';
 import {
     AlgorithmSettings,
     HeuristicSettings, 
     SpeedSettings,
     VisualSettings
-} from './panel/SettingPanels';
-import DraggablePanel from './panel/DraggablePanel';
-import PathfindingVisualizer from './grid/PathfindingVisualizer';
-import PathfinderBuilder from '../pathfinding/builders/PathfinderBuilder';
-import {
-    MAZE,
-    MAZE_HORIZONTAL_SKEW,
-    MAZE_VERTICAL_SKEW,
-    RANDOM_TERRAIN
-} from '../pathfinding/builders/TerrainGeneratorBuilder';
+} from './SettingPanels';
+import DraggablePanel from './DraggablePanel';
+import PathfindingVisualizer from './PathfindingVisualizer';
 import Icon from '../assets/react.png';
 import AppSettings, {getDefaultSettings} from "../utils/AppSettings";
-import Tutorial, {KEY_SHOW} from './tutorial/Tutorial';
-import {getTutorialPages} from './tutorial/TutorialPages';
+import Tutorial, {KEY_SHOW} from './Tutorial';
+import {getTutorialPages} from './TutorialPages';
+import { MAZE, MAZE_HORIZONTAL_SKEW, MAZE_VERTICAL_SKEW, PathfinderBuilder, RANDOM_TERRAIN } from '../pathfinding/Builders';
 
-interface IProps {}
+interface Props {}
 
-interface IState {
+interface State {
     settings: AppSettings,
 
     heuristicDisabled: boolean,
@@ -49,7 +43,7 @@ interface IState {
     useIcon: boolean
 }
 
-class PathfindingApp extends React.Component<IProps, IState>
+class PathfindingApp extends React.Component<Props, State>
 {
     //expose grid to parent to connect to button siblings
     private visualizer: RefObject<PathfindingVisualizer> = React.createRef();
@@ -62,12 +56,13 @@ class PathfindingApp extends React.Component<IProps, IState>
 
     private readonly tileWidth: number;
 
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
+        const settings = getDefaultSettings();
         this.state = {
-            settings: getDefaultSettings(),
-            heuristicDisabled: false,
-            bidirectionalDisabled: false,
+            settings,
+            heuristicDisabled: !PathfinderBuilder.usesHeuristic(settings.algorithm),
+            bidirectionalDisabled: !settings.bidirectional,
             arrowsDisabled: false,
             scoreDisabled: false,
             panelShow: false,
@@ -85,10 +80,6 @@ class PathfindingApp extends React.Component<IProps, IState>
         });
     }
 
-    /**
-     * Binds window listeners.
-     * Listener is to keep track of screen size to check if we show icon
-     */
     componentDidMount() {
         window.addEventListener('resize', this.windowOnResize);
     }
@@ -100,11 +91,6 @@ class PathfindingApp extends React.Component<IProps, IState>
     useIcon() {
         return window.innerWidth <= 850;
     }
-
-    /**
-     * Called when the drop downs are clicked to prevent more
-     * than one dropdown from being open at a time
-     */
 
     onClickAlgDrop() {
         this.clrDropDown.current!.hide();
@@ -129,11 +115,6 @@ class PathfindingApp extends React.Component<IProps, IState>
         this.algDropDown.current!.hide();
         this.mazeDropDown.current!.hide();
     }
-
-    /**
-     * Utility functions to change overall state of application
-     * Settings, overall appearance, etc
-     */
 
     changeButtonActiveState(visualizing: boolean) {
         this.setState({
@@ -212,10 +193,6 @@ class PathfindingApp extends React.Component<IProps, IState>
             pathCost: cost
         });
     }
-
-    /**
-     * Functions to modify app's settings
-     */
 
     changeAlgo(algorithm: string) {
         this.setState(prevState => ({
@@ -305,6 +282,7 @@ class PathfindingApp extends React.Component<IProps, IState>
                 alt={title} src={Icon}
             /> :
             title;
+
         return (
             <div>
                 <Tutorial>

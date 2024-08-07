@@ -6,16 +6,16 @@ import React from 'react';
 
 export const KEY_SHOW = 'visited';
 
-interface IProps {}
+interface Props {}
 
-interface IState {
+interface State {
     show: boolean
     page: number
 }
 
-class Tutorial extends React.Component<IProps,IState>
+class Tutorial extends React.Component<Props, State>
 {
-    constructor(props: IProps) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             show: true,
@@ -23,27 +23,18 @@ class Tutorial extends React.Component<IProps,IState>
         }
     }
 
-    /**
-     * Hide the tutorial and set key in local storage to true to prevent it from being shown again
-     */
     hide() {
         this.setState({
             show: false
         }, () => localStorage.setItem(KEY_SHOW, 'true'));
     }
 
-    /**
-     * Display the child one index to the left
-     */
     prev() {
         this.setState(prevState => ({
             page: prevState.page - 1 >= 0 ? prevState.page - 1 : prevState.page
         }));
     }
 
-    /**
-     * Display the child one index to the right
-     */
     next() {
         const children = React.Children.toArray(this.props.children);
         this.setState(prevState => ({
@@ -51,18 +42,10 @@ class Tutorial extends React.Component<IProps,IState>
         }));
     }
 
-    /**
-     * Checks if hide was called before by checking if hide() has been called before
-     */
     showPanel() {
         return localStorage.getItem(KEY_SHOW) !== 'true';
     }
 
-    /**
-     * Tutorial page will only be visible if tutorial hasn't been hidden before
-     * Render's the page-th child in the panel
-     * If the page is the final page, the next button is replaced with a finish button
-     */
     render() {
         const children = React.Children.toArray(this.props.children);
         const lastPage = this.state.page + 1 === children.length;

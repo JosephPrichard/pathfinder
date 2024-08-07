@@ -35,7 +35,7 @@ interface HeuristicProps {
 }
 
 export const SPEED_STEP = 5;
-export const SPEED_MIN = 20;
+export const SPEED_MIN = 5;
 export const SPEED_MAX = 200;
 
 export class VisualSettings extends React.Component<VisualProps>
@@ -66,11 +66,6 @@ export class SpeedSettings extends React.Component<SpeedProps>
         }
     }
 
-    /**
-     * Callback function to be called when slider is changed
-     * Call another callback and change text
-     * @param value
-     */
     onChangeSpeed(value: number) {
         this.props.onChange(value);
     }
@@ -89,6 +84,9 @@ export class SpeedSettings extends React.Component<SpeedProps>
                     sliderStyle='slider speed-slider'
                     onChange={(value: number) => this.onChangeSpeed(value)}
                 />
+                <div className='slider-text slider-text-after'>
+                    ms
+                </div>
             </div>
         );
     }
@@ -96,13 +94,6 @@ export class SpeedSettings extends React.Component<SpeedProps>
 
 export class AlgorithmSettings extends React.Component<AlgorithmProps>
 {
-    constructor(props: AlgorithmProps) {
-        super(props);
-        this.state = {
-            disabled: false
-        }
-    }
-
     render() {
         return (
             <div>

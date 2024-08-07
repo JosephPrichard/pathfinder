@@ -2,7 +2,7 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import { SPEED_MIN } from "../components/panel/SettingPanels";
+import { SPEED_MIN } from "../components/SettingPanels";
 
 interface AppSettings
 {
@@ -15,9 +15,10 @@ interface AppSettings
 }
 
 export function getDefaultSettings(): AppSettings {
+    const defaultDelayInc = 25;
     return {
         showArrows: true,
-        delayInc: SPEED_MIN,
+        delayInc: defaultDelayInc >= SPEED_MIN ? defaultDelayInc : SPEED_MIN,
         algorithm: 'a*',
         heuristicKey: 'manhattan',
         navigatorKey: 'plus',
