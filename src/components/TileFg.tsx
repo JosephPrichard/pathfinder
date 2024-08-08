@@ -4,35 +4,75 @@
 
 import React from 'react';
 import { Point } from '../pathfinding/Core';
+import Weight from "../assets/weight.svg";
 
-interface Props {
+interface TileProps {
     tileWidth: number,
     point: Point,
     color: string,
 }
 
-class TileFg extends React.Component<Props>
-{
-    render() {
-        const size = this.props.tileWidth
-        const top = this.props.point.y * this.props.tileWidth;
-        const left = this.props.point.x * this.props.tileWidth;
-        return (
-            <div
-                style={{
-                    position: 'absolute',
-                    width: size,
-                    height: size,
-                    top: top,
-                    left: left,
-                    backgroundColor: this.props.color,
-                    display: 'block',
-                    borderColor: this.props.color
-                }}
-                className={'svg-tile tile-fg'}
-            />
-        );
-    }
+export function TileFg({ tileWidth, point, color }: TileProps) {
+    const size = tileWidth;
+    const top = point.y * tileWidth;
+    const left = point.x * tileWidth;
+
+    return (
+        <div
+            style={{
+                position: 'absolute',
+                width: size,
+                height: size,
+                top: top,
+                left: left,
+                backgroundColor: color,
+                display: 'block',
+                borderColor: color
+            }}
+            className={'svg-tile tile-fg'}
+        />
+    );
 }
 
-export default TileFg;
+interface SolidProps {
+    tileSize: number,
+    point: Point,
+    doTileAnimation: boolean
+}
+
+export function SolidFg({ tileSize, point, doTileAnimation }: SolidProps) {
+    return (
+        <div
+            style={{
+                position: 'absolute',
+                left: point.x * tileSize,
+                top: point.y * tileSize,
+                width: tileSize,
+                height: tileSize
+            }}
+            className={doTileAnimation ? 'solid-animation' : 'solid'}
+        />
+    );
+}
+
+interface WeightProps {
+    tileSize: number,
+    point: Point,
+    doTileAnimation: boolean
+}
+
+export function WeightFg({ tileSize, point, doTileAnimation }: WeightProps) {
+    return (
+        <div
+            style={{
+                left: point.x * tileSize,
+                top: point.y * tileSize,
+                width: tileSize,
+                height: tileSize,
+                backgroundImage: `url(${Weight})`,
+                position: 'absolute'
+            }}
+            className={doTileAnimation ? 'weight-animation' : 'weight'}
+        />
+    );
+}

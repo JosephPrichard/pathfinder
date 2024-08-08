@@ -1,6 +1,6 @@
-import {Navigator, PlusNavigator, Grid, createTileData, Point, TileData } from "./Core";
+import { createTileData, Grid, Navigator, PlusNavigator, Point, TileData } from "./Core";
 import { TerrainMazeGenerator, TerrainRandomGenerator } from "./Generators";
-import { Pathfinder, AStarPathfinder, BestFirstPathfinder, BiBFSPathfinder, HeuristicFunc, Heuristics, DFSPathfinder, DijkstraPathfinder } from "./Pathfinders";
+import { AStarPathfinder, BestFirstPathfinder, BiBFSPathfinder, DFSPathfinder, DijkstraPathfinder, HeuristicFunc, Heuristics, Pathfinder } from "./Pathfinders";
 
 export const MAZE = 0;
 export const MAZE_VERTICAL_SKEW = 1;
@@ -28,8 +28,7 @@ const CREATE_PATHFINDER: {[key: string]: ((navigator: Navigator, heuristic: Heur
     'bi-bfs': (navigator) => new BiBFSPathfinder(navigator)
 };
 
-export class PathfinderBuilder
-{
+export class PathfinderBuilder {
     private navigator: string = 'plus';
     private algorithm: string = 'a*';
     private heuristic: string = 'null';
@@ -37,43 +36,6 @@ export class PathfinderBuilder
 
     constructor(grid: Readonly<Grid>) {
         this.grid = grid;
-    }
-
-    setNavigator(navigator: string) {
-        navigator = navigator.toLowerCase();
-        if(CREATE_NAVIGATOR[navigator] == null) {
-            throw new Error('No such navigator pattern exists')
-        } else {
-            this.navigator = navigator;
-        }
-        return this;
-    }
-
-    setAlgorithm(algorithm: string) {
-        algorithm = algorithm.toLowerCase();
-        if(CREATE_PATHFINDER[algorithm] == null) {
-            throw new Error('No such pathfinding algorithm exists')
-        } else {
-            this.algorithm = algorithm;
-        }
-        return this;
-    }
-
-    setHeuristic(heuristic: string) {
-        heuristic = heuristic.toLowerCase();
-        if(CREATE_HEURISTIC[heuristic] == null) {
-            throw new Error('No such heuristic function exists')
-        } else {
-            this.heuristic = heuristic;
-        }
-        return this;
-    }
-
-    build() {
-        const createHeuristic = CREATE_HEURISTIC[this.heuristic];
-        const createNavigator = CREATE_NAVIGATOR[this.navigator];
-        const createPathfinder = CREATE_PATHFINDER[this.algorithm];
-        return createPathfinder(createNavigator(this.grid), createHeuristic());
     }
 
     static usesHeuristic(algorithm: string) {
@@ -92,10 +54,46 @@ export class PathfinderBuilder
     static makeBidirectional(algorithm: string) {
         return 'bi-' + algorithm;
     }
+
+    setNavigator(navigator: string) {
+        navigator = navigator.toLowerCase();
+        if (CREATE_NAVIGATOR[navigator] == null) {
+            throw new Error('No such navigator pattern exists')
+        } else {
+            this.navigator = navigator;
+        }
+        return this;
+    }
+
+    setAlgorithm(algorithm: string) {
+        algorithm = algorithm.toLowerCase();
+        if (CREATE_PATHFINDER[algorithm] == null) {
+            throw new Error('No such pathfinding algorithm exists')
+        } else {
+            this.algorithm = algorithm;
+        }
+        return this;
+    }
+
+    setHeuristic(heuristic: string) {
+        heuristic = heuristic.toLowerCase();
+        if (CREATE_HEURISTIC[heuristic] == null) {
+            throw new Error('No such heuristic function exists')
+        } else {
+            this.heuristic = heuristic;
+        }
+        return this;
+    }
+
+    build() {
+        const createHeuristic = CREATE_HEURISTIC[this.heuristic];
+        const createNavigator = CREATE_NAVIGATOR[this.navigator];
+        const createPathfinder = CREATE_PATHFINDER[this.algorithm];
+        return createPathfinder(createNavigator(this.grid), createHeuristic());
+    }
 }
 
-class TerrainGeneratorBuilder
-{
+class TerrainGeneratorBuilder {
     private width: number = 0;
     private height: number = 0;
     private type: number = MAZE;
@@ -124,7 +122,7 @@ class TerrainGeneratorBuilder
     }
 
     build() {
-        if(this.type >= RANDOM_TERRAIN) {
+        if (this.type >= RANDOM_TERRAIN) {
             return new TerrainRandomGenerator(this.width, this.height, this.data, this.ignore);
         } else {
             return new TerrainMazeGenerator(this.width, this.height, this.data, this.ignore, this.type);

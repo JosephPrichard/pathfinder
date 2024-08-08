@@ -2,7 +2,7 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React, {RefObject} from 'react';
+import React, { RefObject } from 'react';
 
 interface Props {
     algorithm: string,
@@ -12,8 +12,7 @@ interface Props {
     nodes: number
 }
 
-class Stats extends React.Component<Props>
-{
+class Stats extends React.Component<Props> {
     private readonly textLog: RefObject<HTMLTextAreaElement> = React.createRef();
 
     componentDidUpdate() {
@@ -25,7 +24,7 @@ class Stats extends React.Component<Props>
         const text = this.props.algorithm === '' ? '' :
             `${this.props.algorithm} visited ${this.props.nodes} nodes in ${time} ms. ` +
             `Path length = ${this.props.length}. Path cost = ${this.props.cost}.`;
-        return(
+        return (
             <textarea
                 tabIndex={-1}
                 ref={this.textLog}

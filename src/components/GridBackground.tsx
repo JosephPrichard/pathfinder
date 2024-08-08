@@ -11,8 +11,7 @@ interface Props {
     height: number
 }
 
-class GridBackground extends React.Component<Props>
-{
+class GridBackground extends React.Component<Props> {
     private readonly tileWidth: number;
 
     constructor(props: Props) {
@@ -37,15 +36,11 @@ class GridBackground extends React.Component<Props>
 
     renderTiles() {
         const tiles: JSX.Element[][] = [];
-        for(let y = 0; y < this.props.height; y++) {
+        for (let y = 0; y < this.props.height; y++) {
             const row: JSX.Element[] = [];
-            for(let x = 0; x < this.props.width; x++) {
-                const point = {
-                    x: x, y: y
-                };
-                row.push(
-                    this.renderTile(point)
-                );
+            for (let x = 0; x < this.props.width; x++) {
+                const point = {x, y};
+                row.push(this.renderTile(point));
             }
             tiles.push(row);
         }

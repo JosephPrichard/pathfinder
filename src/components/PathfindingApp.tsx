@@ -2,30 +2,20 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React, {RefObject} from 'react';
-import TopBar from './TopBar';
-import {SettingsButton, VisualizeButton} from './Buttons';
-import {
-    AlgorithmDropDown,
-    ClearDropDown,
-    MazeDropDown,
-    TilesDropDown
-} from './DropDowns';
-import {
-    AlgorithmSettings,
-    HeuristicSettings, 
-    SpeedSettings,
-    VisualSettings
-} from './SettingPanels';
+import React, { PropsWithChildren, RefObject } from 'react';
+import { SettingsButton, VisualizeButton } from './Buttons';
+import { AlgorithmDropDown, ClearDropDown, MazeDropDown, TilesDropDown } from './DropDowns';
+import { AlgorithmSettings, HeuristicSettings, SpeedSettings, VisualSettings } from './SettingPanels';
 import DraggablePanel from './DraggablePanel';
 import PathfindingVisualizer from './PathfindingVisualizer';
 import Icon from '../assets/react.png';
-import AppSettings, {getDefaultSettings} from "../utils/AppSettings";
-import Tutorial, {KEY_SHOW} from './Tutorial';
-import {getTutorialPages} from './TutorialPages';
+import AppSettings, { getDefaultSettings } from "../utils/AppSettings";
+import Tutorial, { KEY_SHOW } from './Tutorial';
+import { getTutorialPages } from './TutorialPages';
 import { MAZE, MAZE_HORIZONTAL_SKEW, MAZE_VERTICAL_SKEW, PathfinderBuilder, RANDOM_TERRAIN } from '../pathfinding/Builders';
 
-interface Props {}
+interface Props {
+}
 
 interface State {
     settings: AppSettings,
@@ -43,12 +33,11 @@ interface State {
     useIcon: boolean
 }
 
-class PathfindingApp extends React.Component<Props, State>
-{
-    //expose grid to parent to connect to button siblings
+class PathfindingApp extends React.Component<Props, State> {
+    // expose grid to parent to connect to button siblings
     private visualizer: RefObject<PathfindingVisualizer> = React.createRef();
 
-    //drop down refs needed to invoke behavior between dropdowns
+    // drop down refs needed to invoke behavior between dropdowns
     private algDropDown: RefObject<AlgorithmDropDown> = React.createRef();
     private clrDropDown: RefObject<ClearDropDown> = React.createRef();
     private mazeDropDown: RefObject<MazeDropDown> = React.createRef();
@@ -71,7 +60,7 @@ class PathfindingApp extends React.Component<Props, State>
             useIcon: this.useIcon()
         }
         const mobile = isMobile();
-        this.tileWidth =  mobile ? 47 : 26;
+        this.tileWidth = mobile ? 47 : 26;
     }
 
     windowOnResize = () => {
@@ -378,6 +367,20 @@ class PathfindingApp extends React.Component<Props, State>
         );
     }
 }
+
+function TopBar(props: PropsWithChildren<{}>) {
+    return (
+        <div
+            style={{
+                width: window.screen.availWidth
+            }}
+            className='top-navbar'
+        >
+            {props.children}
+        </div>
+    );
+}
+
 
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

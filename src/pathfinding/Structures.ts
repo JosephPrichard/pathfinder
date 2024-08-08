@@ -1,7 +1,6 @@
 import { Point } from "./Core";
 
-export class PointSet
-{
+export class PointSet {
     private readonly map: (boolean | undefined)[][];
 
     constructor(width: number, height: number) {
@@ -32,8 +31,7 @@ export class PointSet
     }
 }
 
-export class PointTable<Value>
-{
+export class PointTable<Value> {
     private readonly map: (Value | undefined)[][];
 
     constructor(width: number, height: number) {
@@ -93,10 +91,9 @@ export class PointTable<Value>
 
 export type Comparator<E> = (a: E, b: E) => boolean
 
-export class Heap<E>
-{
-    private elements: E[] = [];
+export class Heap<E> {
     readonly compare: Comparator<E>;
+    private elements: E[] = [];
 
     constructor(compare: Comparator<E>) {
         this.compare = compare;
@@ -112,7 +109,7 @@ export class Heap<E>
 
     push(e: E) {
         this.elements.push(e);
-        this.siftUp(this.elements.length-1); //last element
+        this.siftUp(this.elements.length - 1); //last element
     }
 
     peek() {
@@ -133,9 +130,9 @@ export class Heap<E>
 
     private siftUp(pos: number) {
         let parent = ((pos - 1) / 2) >> 0; // integer division
-        while(parent >= 0) {
+        while (parent >= 0) {
             // if the current position is better than parent
-            if(this.compare(this.elements[pos], this.elements[parent])) {
+            if (this.compare(this.elements[pos], this.elements[parent])) {
                 // then current position with parent and move to next
                 this.swap(pos, parent);
                 pos = parent;
@@ -151,14 +148,14 @@ export class Heap<E>
         const left = 2 * pos + 1;
         const right = 2 * pos + 2;
         // stop if the children are out of bounds
-        if(left >= this.elements.length) {
+        if (left >= this.elements.length) {
             return;
         }
         // find the better child
         const child = (right >= this.elements.length || this.compare(this.elements[left], this.elements[right]))
             ? left : right;
         // continues to sift down if the child is better than the current position
-        if(this.compare(this.elements[child], this.elements[pos])) {
+        if (this.compare(this.elements[child], this.elements[pos])) {
             this.swap(child, pos);
             this.siftDown(child);
         }
@@ -175,8 +172,7 @@ export class Heap<E>
     }
 }
 
-export class Stack<E>
-{
+export class Stack<E> {
     private readonly elems: E[] = [];
 
     peek() {

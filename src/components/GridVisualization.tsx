@@ -13,7 +13,7 @@ const OPEN_NODE = 'rgb(191, 248, 159)';
 const ARROW_COLOR = 'rgb(153,153,153)';
 const EMPTY_NODE = 'e';
 const TILE_CLASS = 'tile';
-const VIZ_TILE_CLASS = 'tile-viz';
+const VIZ_TILE_CLASS = 'tile tile-viz';
 
 const BASE_WIDTH = 27;
 
@@ -35,8 +35,7 @@ interface State {
     arrows: PointTable<Arrow> // arrows are uniquely defined by where they point to
 }
 
-class GridVisualization extends React.Component<Props, State>
-{
+class GridVisualization extends React.Component<Props, State> {
     private readonly tileWidth: number;
     private tileClass: string = TILE_CLASS;
     private readonly width: number;
@@ -53,25 +52,50 @@ class GridVisualization extends React.Component<Props, State>
         }
     }
 
+    static doVizGeneration(generation: PathNode, visualization: string[][]) {
+        for (const node of generation.children) {
+            const point = node.tile.point;
+            visualization[point.y][point.x] = OPEN_NODE;
+        }
+        const point = generation.tile.point;
+        visualization[point.y][point.x] = CLOSED_NODE;
+        return visualization;
+    }
+
+    static doArrowGeneration(generation: PathNode, arrows: PointTable<Arrow>) {
+        const point = generation.tile.point;
+        for (const node of generation.children) {
+            const childPoint = node.tile.point;
+            const newArrow = {
+                from: point,
+                to: childPoint,
+            };
+            // remove a duplicate arrow to indicate replacement
+            // in A* for example, we could have re-discovered a better path to a tile
+            arrows.add(newArrow.to, newArrow);
+        }
+        return arrows;
+    }
+
     componentDidUpdate(prevProps: Readonly<Props>) {
-        if(this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
+        if (this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
             const visualization: string[][] = this.createEmptyViz();
-            for(let y = 0; y < this.props.height; y++) {
-                for(let x = 0; x < this.props.width; x++) {
-                    if(y < prevProps.height && x < prevProps.width) {
+            for (let y = 0; y < this.props.height; y++) {
+                for (let x = 0; x < this.props.width; x++) {
+                    if (y < prevProps.height && x < prevProps.width) {
                         visualization[y][x] = this.state.visualization[y][x];
                     }
                 }
             }
-            this.setState({ visualization });
+            this.setState({visualization});
         }
     }
 
     createEmptyViz() {
         const visualization: string[][] = [];
-        for(let y = 0; y < this.props.height; y++) {
+        for (let y = 0; y < this.props.height; y++) {
             const row: string[] = [];
-            for(let x = 0; x < this.props.width; x++) {
+            for (let x = 0; x < this.props.width; x++) {
                 row.push(EMPTY_NODE);
             }
             visualization.push(row);
@@ -86,22 +110,9 @@ class GridVisualization extends React.Component<Props, State>
         });
     }
 
-    static doVizGeneration(generation: PathNode, visualization: string[][]) {
-        for(const node of generation.children) {
-            const point = node.tile.point;
-            visualization[point.y][point.x] = OPEN_NODE;
-        }
-        const point = generation.tile.point;
-        visualization[point.y][point.x] = CLOSED_NODE;
-        return visualization;
-    }
-
     visualizeGeneration(generation: PathNode) {
         this.setState(prevState => ({
-            visualization: GridVisualization.doVizGeneration(
-                generation,
-                clone(prevState.visualization)
-            )
+            visualization: GridVisualization.doVizGeneration(generation, clone(prevState.visualization))
         }));
     }
 
@@ -115,58 +126,30 @@ class GridVisualization extends React.Component<Props, State>
 
     visualizeGenerations(generations: PathNode[]) {
         const visualization = this.createEmptyViz();
-        for(const generation of generations) {
+        for (const generation of generations) {
             GridVisualization.doVizGeneration(generation, visualization);
         }
-        this.setState({
-            visualization: visualization
-        });
-    }
-
-    static doArrowGeneration(generation: PathNode, arrows: PointTable<Arrow>) {
-        const point = generation.tile.point;
-        for(const node of generation.children) {
-            const childPoint = node.tile.point;
-            const newArrow = {
-                from: point,
-                to: childPoint,
-            };
-            // remove a duplicate arrow to indicate replacement
-            // in A* for example, we could have re-discovered a better path to a tile
-            arrows.add(newArrow.to, newArrow);
-        }
-        return arrows;
+        this.setState({visualization});
     }
 
     addArrowGeneration(generation: PathNode) {
         this.setState(prevState => ({
-            arrows: GridVisualization.doArrowGeneration(
-                generation,
-                prevState.arrows.clone()
-            )
+            arrows: GridVisualization.doArrowGeneration(generation, prevState.arrows.clone())
         }));
     }
 
     addArrowGenerations(generations: PathNode[]) {
         const arrows: PointTable<Arrow> = new PointTable(this.width, this.height);
-        for(const generation of generations) {
+        for (const generation of generations) {
             GridVisualization.doArrowGeneration(generation, arrows)
         }
-        this.setState({
-            arrows: arrows
-        });
+        this.setState({arrows});
     }
 
     visualizeGenerationAndArrows(generation: PathNode) {
         this.setState(prevState => ({
-            visualization: GridVisualization.doVizGeneration(
-                generation,
-                clone(prevState.visualization)
-            ),
-            arrows: GridVisualization.doArrowGeneration(
-                generation,
-                prevState.arrows.clone()
-            )
+            visualization: GridVisualization.doVizGeneration(generation, clone(prevState.visualization)),
+            arrows: GridVisualization.doArrowGeneration(generation, prevState.arrows.clone())
         }));
     }
 
@@ -204,11 +187,10 @@ class GridVisualization extends React.Component<Props, State>
 
     renderArrows() {
         const width = this.tileWidth;
-        const offset = width/2;
+        const offset = width / 2;
         const arrows: JSX.Element[] = [];
         const arrowList = this.state.arrows.values();
-        for(let i = 0; i < arrowList.length; i++) {
-            // calculate arrow position and dimensions
+        for (let i = 0; i < arrowList.length; i++) {
             const arrow = arrowList[i];
             const first = arrow.from;
             const second = arrow.to;
@@ -216,8 +198,8 @@ class GridVisualization extends React.Component<Props, State>
             const firstY = first.y * width;
             const secondX = second.x * width;
             const secondY = second.y * width;
-            const offsetX = (secondX - firstX)/4;
-            const offsetY = (secondY - firstY)/4;
+            const offsetX = (secondX - firstX) / 4;
+            const offsetY = (secondY - firstY) / 4;
             arrows.push(
                 <line
                     key={'arrow ' + i}
@@ -226,7 +208,7 @@ class GridVisualization extends React.Component<Props, State>
                     x2={secondX + offset - offsetX}
                     y2={secondY + offset - offsetY}
                     stroke={ARROW_COLOR}
-                    strokeWidth={2 * this.tileWidth/BASE_WIDTH}
+                    strokeWidth={2 * this.tileWidth / BASE_WIDTH}
                     className='line-arrow'
                     markerEnd='url(#arrowhead)'
                 />
@@ -237,18 +219,14 @@ class GridVisualization extends React.Component<Props, State>
 
     renderViz() {
         const tiles: JSX.Element[][] = [];
-        for(let y = 0; y < this.props.height; y++) {
+        for (let y = 0; y < this.props.height; y++) {
             const row: JSX.Element[] = [];
-            for(let x = 0; x < this.props.width; x++) {
-                const inBounds = (this.state.visualization[y]||[])[x] !== undefined;
+            for (let x = 0; x < this.props.width; x++) {
+                const inBounds = (this.state.visualization[y] || [])[x] !== undefined;
                 const viz = inBounds ? this.state.visualization[y][x] : EMPTY_NODE;
-                if(viz !== EMPTY_NODE) {
-                    const point = {
-                        x: x, y: y
-                    };
-                    row.push(
-                        this.renderTile(point, viz)
-                    );
+                if (viz !== EMPTY_NODE) {
+                    const point = {x: x, y: y};
+                    row.push(this.renderTile(point, viz));
                 }
             }
             tiles.push(row);
@@ -266,7 +244,7 @@ class GridVisualization extends React.Component<Props, State>
             height: width + 'px',
             top: top,
             left: left,
-            fontSize: 10 * width/BASE_WIDTH
+            fontSize: 10 * width / BASE_WIDTH
         };
         return (
             <div
@@ -279,9 +257,7 @@ class GridVisualization extends React.Component<Props, State>
 }
 
 function clone<T>(array: T[][]) {
-    return array.map(
-        (arr) => arr.slice()
-    );
+    return array.map((arr) => arr.slice());
 }
 
 export default GridVisualization;

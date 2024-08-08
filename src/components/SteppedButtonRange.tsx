@@ -19,8 +19,7 @@ interface State {
 
 const HOLD_DELAY = 120;
 
-class SteppedButtonRange extends React.Component<Props, State>
-{
+class SteppedButtonRange extends React.Component<Props, State> {
     private interval: NodeJS.Timeout | undefined;
     private callback: (() => void) | undefined; // set to either plus or minus
 
@@ -54,10 +53,12 @@ class SteppedButtonRange extends React.Component<Props, State>
     }
 
     plus() {
-        this.setState(prevState => ({
-            value: prevState.value + this.props.step <= this.props.max ?
-                prevState.value + this.props.step : prevState.value
-        }), () => this.props.onChange(this.state.value));
+        this.setState(
+            prevState => ({
+                value: prevState.value + this.props.step <= this.props.max ? prevState.value + this.props.step : prevState.value
+            }),
+            () => this.props.onChange(this.state.value)
+        );
     }
 
     onPlus(e: Event) {
@@ -71,7 +72,7 @@ class SteppedButtonRange extends React.Component<Props, State>
     }
 
     cancel() {
-        if(this.intervals === 0 && this.wasClicked) {
+        if (this.intervals === 0 && this.wasClicked) {
             (this.callback as () => void)();
         }
         clearInterval(this.interval as NodeJS.Timeout);
@@ -88,7 +89,7 @@ class SteppedButtonRange extends React.Component<Props, State>
                     onMouseUp={() => this.cancel()}
                     onMouseLeave={() => this.cancel()}
                     onKeyDown={(e) => {
-                        if(e.key === 'Enter') {
+                        if (e.key === 'Enter') {
                             this.minus();
                         }
                     }}
@@ -106,7 +107,7 @@ class SteppedButtonRange extends React.Component<Props, State>
                     onMouseUp={() => this.cancel()}
                     onMouseLeave={() => this.cancel()}
                     onKeyDown={(e) => {
-                        if(e.key === 'Enter') {
+                        if (e.key === 'Enter') {
                             this.plus()
                         }
                     }}

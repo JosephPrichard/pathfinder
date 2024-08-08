@@ -2,7 +2,7 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React, {RefObject} from 'react';
+import React, { RefObject } from 'react';
 import GridVisualization from './GridVisualization';
 import GridForeground from './GridForeground';
 import Stats from './Stats';
@@ -30,15 +30,14 @@ interface State {
     tilesY: number
 }
 
-class PathfindingVisualizer extends React.Component<Props, State>
-{
+class PathfindingVisualizer extends React.Component<Props, State> {
     // references to expose background and foreground grids to parent
     private background: RefObject<GridVisualization> = React.createRef();
     private foreground: RefObject<GridForeground> = React.createRef();
 
     private visualized = false;
     private visualizing = false;
-    private visualTimeouts: VirtualTimer[]  = [];
+    private visualTimeouts: VirtualTimer[] = [];
     private generations: PathNode[] = [];
     private paused = false;
     private wasPaused = false; // paused before alt tab?
@@ -54,6 +53,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
         this.tileWidth = this.props.tileWidth;
         const tilesX = Math.floor(w / this.tileWidth) + 1;
         const tilesY = Math.floor((h - 75 - 30) / this.tileWidth) + 1;
+
         this.state = {
             time: -1,
             length: -1,
@@ -70,6 +70,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
         const h = document.documentElement.clientHeight;
         const tilesX = Math.floor(w / this.tileWidth) + 1;
         const tilesY = Math.floor((h - 75 - 30) / this.tileWidth) + 1;
+
         this.setState(prevState => ({
             tilesX: prevState.tilesX < tilesX ? tilesX : prevState.tilesX,
             tilesY: prevState.tilesY < tilesY ? tilesY : prevState.tilesY
@@ -78,13 +79,13 @@ class PathfindingVisualizer extends React.Component<Props, State>
 
     onWindowBlur = () => {
         this.wasPaused = this.isPaused();
-        if(!this.wasPaused) {
+        if (!this.wasPaused) {
             this.pausePathfinding();
         }
     }
 
     onWindowFocus = () => {
-        if(this.isPaused() && !this.wasPaused) {
+        if (this.isPaused() && !this.wasPaused) {
             this.resumePathfinding();
         }
     }
@@ -109,7 +110,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 
     changeTile(data: TileData) {
-        this.mazeTile = data; //enables weighted terrain
+        this.mazeTile = data; // enables weighted terrain
         this.foreground.current!.changeTile(data);
     }
 
@@ -119,14 +120,14 @@ class PathfindingVisualizer extends React.Component<Props, State>
 
     pausePathfinding() {
         this.paused = true;
-        for(const timeout of this.visualTimeouts) {
+        for (const timeout of this.visualTimeouts) {
             timeout.pause();
         }
     }
 
     resumePathfinding() {
         this.paused = false;
-        for(const timeout of this.visualTimeouts) {
+        for (const timeout of this.visualTimeouts) {
             timeout.resume();
         }
     }
@@ -143,10 +144,15 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 
     doDelayedPathfinding() {
-        // start the visualization initialization
         const settings = this.props.settings;
         const background = this.background.current!;
-        background.enableAnimations();
+
+        if (settings.delayInc < 20) {
+            background.disableAnimations();
+        } else {
+            background.enableAnimations();
+        }
+
         this.paused = false;
         this.clearVisualization();
         this.clearPath();
@@ -155,7 +161,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
         foreground.toggleDisable();
 
         // start visualization if not visualizing
-        if(!this.visualizing) {
+        if (!this.visualizing) {
             this.visualizing = true;
             this.props.onChangeVisualizing(this.visualizing);
 
@@ -185,7 +191,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
                     this.visualTimeouts.push(timeout);
                 });
                 promises.push(promise);
-                if(!generationSet.has(generation.tile.point)) {
+                if (!generationSet.has(generation.tile.point)) {
                     // rediscovered nodes shouldn't add a delay to visualization
                     delay += baseIncrement;
                 }
@@ -223,20 +229,20 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 
     findPath(pathfinder: Pathfinder) {
-         // perform pathfinding with performance calculation
-         const foreground = this.foreground.current!;
-         const t0 = performance.now();
-         const path = pathfinder.findPath(foreground.state.initial, foreground.state.goal);
-         const t1 = performance.now();
-         const t2 = t1 - t0;
-         this.setState({
-             time: t2,
-             nodes: pathfinder.getRecentNodes(),
-             length: calcLength(foreground.state.initial, path),
-             cost: calcCost(foreground.state.grid.get(foreground.state.initial), path),
-             algorithm: pathfinder.getAlgorithmName()
-         });
-         return path;
+        // perform pathfinding with performance calculation
+        const foreground = this.foreground.current!;
+        const t0 = performance.now();
+        const path = pathfinder.findPath(foreground.state.initial, foreground.state.goal);
+        const t1 = performance.now();
+        const t2 = t1 - t0;
+        this.setState({
+            time: t2,
+            nodes: pathfinder.getRecentNodes(),
+            length: calcLength(foreground.state.initial, path),
+            cost: calcCost(foreground.state.grid.get(foreground.state.initial), path),
+            algorithm: pathfinder.getAlgorithmName()
+        });
+        return path;
     }
 
     drawPath(path: Tile[]) {
@@ -246,7 +252,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 
     onTilesDragged() {
-        if(this.visualized) {
+        if (this.visualized) {
             this.clearVisualization();
             this.doPathfinding();
             this.visualized = true;
@@ -254,7 +260,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 
     createTerrain(mazeType: number, useMazeTile: boolean) {
-        if(this.visualizing) {
+        if (this.visualizing) {
             return;
         }
         this.clearTiles();
@@ -262,23 +268,16 @@ class PathfindingVisualizer extends React.Component<Props, State>
         this.clearVisualization();
         const foreground = this.foreground.current!;
         const end = this.calcEndPointInView();
-        const newState = (mazeType !== RANDOM_TERRAIN) ? {
-            initial: {
-                x: 1, y: 1
-            },
-            goal: {
-                x: end.x-2, y: end.y-2
-            }
-        } : {
-            initial: {
-                x: 1, y: ((end.y-1) / 2) >> 0
-            },
-            goal: {
-                x: end.x-2, y: ((end.y-1) / 2) >> 0
-            }
-        };
-        foreground.setState(newState,() => {
+
+        const newState = (mazeType !== RANDOM_TERRAIN) ?
+            {initial: {x: 1, y: 1}, goal: {x: end.x - 2, y: end.y - 2}} :
+            {initial: {x: 1, y: ((end.y - 1) / 2) >> 0}, goal: {x: end.x - 2, y: ((end.y - 1) / 2) >> 0}};
+
+        foreground.setState(newState, () => {
             const prevGrid = foreground.state.grid;
+
+            const solid: TileData = { pathCost: 1, isSolid: true };
+
             const generator = new TerrainGeneratorBuilder()
                 .setDimensions(
                     prevGrid.getWidth(),
@@ -286,14 +285,10 @@ class PathfindingVisualizer extends React.Component<Props, State>
                 )
                 .setGeneratorType(mazeType)
                 .setIgnorePoints([foreground.state.initial, foreground.state.goal])
-                .setTileData(useMazeTile ? this.mazeTile : getSolid())
+                .setTileData(useMazeTile ? this.mazeTile : solid)
                 .build();
-            const topLeft = {
-                x: 1, y: 1
-            };
-            const bottomRight = {
-                x: end.x-2, y: end.y-2
-            };
+            const topLeft = {x: 1, y: 1};
+            const bottomRight = {x: end.x - 2, y: end.y - 2};
             const grid = generator.generateTerrain(topLeft, bottomRight);
             foreground.drawGrid(grid);
         });
@@ -309,15 +304,13 @@ class PathfindingVisualizer extends React.Component<Props, State>
         const yDecimal = yEnd - yFloor;
         let x = xDecimal > 0.05 ? Math.ceil(xEnd) : xFloor;
         let y = yDecimal > 0.05 ? Math.ceil(yEnd) : yFloor;
-        if(x > this.state.tilesX) {
+        if (x > this.state.tilesX) {
             x = this.state.tilesX
         }
-        if(y > this.state.tilesY) {
+        if (y > this.state.tilesY) {
             y = this.state.tilesY
         }
-        return {
-            x: x, y: y
-        }
+        return {x: x, y: y};
     }
 
     calcEndPoint() {
@@ -329,7 +322,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 
     resetPoints() {
-        if(!this.visualizing) {
+        if (!this.visualizing) {
             this.foreground.current!.resetPoints();
         }
     }
@@ -343,7 +336,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 
     clearTilesChecked() {
-        if(!this.visualizing) {
+        if (!this.visualizing) {
             this.foreground.current!.clearTiles();
         }
     }
@@ -354,7 +347,7 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 
     clearVisualizationChecked() {
-        if(!this.visualizing) {
+        if (!this.visualizing) {
             this.visualized = false;
             this.background.current!.clear();
         }
@@ -372,7 +365,6 @@ class PathfindingVisualizer extends React.Component<Props, State>
     visualizeGenerationAndArrows(generation: PathNode) {
         this.background.current!.visualizeGenerationAndArrows(generation);
     }
-
 
     render() {
         return (
@@ -411,16 +403,10 @@ class PathfindingVisualizer extends React.Component<Props, State>
     }
 }
 
-function getSolid() {
-    return {
-        pathCost: 1,
-        isSolid: true
-    }
-}
 
 // calculates the length of a chain of tiles starting from a point
 function calcLength(initial: Point, path: Tile[]) {
-    if(path.length === 0) {
+    if (path.length === 0) {
         return 0;
     }
     let len = Heuristics.euclidean(initial, path[0].point);
@@ -432,7 +418,7 @@ function calcLength(initial: Point, path: Tile[]) {
 
 // calculates the cost of a chain of tiles starting from a point
 function calcCost(initial: Tile, path: Tile[]) {
-    if(path.length === 0) {
+    if (path.length === 0) {
         return 0;
     }
     let len = Heuristics.euclidean(initial.point, path[0].point) * path[0].data.pathCost;

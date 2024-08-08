@@ -1,19 +1,16 @@
 export const UNIT = 1; // number of tiles we can move at once
 
-export interface Point
-{
+export interface Point {
     readonly x: number;
     readonly y: number;
 }
 
-export interface TileData
-{
+export interface TileData {
     readonly pathCost: number;
     readonly isSolid: boolean;
 }
 
-export interface Tile
-{
+export interface Tile {
     data: TileData;
     readonly point: Point;
 }
@@ -25,26 +22,37 @@ export function createTileData(isSolid: boolean): TileData {
     }
 }
 
-export interface Grid
-{
+export interface Grid {
     getWidth(): number;
+
     getHeight(): number;
+
     inBounds(point: Point): boolean;
+
     get(point: Point): Tile;
+
     isSolid(point: Point): boolean;
+
     mutate(point: Point, data: TileData): void;
+
     mutateTile(tile: Tile): void;
+
     mutateDefault(point: Point, solid: boolean): void;
+
     output(console: Console): void;
+
     getJson(): string;
+
     walkable(point: Point): boolean;
+
     isEmpty(point: Point): boolean;
+
     clone(): Grid,
+
     cloneNewSize(width: number, height: number): Grid;
 }
 
-export class RectGrid implements Grid
-{
+export class RectGrid implements Grid {
     private readonly tiles: Tile[][];
     private readonly width: number;
     private readonly height: number;
@@ -89,9 +97,9 @@ export class RectGrid implements Grid
     }
 
     output(console: Console) {
-        for(let y = 0; y < this.height; y++) {
+        for (let y = 0; y < this.height; y++) {
             let str = '';
-            for(let x = 0; x < this.width; x++) {
+            for (let x = 0; x < this.width; x++) {
                 str += this.tiles[y][x].data.isSolid + ', ';
             }
             console.log(str);
@@ -117,8 +125,8 @@ export class RectGrid implements Grid
 
     clone() {
         const grid = new RectGrid(this.width, this.height);
-        for(let y = 0; y < grid.height; y++) {
-            for(let x = 0; x < grid.width; x++) {
+        for (let y = 0; y < grid.height; y++) {
+            for (let x = 0; x < grid.width; x++) {
                 const point = {
                     x: x, y: y
                 }
@@ -130,12 +138,12 @@ export class RectGrid implements Grid
 
     cloneNewSize(width: number, height: number) {
         const grid = new RectGrid(width, height);
-        for(let y = 0; y < grid.height; y++) {
-            for(let x = 0; x < grid.width; x++) {
+        for (let y = 0; y < grid.height; y++) {
+            for (let x = 0; x < grid.width; x++) {
                 const point = {
                     x: x, y: y
                 }
-                if(this.inBounds(point)) {
+                if (this.inBounds(point)) {
                     grid.mutateTile(this.get(point));
                 }
             }
@@ -147,9 +155,9 @@ export class RectGrid implements Grid
 
 function createEmptyGrid(width: number, height: number) {
     const nodes: Tile[][] = [];
-    for(let y = 0; y < height; y++) {
+    for (let y = 0; y < height; y++) {
         const row: Tile[] = [];
-        for(let x = 0; x < width; x++) {
+        for (let x = 0; x < width; x++) {
             row.push({
                 point: {
                     x: x, y: y
@@ -162,8 +170,7 @@ function createEmptyGrid(width: number, height: number) {
     return nodes;
 }
 
-export abstract class Navigator
-{
+export abstract class Navigator {
     protected readonly grid: Grid;
 
     constructor(grid: Grid) {
@@ -186,42 +193,41 @@ export abstract class Navigator
 }
 
 // we only have one navigator right now, since the diagonal navigator was removed
-export class PlusNavigator extends Navigator
-{
+export class PlusNavigator extends Navigator {
     neighbors(point: Point) {
         const tiles: Tile[] = [];
-        if(point.x + UNIT < this.grid.getWidth()) {
-            const tile = this.grid.get({ x: point.x + UNIT, y: point.y });
+        if (point.x + UNIT < this.grid.getWidth()) {
+            const tile = this.grid.get({x: point.x + UNIT, y: point.y});
 
-            if(!tile.data.isSolid) {
+            if (!tile.data.isSolid) {
                 tiles.push(tile);
             }
         }
-        if(point.y + UNIT < this.grid.getHeight()) {
-            const tile = this.grid.get({ x: point.x, y: point.y + UNIT });
+        if (point.y + UNIT < this.grid.getHeight()) {
+            const tile = this.grid.get({x: point.x, y: point.y + UNIT});
 
-            if(!tile.data.isSolid) {
+            if (!tile.data.isSolid) {
                 tiles.push(tile);
             }
         }
-        if(point.x - UNIT >= 0) {
-            const tile = this.grid.get({ x: point.x - UNIT, y: point.y });
+        if (point.x - UNIT >= 0) {
+            const tile = this.grid.get({x: point.x - UNIT, y: point.y});
 
-            if(!tile.data.isSolid) {
+            if (!tile.data.isSolid) {
                 tiles.push(tile);
             }
         }
-        if(point.y - UNIT >= 0) {
-            const tile = this.grid.get({ x: point.x, y: point.y - UNIT });
+        if (point.y - UNIT >= 0) {
+            const tile = this.grid.get({x: point.x, y: point.y - UNIT});
 
-            if(!tile.data.isSolid) {
+            if (!tile.data.isSolid) {
                 tiles.push(tile);
             }
         }
         return tiles;
     }
 
-    // a is unused, because some kinds of navifators need both points to calculate a cost, but not for a plus movement
+    // an is unused, because some kinds of navigators need both points to calculate a cost, but not for a plus movement
     cost(a: Point, b: Point) {
         return this.grid.get(b).data.pathCost;
     }

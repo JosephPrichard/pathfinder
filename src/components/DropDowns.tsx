@@ -2,7 +2,7 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React, {RefObject} from 'react';
+import React, { RefObject } from 'react';
 
 export interface DropDownProps {
     onClick: () => void,
@@ -50,8 +50,7 @@ interface ClickableProps {
     click: () => void;
 }
 
-class Clickable extends React.Component<ClickableProps>
-{
+class Clickable extends React.Component<ClickableProps> {
     render() {
         return (
             <div
@@ -65,8 +64,7 @@ class Clickable extends React.Component<ClickableProps>
     }
 }
 
-class DropDown extends React.Component<DropDownProps, DropDownState>
-{
+class DropDown extends React.Component<DropDownProps, DropDownState> {
     protected constructor(props: DropDownProps) {
         super(props);
         this.state = {
@@ -80,10 +78,6 @@ class DropDown extends React.Component<DropDownProps, DropDownState>
         this.hide();
     }
 
-    /**
-     * Binds window listeners.
-     * Hides the drop down if clicked anywhere else
-     */
     componentDidMount() {
         window.addEventListener('click', this.windowOnClick);
     }
@@ -109,7 +103,7 @@ class DropDown extends React.Component<DropDownProps, DropDownState>
     toggle(e: Event) {
         e.stopPropagation();
         this.props.onClick();
-        if(this.isHidden()) {
+        if (this.isHidden()) {
             this.show();
         } else {
             this.hide();
@@ -120,34 +114,20 @@ class DropDown extends React.Component<DropDownProps, DropDownState>
         return this.state.display === 'none';
     }
 
-    /**
-     * Gets the style that will determine if the dropdown content should be displayed or not
-     */
     contentStyle() {
         return {
             display: this.state.display
         }
     }
 
-    /**
-     * Gets the css class determining if the arrow should be facing up or down
-     *  If the dropdown is extended the arrow faces down, otherwise it faces up
-     */
     arrowClass() {
         return this.state.up ? 'arrowUp' : 'arrowDown';
     }
 
-    /**
-     * Gets the css class that highlights the dropdown if the dropdown is extended
-     */
     getHighlightClass() {
         return !this.state.up ? 'drop-down-button-down drop-down-button-up' : 'drop-down-button-up'
     }
 
-    /**
-     * Renders the dropdown button, and its arrow
-     * The children will be rendered in the dropdown content
-     */
     render() {
         const className = this.props.dropDownClass === undefined ? '' : this.props.dropDownClass;
         const contentClassName = this.props.dropDownContentClass === undefined ? '' : this.props.dropDownContentClass;
@@ -180,15 +160,12 @@ class DropDown extends React.Component<DropDownProps, DropDownState>
     }
 }
 
-export class AlgorithmDropDown extends React.Component<AlgProps, DropDownTextState>
-{
+export class AlgorithmDropDown extends React.Component<AlgProps, DropDownTextState> {
     private dropDown: RefObject<DropDown> = React.createRef();
 
     constructor(props: AlgProps) {
         super(props);
-        this.state = {
-            text: 'A* Search'
-        };
+        this.state = {text: 'A* Search'};
     }
 
     hide() {
@@ -197,9 +174,7 @@ export class AlgorithmDropDown extends React.Component<AlgProps, DropDownTextSta
 
     onChange(key: string, algText: string) {
         this.props.onChange(key);
-        this.setState({
-            text: algText
-        });
+        this.setState({text: algText});
     }
 
     render() {
@@ -220,8 +195,7 @@ export class AlgorithmDropDown extends React.Component<AlgProps, DropDownTextSta
     }
 }
 
-export class ClearDropDown extends React.Component<ClrProps>
-{
+export class ClearDropDown extends React.Component<ClrProps> {
     private dropDown: RefObject<DropDown> = React.createRef();
 
     hide() {
@@ -244,8 +218,7 @@ export class ClearDropDown extends React.Component<ClrProps>
     }
 }
 
-export class MazeDropDown extends React.Component<MazeProps>
-{
+export class MazeDropDown extends React.Component<MazeProps> {
     private dropDown: RefObject<DropDown> = React.createRef();
 
     hide() {
@@ -270,15 +243,12 @@ export class MazeDropDown extends React.Component<MazeProps>
     }
 }
 
-export class TilesDropDown extends React.Component<TileProps, DropDownTextState>
-{
+export class TilesDropDown extends React.Component<TileProps, DropDownTextState> {
     private dropDown: RefObject<DropDown> = React.createRef();
 
     constructor(props: TileProps) {
         super(props);
-        this.state = {
-            text: 'Wall [∞]'
-        };
+        this.state = {text: 'Wall [∞]'};
     }
 
     hide() {
@@ -287,9 +257,7 @@ export class TilesDropDown extends React.Component<TileProps, DropDownTextState>
 
     onChange(cost: number, text: string) {
         this.props.onClickTileType(cost);
-        this.setState({
-            text: text
-        }, () => this.props.onClickTileType(cost));
+        this.setState({text: text}, () => this.props.onClickTileType(cost));
     }
 
     render() {

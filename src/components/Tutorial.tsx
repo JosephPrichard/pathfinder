@@ -6,21 +6,21 @@ import React from 'react';
 
 export const KEY_SHOW = 'visited';
 
-interface Props {}
+interface Props {
+}
 
 interface State {
     show: boolean
     page: number
 }
 
-class Tutorial extends React.Component<Props, State>
-{
+class Tutorial extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
             show: true,
             page: 0
-        }
+        };
     }
 
     hide() {
@@ -49,7 +49,7 @@ class Tutorial extends React.Component<Props, State>
     render() {
         const children = React.Children.toArray(this.props.children);
         const lastPage = this.state.page + 1 === children.length;
-        return(
+        return (
             <div
                 style={{
                     display: this.showPanel() && this.state.show ? 'block' : 'none'
@@ -72,7 +72,7 @@ class Tutorial extends React.Component<Props, State>
                 </div>
                 <div className='content-top-wrapper'>
                     <div className='content-top'>
-                        {this.state.page + 1 }/{children.length}
+                        {this.state.page + 1}/{children.length}
                     </div>
                 </div>
                 <div className='content'>

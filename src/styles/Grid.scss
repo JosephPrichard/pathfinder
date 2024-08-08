@@ -83,18 +83,6 @@
 }
 
 .tile-viz {
-    margin: 0;
-    padding: 0;
-    position: absolute;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    border-color: rgb(190,216,246);
-    border-top-width: 0;
-    border-bottom-width: 1px;
-    border-left-width: 0;
-    border-right-width: 1px;
-    border-style: solid;
     @include expandAnimation(0.5s, vizAnimation, ease, none);
 }
 

@@ -2,10 +2,8 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React, {RefObject} from 'react';
-import TileFg from './TileFg';
-import SolidFg from './SolidFg';
-import WeightFg from './WeightFg';
+import React, { RefObject } from 'react';
+import { TileFg, SolidFg, WeightFg } from './TileFg';
 import { createTileData, Grid, Point, RectGrid, Tile, TileData } from '../pathfinding/Core';
 
 interface Props {
@@ -29,8 +27,7 @@ const ARROW_PATH_COLOR = 'rgb(73, 79, 250)';
 
 const BASE_WIDTH = 27;
 
-class GridForeground extends React.Component<Props, State>
-{
+class GridForeground extends React.Component<Props, State> {
     private svg: RefObject<SVGSVGElement> = React.createRef();
 
     private tilePointer: TileData;
@@ -65,9 +62,8 @@ class GridForeground extends React.Component<Props, State>
     }
 
     componentDidUpdate(prevProps: Props) {
-        if(this.props.width !== prevProps.width
-            || this.props.height !== prevProps.height)
-        {
+        if (this.props.width !== prevProps.width
+            || this.props.height !== prevProps.height) {
             this.setState(prevState => ({
                 grid: prevState.grid.cloneNewSize(this.props.width, this.props.height)
             }));
@@ -94,7 +90,7 @@ class GridForeground extends React.Component<Props, State>
 
     mouseUp(e: MouseEvent) {
         e.preventDefault();
-        if(isControlKey(e.button)) {
+        if (isControlKey(e.button)) {
             this.draggingGoal = false;
             this.draggingInitial = false;
             this.drawing = false;
@@ -128,14 +124,14 @@ class GridForeground extends React.Component<Props, State>
     }
 
     onPress(xCoordinate: number, yCoordinate: number, button: number) {
-        const point = this.calculatePoint(xCoordinate,yCoordinate);
-        if(isControlKey(button)) {
-            if(pointsEqual(point, this.state.initial)) {
+        const point = this.calculatePoint(xCoordinate, yCoordinate);
+        if (isControlKey(button)) {
+            if (pointsEqual(point, this.state.initial)) {
                 this.draggingInitial = true;
-            } else if(pointsEqual(point, this.state.goal)) {
+            } else if (pointsEqual(point, this.state.goal)) {
                 this.draggingGoal = true;
-            } else if(!this.disable) {
-                if(this.state.grid.isEmpty(point)) {
+            } else if (!this.disable) {
+                if (this.state.grid.isEmpty(point)) {
                     this.drawing = true;
                     this.drawTile(point);
                 } else {
@@ -147,17 +143,15 @@ class GridForeground extends React.Component<Props, State>
     }
 
     onDrag(xCoordinate: number, yCoordinate: number) {
-        const point = this.calculatePoint(xCoordinate,yCoordinate);
-        if(this.draggingInitial) {
+        const point = this.calculatePoint(xCoordinate, yCoordinate);
+        if (this.draggingInitial) {
             this.moveInitial(point);
-        } else if(this.draggingGoal) {
+        } else if (this.draggingGoal) {
             this.moveGoal(point);
-        } else if(!pointsEqual(point, this.state.initial)
-            && !pointsEqual(point, this.state.goal) && !this.disable)
-        {
-            if(this.drawing) {
+        } else if (!pointsEqual(point, this.state.initial) && !pointsEqual(point, this.state.goal) && !this.disable) {
+            if (this.drawing) {
                 this.drawTile(point);
-            } else if(this.erasing) {
+            } else if (this.erasing) {
                 this.eraseTile(point);
             }
         }
@@ -172,57 +166,44 @@ class GridForeground extends React.Component<Props, State>
 
     drawTile(point: Point) {
         const grid = this.state.grid.clone();
-        if(grid.inBounds(point)) {
+        if (grid.inBounds(point)) {
             grid.mutateTile({
                 point: point,
                 data: this.tilePointer
             });
         }
-        this.setState({
-            grid: grid
-        });
+        this.setState({grid: grid});
     }
 
     eraseTile(point: Point) {
         const grid = this.state.grid.clone();
-        if(grid.inBounds(point)) {
+        if (grid.inBounds(point)) {
             grid.mutateDefault(point, false);
         }
-        this.setState({
-            grid: grid
-        });
+        this.setState({grid: grid});
     }
 
     clearTiles() {
         const grid = this.state.grid.clone();
-        for(let y = 0; y < this.state.grid.getHeight(); y++) {
-            for(let x = 0; x < this.state.grid.getWidth(); x++) {
-                const point = {
-                    x: x, y: y
-                }
-                grid.mutateDefault(point, false);
+        for (let y = 0; y < this.state.grid.getHeight(); y++) {
+            for (let x = 0; x < this.state.grid.getWidth(); x++) {
+                grid.mutateDefault({x, y}, false);
             }
         }
-        this.setState({
-            grid: grid
-        });
+        this.setState({grid: grid});
     }
 
     moveInitial(point: Point) {
-        if(this.canMoveEndPoint(point)) {
+        if (this.canMoveEndPoint(point)) {
             this.initialKey++;
-            this.setState({
-                initial: point
-            }, () => this.props.onTilesDragged());
+            this.setState({initial: point}, () => this.props.onTilesDragged());
         }
     }
 
     moveGoal(point: Point) {
-        if(this.canMoveEndPoint(point)) {
+        if (this.canMoveEndPoint(point)) {
             this.goalKey++;
-            this.setState({
-                goal: point
-            }, () => this.props.onTilesDragged());
+            this.setState({goal: point}, () => this.props.onTilesDragged());
         }
     }
 
@@ -235,21 +216,17 @@ class GridForeground extends React.Component<Props, State>
     }
 
     drawPath(path: Tile[]) {
-        this.setState({
-            path: path.slice()
-        });
+        this.setState({path: path.slice()});
     }
 
     erasePath() {
-        this.setState({
-            path: []
-        });
+        this.setState({path: []});
     }
 
     calculatePoint(xCoordinate: number, yCoordinate: number) {
         return {
-            x: Math.floor(xCoordinate/this.props.tileSize),
-            y: Math.floor(yCoordinate/this.props.tileSize)
+            x: Math.floor(xCoordinate / this.props.tileSize),
+            y: Math.floor(yCoordinate / this.props.tileSize)
         }
     }
 
@@ -259,12 +236,12 @@ class GridForeground extends React.Component<Props, State>
         const end = this.props.end;
         this.setState({
             initial: {
-                x: ((end.x)/3) >> 0,
-                y: ((end.y)/3) >> 0
+                x: ((end.x) / 3) >> 0,
+                y: ((end.y) / 3) >> 0
             },
             goal: {
-                x: ((2*(end.x)/3) >> 0) - 1,
-                y: ((2*(end.y)/3) >> 0) - 1
+                x: ((2 * (end.x) / 3) >> 0) - 1,
+                y: ((2 * (end.y) / 3) >> 0) - 1
             }
         });
     }
@@ -275,8 +252,8 @@ class GridForeground extends React.Component<Props, State>
                 <div
                     className='endpoint-tiles-table'
                 >
-                    {this.renderEndTile(this.state.initial, INITIAL_COLOR,'initial' + this.initialKey)}
-                    {this.renderEndTile(this.state.goal, GOAL_COLOR,'goal' + this.goalKey)}
+                    {this.renderEndTile(this.state.initial, INITIAL_COLOR, 'initial' + this.initialKey)}
+                    {this.renderEndTile(this.state.goal, GOAL_COLOR, 'goal' + this.goalKey)}
                 </div>
                 <svg
                     ref={this.svg}
@@ -318,9 +295,9 @@ class GridForeground extends React.Component<Props, State>
 
     renderPath() {
         const lines: JSX.Element[] = [];
-        for(let i = 0; i < this.state.path.length-1; i++) {
+        for (let i = 0; i < this.state.path.length - 1; i++) {
             const first = this.state.path[i].point;
-            const second = this.state.path[i+1].point;
+            const second = this.state.path[i + 1].point;
             lines.push(this.renderPathArrow(i, first, second));
         }
         return lines;
@@ -328,13 +305,13 @@ class GridForeground extends React.Component<Props, State>
 
     renderPathArrow(index: number, first: Point, second: Point) {
         const width = this.props.tileSize;
-        const offset = width/2;
+        const offset = width / 2;
         const firstX = first.x * width;
         const firstY = first.y * width;
         const secondX = second.x * width;
         const secondY = second.y * width;
-        const offsetX = (secondX - firstX)/4;
-        const offsetY = (secondY - firstY)/4;
+        const offsetX = (secondX - firstX) / 4;
+        const offsetY = (secondY - firstY) / 4;
         return (
             <line
                 key={'path ' + index}
@@ -343,7 +320,7 @@ class GridForeground extends React.Component<Props, State>
                 x2={secondX + offset - offsetX}
                 y2={secondY + offset - offsetY}
                 stroke={ARROW_PATH_COLOR}
-                strokeWidth={2 * this.props.tileSize/BASE_WIDTH}
+                strokeWidth={2 * this.props.tileSize / BASE_WIDTH}
                 className='line'
                 markerEnd='url(#arrowhead-path)'
             />
@@ -352,14 +329,11 @@ class GridForeground extends React.Component<Props, State>
 
     renderTilesGrid() {
         const tiles: JSX.Element[] = [];
-        for(let y = 0; y < this.state.grid.getHeight(); y++) {
-            for(let x = 0; x < this.state.grid.getWidth(); x++) {
-                const point = {
-                    x: x, y: y
-                }
+        for (let y = 0; y < this.state.grid.getHeight(); y++) {
+            for (let x = 0; x < this.state.grid.getWidth(); x++) {
+                const point = {x, y};
                 const cost = this.state.grid.get(point).data.pathCost;
-                if(this.state.grid.isSolid(point)) {
-                    //render a solid tile div
+                if (this.state.grid.isSolid(point)) {
                     tiles.push(
                         <SolidFg
                             key={x + ',' + y}
@@ -368,8 +342,7 @@ class GridForeground extends React.Component<Props, State>
                             doTileAnimation={this.doTileAnimation}
                         />
                     );
-                } else if(cost > 1) {
-                    //render a weight svg
+                } else if (cost > 1) {
                     tiles.push(
                         <WeightFg
                             key={x + ',' + y}
@@ -378,14 +351,7 @@ class GridForeground extends React.Component<Props, State>
                             doTileAnimation={this.doTileAnimation}
                         />
                     );
-                    //render a div containing the cost as text
-                    tiles.push(
-                        this.renderWeightText(
-                            point,
-                            cost,
-                            x + ',' + y + ' text'
-                        )
-                    )
+                    tiles.push(this.renderWeightText(point, cost, x + ',' + y + ' text'));
                 }
             }
         }

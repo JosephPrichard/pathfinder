@@ -2,7 +2,7 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React, {RefObject} from 'react';
+import React, { RefObject } from 'react';
 
 interface Props {
     title: string,
@@ -17,14 +17,13 @@ interface State {
     left: number
 }
 
-class DraggablePanel extends React.Component<Props, State>
-{
-    //refs are used to access native DOM
+class DraggablePanel extends React.Component<Props, State> {
+    // refs are used to access native DOM
     private draggable: RefObject<HTMLDivElement> = React.createRef();
     private draggableContainer: RefObject<HTMLDivElement> = React.createRef();
     private draggableContent: RefObject<HTMLDivElement> = React.createRef();
 
-    //stores previous mouse location and drag
+    // stores previous mouse location and drag
     private dragging = false;
     private prevX = 0;
     private prevY = 0;
@@ -38,21 +37,21 @@ class DraggablePanel extends React.Component<Props, State>
     }
 
     componentDidMount() {
-        //mouse
+        // mouse
         document.addEventListener('mouseup', this.mouseUp);
         document.addEventListener('mousemove', this.mouseMove);
         window.addEventListener('mouseleave', this.mouseUp);
-        //touch
+        // touch
         document.addEventListener('touchend', this.stopDrag);
         document.addEventListener('touchmove', this.touchMove);
     }
 
     componentWillUnmount() {
-        //mouse
+        // mouse
         document.removeEventListener('mouseup', this.mouseUp);
         document.removeEventListener('mousemove', this.mouseMove);
         window.removeEventListener('mouseleave', this.mouseUp);
-        //touch
+        // touch
         document.removeEventListener('touchend', this.stopDrag);
         document.removeEventListener('touchmove', this.touchMove);
     }
@@ -61,10 +60,6 @@ class DraggablePanel extends React.Component<Props, State>
         this.dragging = false;
     }
 
-    /**
-     * Start drag and init prev mouse location when mouse is clicked on draggable
-     * @param e
-     */
     mouseDown = (e: MouseEvent) => {
         e.preventDefault();
         this.prevY = e.clientY;
@@ -72,10 +67,6 @@ class DraggablePanel extends React.Component<Props, State>
         this.dragging = true;
     }
 
-    /**
-     * Start drag and init prev touch location when finger is clicked on draggable
-     * @param e
-     */
     touchStart = (e: TouchEvent) => {
         const touch = e.touches[0] || e.changedTouches[0];
         this.prevY = touch.clientY;
@@ -83,68 +74,49 @@ class DraggablePanel extends React.Component<Props, State>
         this.dragging = true;
     }
 
-    /**
-     * Called when mouse is risen on document stop drag
-     * @param e
-     */
     mouseUp = (e: Event) => {
         e.preventDefault();
         this.dragging = false;
     }
 
-    /**
-     * Called when the mouse is moved over the document to calculate the new position of
-     * the draggable canvas
-     * @param e
-     */
     mouseMove = (e: MouseEvent) => {
         this.drag(e.clientX, e.clientY);
     }
 
-    /**
-     * Called when the touch is moved over the document to calculate the new position of
-     * the draggable canvas
-     * @param e
-     */
     touchMove = (e: TouchEvent) => {
         const touch = e.touches[0] || e.changedTouches[0];
         this.drag(touch.clientX, touch.clientY);
     }
 
-    /**
-     * Called when user drags over the document to move the panel
-     * @param clientX
-     * @param clientY
-     */
     drag(clientX: number, clientY: number) {
-        if(this.dragging) {
+        if (this.dragging) {
             const container = this.draggableContainer.current!;
             let top = (container.offsetTop - (this.prevY - clientY))
             let left = (container.offsetLeft - (this.prevX - clientX));
             const content = this.draggableContent.current!;
             const draggable = this.draggable.current!;
-            //stop drag if mouse goes out of bounds
-            if(clientY < 0 || clientY > window.innerHeight
+            // stop drag if mouse goes out of bounds
+            if (clientY < 0 || clientY > window.innerHeight
                 || clientX < 0 || clientX > window.innerWidth) {
                 this.dragging = false;
             }
-            //check if position is out of bounds and prevent the panel from being dragged there
-            if(top < 0) {
+            // check if position is out of bounds and prevent the panel from being dragged there
+            if (top < 0) {
                 top = 0;
             } else if (top > window.innerHeight - draggable.offsetHeight) {
                 top = window.innerHeight - draggable.offsetHeight;
             }
-            if(left < -content.offsetWidth/2) {
-                left = -content.offsetWidth/2;
-            } else if(left > window.innerWidth - content.offsetWidth/2) {
-                left = window.innerWidth - content.offsetWidth/2;
+            if (left < -content.offsetWidth / 2) {
+                left = -content.offsetWidth / 2;
+            } else if (left > window.innerWidth - content.offsetWidth / 2) {
+                left = window.innerWidth - content.offsetWidth / 2;
             }
-            //set new position
+            // set new position
             this.setState({
                 top: top,
                 left: left
             });
-            //update previous pos
+            // update previous pos
             this.prevY = clientY;
             this.prevX = clientX;
         }
@@ -153,16 +125,13 @@ class DraggablePanel extends React.Component<Props, State>
     getPosition() {
         const left = this.state.left;
         const top = this.state.top;
-        if(left === -1 || top === -1) {
+        if (left === -1 || top === -1) {
             return {};
         }
-        return {
-            left: left + 'px',
-            top: top + 'px',
-        };
+        return {left: left + 'px', top: top + 'px'};
     }
 
-    visibleStyle()  {
+    visibleStyle() {
         return this.props.show ? 'block' : 'none';
     }
 
@@ -181,10 +150,6 @@ class DraggablePanel extends React.Component<Props, State>
         }
     }
 
-    /**
-     * Renders the draggable component on top with the
-     *  children as the content within the panel
-     */
     render() {
         return (
             <div
@@ -206,9 +171,6 @@ class DraggablePanel extends React.Component<Props, State>
         );
     }
 
-    /**
-     * Renders the draggable component of the panel (just the top)
-     */
     renderDraggable() {
         return (
             <div

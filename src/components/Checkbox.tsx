@@ -15,8 +15,7 @@ interface State {
     checked: boolean
 }
 
-class Checkbox extends React.Component<Props, State>
-{
+class Checkbox extends React.Component<Props, State> {
     public static defaultProps = {
         disabled: false
     };
@@ -25,20 +24,17 @@ class Checkbox extends React.Component<Props, State>
         super(props);
         this.state = {
             checked: this.props.defaultChecked
-        }
+        };
     }
 
-    /**
-     * Trigger callback and toggle checkbox checked state
-     */
     onChange() {
-        this.setState(prevState => ({
-            checked: !prevState.checked
-        }), () => this.props.onChange(this.state.checked));
+        this.setState(
+            prevState => ({checked: !prevState.checked}),
+            () => this.props.onChange(this.state.checked));
     }
 
     render() {
-        return(
+        return (
             <div>
                 <input
                     checked={this.state.checked}
