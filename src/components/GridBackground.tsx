@@ -2,13 +2,13 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React from 'react';
-import { Point } from '../pathfinding/Core';
+import React from "react";
+import { Point } from "../pathfinding/Core";
 
 interface Props {
-    tileWidth: number,
-    width: number,
-    height: number
+    tileWidth: number;
+    width: number;
+    height: number;
 }
 
 class GridBackground extends React.Component<Props> {
@@ -20,16 +20,13 @@ class GridBackground extends React.Component<Props> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        return this.props.width !== prevProps.width ||
-            this.props.height !== prevProps.height;
+        return this.props.width !== prevProps.width || this.props.height !== prevProps.height;
     }
 
     render() {
         return (
             <div>
-                <div className='bg'>
-                    {this.renderTiles()}
-                </div>
+                <div className="bg">{this.renderTiles()}</div>
             </div>
         );
     }
@@ -39,7 +36,7 @@ class GridBackground extends React.Component<Props> {
         for (let y = 0; y < this.props.height; y++) {
             const row: JSX.Element[] = [];
             for (let x = 0; x < this.props.width; x++) {
-                const point = {x, y};
+                const point = { x, y };
                 row.push(this.renderTile(point));
             }
             tiles.push(row);
@@ -52,19 +49,13 @@ class GridBackground extends React.Component<Props> {
         const top = point.y * this.tileWidth;
         const left = point.x * this.tileWidth;
         const style = {
-            backgroundColor: 'white',
-            width: width + 'px',
-            height: width + 'px',
+            backgroundColor: "white",
+            width: width + "px",
+            height: width + "px",
             top: top,
-            left: left
+            left: left,
         };
-        return (
-            <div
-                key={point.x + ',' + point.y}
-                style={style}
-                className='tile'
-            />
-        );
+        return <div key={point.x + "," + point.y} style={style} className="tile" />;
     }
 }
 

@@ -2,8 +2,8 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import { Navigator, Point, Tile } from './Core';
-import { Heap, PointSet, PointTable, Stack } from './Structures';
+import { Navigator, Point, Tile } from "./Core";
+import { Heap, PointSet, PointTable, Stack } from "./Structures";
 
 export type PathNode = {
     parent: PathNode | null; // parent node
@@ -11,7 +11,7 @@ export type PathNode = {
     readonly tile: Tile; // stores a graph node
 };
 
-function createPathNode(tile: Tile) : PathNode {
+function createPathNode(tile: Tile): PathNode {
     return { parent: null, children: [], tile };
 }
 
@@ -98,7 +98,6 @@ export function reconstructPathReversed(bottomLeaf: PathNode) {
 export type HeuristicFunc = (a: Point, b: Point) => number;
 
 export class Heuristics {
-
     static manhattan(a: Point, b: Point) {
         const dx = Math.abs(a.x - b.x);
         const dy = Math.abs(a.y - b.y);
@@ -126,7 +125,7 @@ export class Heuristics {
     static nullHeuristic() {
         return 0;
     }
-};
+}
 
 export class AStarPathfinder extends Pathfinder {
     private readonly p: number; // tie breaker
@@ -142,7 +141,7 @@ export class AStarPathfinder extends Pathfinder {
     }
 
     getAlgorithmName() {
-        return 'A*';
+        return "A*";
     }
 
     findPath(initial: Point, goal: Point) {
@@ -209,7 +208,6 @@ export class AStarPathfinder extends Pathfinder {
     private readonly heuristicFunc: HeuristicFunc = (a: Point, b: Point) => Heuristics.euclidean(a, b);
 }
 
-
 export class BestFirstPathfinder extends Pathfinder {
     constructor(navigator: Navigator, func?: HeuristicFunc) {
         super(navigator);
@@ -219,7 +217,7 @@ export class BestFirstPathfinder extends Pathfinder {
     }
 
     getAlgorithmName() {
-        return 'Best-First Search';
+        return "Best-First Search";
     }
 
     findPath(initial: Point, goal: Point) {
@@ -267,7 +265,7 @@ export class BestFirstPathfinder extends Pathfinder {
 
 export class BiBFSPathfinder extends Pathfinder {
     getAlgorithmName() {
-        return 'Bidirectional Breadth First Search';
+        return "Bidirectional Breadth First Search";
     }
 
     findPath(initial: Point, goal: Point) {
@@ -287,7 +285,6 @@ export class BiBFSPathfinder extends Pathfinder {
         endFrontier.push(goalRoot);
         endVisited.add(goal, goalRoot);
 
-
         while (startFrontier.length !== 0 && endFrontier.length !== 0) {
             const startCurrentNode = startFrontier.shift()!;
             const startCurrentPoint = startCurrentNode.tile.point;
@@ -297,10 +294,12 @@ export class BiBFSPathfinder extends Pathfinder {
             if (endVisited.has(startCurrentPoint)) {
                 // path from start to collision + path from collision to goal
                 if (startCurrentNode.parent != null) {
-                    return reconstructPath(startCurrentNode.parent)
-                        .concat(reconstructPathReversed(endVisited.get(startCurrentPoint)!))
-                        // must be added because goal is excluded from reconstructPathReversed algorithm
-                        .concat(grid.get(goal));
+                    return (
+                        reconstructPath(startCurrentNode.parent)
+                            .concat(reconstructPathReversed(endVisited.get(startCurrentPoint)!))
+                            // must be added because goal is excluded from reconstructPathReversed algorithm
+                            .concat(grid.get(goal))
+                    );
                 } else {
                     return [grid.get(goal)];
                 }
@@ -315,10 +314,12 @@ export class BiBFSPathfinder extends Pathfinder {
             if (startVisited.has(endCurrentPoint)) {
                 // path from start to collision + path from collision to goal
                 if (endCurrentNode.parent != null) {
-                    return reconstructPath(startVisited.get(endCurrentPoint)!)
-                        .concat(reconstructPathReversed(endCurrentNode.parent))
-                        //must be added because goal is excluded from reconstructPathReversed algorithm
-                        .concat(grid.get(goal));
+                    return (
+                        reconstructPath(startVisited.get(endCurrentPoint)!)
+                            .concat(reconstructPathReversed(endCurrentNode.parent))
+                            //must be added because goal is excluded from reconstructPathReversed algorithm
+                            .concat(grid.get(goal))
+                    );
                 } else {
                     return [grid.get(goal)];
                 }
@@ -345,7 +346,7 @@ export class BiBFSPathfinder extends Pathfinder {
 
 export class DFSPathfinder extends Pathfinder {
     getAlgorithmName() {
-        return 'Depth First Search';
+        return "Depth First Search";
     }
 
     findPath(initial: Point, goal: Point) {
@@ -383,7 +384,7 @@ export class DFSPathfinder extends Pathfinder {
 
 export class DijkstraPathfinder extends Pathfinder {
     getAlgorithmName() {
-        return 'Dijkstra';
+        return "Dijkstra";
     }
 
     findPath(initial: Point, goal: Point) {

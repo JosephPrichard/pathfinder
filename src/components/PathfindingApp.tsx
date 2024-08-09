@@ -2,35 +2,34 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React, { PropsWithChildren, RefObject } from 'react';
-import { SettingsButton, VisualizeButton } from './Buttons';
-import { AlgorithmDropDown, ClearDropDown, MazeDropDown, TilesDropDown } from './DropDowns';
-import { AlgorithmSettings, HeuristicSettings, SpeedSettings, VisualSettings } from './SettingPanels';
-import DraggablePanel from './DraggablePanel';
-import PathfindingVisualizer from './PathfindingVisualizer';
-import Icon from '../assets/react.png';
+import React, { PropsWithChildren, RefObject } from "react";
+import { SettingsButton, VisualizeButton } from "./Buttons";
+import { AlgorithmDropDown, ClearDropDown, MazeDropDown, TilesDropDown } from "./DropDowns";
+import { AlgorithmSettings, HeuristicSettings, SpeedSettings, VisualSettings } from "./SettingPanels";
+import DraggablePanel from "./DraggablePanel";
+import PathfindingVisualizer from "./PathfindingVisualizer";
+import Icon from "../assets/react.png";
 import AppSettings, { getDefaultSettings } from "../utils/AppSettings";
-import Tutorial, { KEY_SHOW } from './Tutorial';
-import { getTutorialPages } from './TutorialPages';
-import { MAZE, MAZE_HORIZONTAL_SKEW, MAZE_VERTICAL_SKEW, PathfinderBuilder, RANDOM_TERRAIN } from '../pathfinding/Builders';
+import Tutorial, { KEY_SHOW } from "./Tutorial";
+import { getTutorialPages } from "./TutorialPages";
+import { MAZE, MAZE_HORIZONTAL_SKEW, MAZE_VERTICAL_SKEW, PathfinderBuilder, RANDOM_TERRAIN } from "../pathfinding/Builders";
 
-interface Props {
-}
+interface Props {}
 
 interface State {
-    settings: AppSettings,
+    settings: AppSettings;
 
-    heuristicDisabled: boolean,
-    bidirectionalDisabled: boolean,
-    arrowsDisabled: boolean,
-    scoreDisabled: boolean
+    heuristicDisabled: boolean;
+    bidirectionalDisabled: boolean;
+    arrowsDisabled: boolean;
+    scoreDisabled: boolean;
 
-    panelShow: boolean,
+    panelShow: boolean;
 
-    visualizing: boolean,
-    paused: boolean,
+    visualizing: boolean;
+    paused: boolean;
 
-    useIcon: boolean
+    useIcon: boolean;
 }
 
 class PathfindingApp extends React.Component<Props, State> {
@@ -57,24 +56,24 @@ class PathfindingApp extends React.Component<Props, State> {
             panelShow: false,
             visualizing: false,
             paused: false,
-            useIcon: this.useIcon()
-        }
+            useIcon: this.useIcon(),
+        };
         const mobile = isMobile();
         this.tileWidth = mobile ? 47 : 26;
     }
 
     windowOnResize = () => {
         this.setState({
-            useIcon: this.useIcon()
+            useIcon: this.useIcon(),
         });
-    }
+    };
 
     componentDidMount() {
-        window.addEventListener('resize', this.windowOnResize);
+        window.addEventListener("resize", this.windowOnResize);
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.windowOnResize);
+        window.removeEventListener("resize", this.windowOnResize);
     }
 
     useIcon() {
@@ -107,39 +106,39 @@ class PathfindingApp extends React.Component<Props, State> {
 
     changeButtonActiveState(visualizing: boolean) {
         this.setState({
-            visualizing: visualizing
-        })
+            visualizing: visualizing,
+        });
     }
 
     toggleSettings() {
-        this.setState(prevState => ({
-            panelShow: !prevState.panelShow
+        this.setState((prevState) => ({
+            panelShow: !prevState.panelShow,
         }));
     }
 
     hideSettings() {
         this.setState({
-            panelShow: false
+            panelShow: false,
         });
     }
 
     doPathfinding() {
         this.setState({
-            paused: false
+            paused: false,
         });
         this.visualizer.current!.doDelayedPathfinding();
     }
 
     pausePathfinding() {
         this.setState({
-            paused: true
+            paused: true,
         });
         this.visualizer.current!.pausePathfinding();
     }
 
     resumePathfinding() {
         this.setState({
-            paused: false
+            paused: false,
         });
         this.visualizer.current!.resumePathfinding();
     }
@@ -179,121 +178,104 @@ class PathfindingApp extends React.Component<Props, State> {
     changeTile(cost: number) {
         this.visualizer.current!.changeTile({
             isSolid: cost === -1,
-            pathCost: cost
+            pathCost: cost,
         });
     }
 
     changeAlgo(algorithm: string) {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             heuristicDisabled: !PathfinderBuilder.usesHeuristic(algorithm),
             bidirectionalDisabled: !PathfinderBuilder.hasBidirectional(algorithm),
             scoreDisabled: !PathfinderBuilder.usesWeights(algorithm),
             settings: {
                 ...prevState.settings,
-                algorithm: algorithm
-            }
+                algorithm: algorithm,
+            },
         }));
     }
 
     changeShowArrows() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             settings: {
                 ...prevState.settings,
-                showArrows: !prevState.settings.showArrows
-            }
+                showArrows: !prevState.settings.showArrows,
+            },
         }));
     }
 
     changeBidirectional() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             settings: {
                 ...prevState.settings,
-                bidirectional: !prevState.settings.bidirectional
-            }
+                bidirectional: !prevState.settings.bidirectional,
+            },
         }));
     }
 
     changeSpeed(value: number) {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             settings: {
                 ...prevState.settings,
-                delayInc: value
-            }
+                delayInc: value,
+            },
         }));
     }
 
     changeManhattan() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             settings: {
                 ...prevState.settings,
-                heuristicKey: 'manhattan'
-            }
+                heuristicKey: "manhattan",
+            },
         }));
     }
 
     changeEuclidean() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             settings: {
                 ...prevState.settings,
-                heuristicKey: 'euclidean'
-            }
+                heuristicKey: "euclidean",
+            },
         }));
     }
 
     changeChebyshev() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             settings: {
                 ...prevState.settings,
-                heuristicKey: 'chebyshev'
-            }
+                heuristicKey: "chebyshev",
+            },
         }));
     }
 
     changeOctile() {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             settings: {
                 ...prevState.settings,
-                heuristicKey: 'octile'
-            }
+                heuristicKey: "octile",
+            },
         }));
     }
 
     showTutorial() {
-        localStorage.setItem(KEY_SHOW, 'false');
+        localStorage.setItem(KEY_SHOW, "false");
     }
 
     render() {
-        const title: string = 'Pathfinding Visualizer';
-        const icon = this.state.useIcon ?
-            <img
-                width={'100%'} height={'100%'}
-                className='icon'
-                alt={title} src={Icon}
-            /> :
-            title;
+        const title: string = "Pathfinding Visualizer";
+        const icon = this.state.useIcon ? <img width={"100%"} height={"100%"} className="icon" alt={title} src={Icon} /> : title;
 
         return (
             <div>
-                <Tutorial>
-                    {getTutorialPages()}
-                </Tutorial>
-                <DraggablePanel
-                    title='Grid Settings'
-                    show={this.state.panelShow}
-                    onClickXButton={() => this.hideSettings()}
-                    width={350}
-                    height={405}
-                >
+                <Tutorial>{getTutorialPages()}</Tutorial>
+                <DraggablePanel title="Grid Settings" show={this.state.panelShow} onClickXButton={() => this.hideSettings()} width={350} height={405}>
                     <VisualSettings
                         defaultShowArrows={this.state.settings.showArrows}
                         disabledTree={this.state.arrowsDisabled}
                         disabledScore={this.state.scoreDisabled}
                         onChangeShowArrows={() => this.changeShowArrows()}
                     />
-                    <SpeedSettings
-                        onChange={(value: number) => this.changeSpeed(value)}
-                        initialSpeed={this.state.settings.delayInc}
-                    />
+                    <SpeedSettings onChange={(value: number) => this.changeSpeed(value)} initialSpeed={this.state.settings.delayInc} />
                     <AlgorithmSettings
                         defaultAlg={this.state.settings.bidirectional}
                         disabled={this.state.bidirectionalDisabled}
@@ -310,11 +292,11 @@ class PathfindingApp extends React.Component<Props, State> {
                 </DraggablePanel>
                 <TopBar>
                     <div
-                        className='title'
+                        className="title"
                         tabIndex={0}
                         style={{
-                            width: this.state.useIcon ? 70 : 'auto',
-                            height: this.state.useIcon ? 52 : '100%'
+                            width: this.state.useIcon ? 70 : "auto",
+                            height: this.state.useIcon ? 52 : "100%",
                         }}
                         onClick={() => {
                             this.showTutorial();
@@ -355,7 +337,7 @@ class PathfindingApp extends React.Component<Props, State> {
                         onClick={() => this.onClickTilesDrop()}
                         onClickTileType={(cost: number) => this.changeTile(cost)}
                     />
-                    <SettingsButton onClick={() => this.toggleSettings()}/>
+                    <SettingsButton onClick={() => this.toggleSettings()} />
                 </TopBar>
                 <PathfindingVisualizer
                     ref={this.visualizer}
@@ -372,15 +354,14 @@ function TopBar(props: PropsWithChildren<{}>) {
     return (
         <div
             style={{
-                width: window.screen.availWidth
+                width: window.screen.availWidth,
             }}
-            className='top-navbar'
+            className="top-navbar"
         >
             {props.children}
         </div>
     );
 }
-
 
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

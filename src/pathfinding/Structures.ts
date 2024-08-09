@@ -89,7 +89,7 @@ export class PointTable<Value> {
     }
 }
 
-export type Comparator<E> = (a: E, b: E) => boolean
+export type Comparator<E> = (a: E, b: E) => boolean;
 
 export class Heap<E> {
     readonly compare: Comparator<E>;
@@ -152,8 +152,7 @@ export class Heap<E> {
             return;
         }
         // find the better child
-        const child = (right >= this.elements.length || this.compare(this.elements[left], this.elements[right]))
-            ? left : right;
+        const child = right >= this.elements.length || this.compare(this.elements[left], this.elements[right]) ? left : right;
         // continues to sift down if the child is better than the current position
         if (this.compare(this.elements[child], this.elements[pos])) {
             this.swap(child, pos);

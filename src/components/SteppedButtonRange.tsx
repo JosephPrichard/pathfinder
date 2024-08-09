@@ -2,19 +2,19 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React from 'react';
+import React from "react";
 
 interface Props {
-    min: number,
-    max: number,
-    default: number,
-    step: number,
-    sliderStyle: string,
-    onChange: (val: number) => void
+    min: number;
+    max: number;
+    default: number;
+    step: number;
+    sliderStyle: string;
+    onChange: (val: number) => void;
 }
 
 interface State {
-    value: number
+    value: number;
 }
 
 const HOLD_DELAY = 120;
@@ -31,15 +31,17 @@ class SteppedButtonRange extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            value: this.props.default
-        }
+            value: this.props.default,
+        };
     }
 
     minus() {
-        this.setState(prevState => ({
-            value: prevState.value - this.props.step >= this.props.min ?
-                prevState.value - this.props.step : prevState.value
-        }), () => this.props.onChange(this.state.value));
+        this.setState(
+            (prevState) => ({
+                value: prevState.value - this.props.step >= this.props.min ? prevState.value - this.props.step : prevState.value,
+            }),
+            () => this.props.onChange(this.state.value)
+        );
     }
 
     onMinus(e: Event) {
@@ -54,8 +56,8 @@ class SteppedButtonRange extends React.Component<Props, State> {
 
     plus() {
         this.setState(
-            prevState => ({
-                value: prevState.value + this.props.step <= this.props.max ? prevState.value + this.props.step : prevState.value
+            (prevState) => ({
+                value: prevState.value + this.props.step <= this.props.max ? prevState.value + this.props.step : prevState.value,
             }),
             () => this.props.onChange(this.state.value)
         );
@@ -82,33 +84,29 @@ class SteppedButtonRange extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className='button-range-wrapper'>
+            <div className="button-range-wrapper">
                 <button
-                    className='range-button minus'
-                    onMouseDown={e => this.onMinus(e.nativeEvent)}
+                    className="range-button minus"
+                    onMouseDown={(e) => this.onMinus(e.nativeEvent)}
                     onMouseUp={() => this.cancel()}
                     onMouseLeave={() => this.cancel()}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
+                        if (e.key === "Enter") {
                             this.minus();
                         }
                     }}
                 >
                     -
                 </button>
-                <div
-                    className='range-value'
-                >
-                    {this.state.value}
-                </div>
+                <div className="range-value">{this.state.value}</div>
                 <button
-                    className='range-button plus'
-                    onMouseDown={e => this.onPlus(e.nativeEvent)}
+                    className="range-button plus"
+                    onMouseDown={(e) => this.onPlus(e.nativeEvent)}
                     onMouseUp={() => this.cancel()}
                     onMouseLeave={() => this.cancel()}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            this.plus()
+                        if (e.key === "Enter") {
+                            this.plus();
                         }
                     }}
                 >

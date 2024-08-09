@@ -2,48 +2,48 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React, { RefObject } from 'react';
+import React, { RefObject } from "react";
 
 export interface DropDownProps {
-    onClick: () => void,
-    text: string,
-    dropDownClass?: string
-    dropDownContentClass?: string
+    onClick: () => void;
+    text: string;
+    dropDownClass?: string;
+    dropDownContentClass?: string;
 }
 
 export interface DropDownState {
-    up: boolean,
-    display: string,
-    fade: string
+    up: boolean;
+    display: string;
+    fade: string;
 }
 
 interface DropDownTextState {
-    text: string
+    text: string;
 }
 
 interface AlgProps {
-    onClick: () => void,
-    onChange: (alg: string) => void
+    onClick: () => void;
+    onChange: (alg: string) => void;
 }
 
 interface ClrProps {
-    onClick: () => void,
-    onClickPath: () => void,
-    onClickTiles: () => void,
+    onClick: () => void;
+    onClickPath: () => void;
+    onClickTiles: () => void;
     onClickReset: () => void;
 }
 
 interface MazeProps {
-    onClick: () => void,
-    onClickMaze: () => void,
-    onClickMazeHorizontal: () => void,
-    onClickMazeVertical: () => void,
-    onClickRandomTerrain: () => void
+    onClick: () => void;
+    onClickMaze: () => void;
+    onClickMazeHorizontal: () => void;
+    onClickMazeVertical: () => void;
+    onClickRandomTerrain: () => void;
 }
 
 interface TileProps {
-    onClick: () => void,
-    onClickTileType: (cost: number) => void
+    onClick: () => void;
+    onClickTileType: (cost: number) => void;
 }
 
 interface ClickableProps {
@@ -53,14 +53,10 @@ interface ClickableProps {
 class Clickable extends React.Component<ClickableProps> {
     render() {
         return (
-            <div
-                tabIndex={0}
-                onKeyPress={this.props.click}
-                onClick={this.props.click}
-            >
+            <div tabIndex={0} onKeyPress={this.props.click} onClick={this.props.click}>
                 {this.props.children}
             </div>
-        )
+        );
     }
 }
 
@@ -69,33 +65,33 @@ class DropDown extends React.Component<DropDownProps, DropDownState> {
         super(props);
         this.state = {
             up: true,
-            display: 'none',
-            fade: 'fade-in'
+            display: "none",
+            fade: "fade-in",
         };
     }
 
     windowOnClick = () => {
         this.hide();
-    }
+    };
 
     componentDidMount() {
-        window.addEventListener('click', this.windowOnClick);
+        window.addEventListener("click", this.windowOnClick);
     }
 
     componentWillUnmount() {
-        window.removeEventListener('click', this.windowOnClick);
+        window.removeEventListener("click", this.windowOnClick);
     }
 
     show() {
         this.setState({
             up: false,
-            display: 'block',
+            display: "block",
         });
     }
 
     hide() {
         this.setState({
-            display: 'none',
+            display: "none",
             up: true,
         });
     }
@@ -111,48 +107,41 @@ class DropDown extends React.Component<DropDownProps, DropDownState> {
     }
 
     isHidden() {
-        return this.state.display === 'none';
+        return this.state.display === "none";
     }
 
     contentStyle() {
         return {
-            display: this.state.display
-        }
+            display: this.state.display,
+        };
     }
 
     arrowClass() {
-        return this.state.up ? 'arrowUp' : 'arrowDown';
+        return this.state.up ? "arrowUp" : "arrowDown";
     }
 
     getHighlightClass() {
-        return !this.state.up ? 'drop-down-button-down drop-down-button-up' : 'drop-down-button-up'
+        return !this.state.up ? "drop-down-button-down drop-down-button-up" : "drop-down-button-up";
     }
 
     render() {
-        const className = this.props.dropDownClass === undefined ? '' : this.props.dropDownClass;
-        const contentClassName = this.props.dropDownContentClass === undefined ? '' : this.props.dropDownContentClass;
+        const className = this.props.dropDownClass === undefined ? "" : this.props.dropDownClass;
+        const contentClassName = this.props.dropDownContentClass === undefined ? "" : this.props.dropDownContentClass;
         return (
             <div
                 tabIndex={0}
-                className={'drop-down ' + className}
-                onMouseDown={e => e.preventDefault()}
+                className={"drop-down " + className}
+                onMouseDown={(e) => e.preventDefault()}
                 onKeyPress={(e) => this.toggle(e.nativeEvent)}
                 onClick={(e) => this.toggle(e.nativeEvent)}
             >
-                <div
-                    className={'drop-down-button ' + this.getHighlightClass()}
-                >
-                    <div className='drop-down-button-wrapper'>
-                        <span className='drop-down-text'>{this.props.text}</span>
-                        <span
-                            className={this.arrowClass()}
-                        />
+                <div className={"drop-down-button " + this.getHighlightClass()}>
+                    <div className="drop-down-button-wrapper">
+                        <span className="drop-down-text"> {this.props.text} </span>
+                        <span className={this.arrowClass()} />
                     </div>
                 </div>
-                <div
-                    style={this.contentStyle()}
-                    className={this.state.fade + ' drop-down-content ' + contentClassName}
-                >
+                <div style={this.contentStyle()} className={this.state.fade + " drop-down-content " + contentClassName}>
                     {this.props.children}
                 </div>
             </div>
@@ -165,7 +154,7 @@ export class AlgorithmDropDown extends React.Component<AlgProps, DropDownTextSta
 
     constructor(props: AlgProps) {
         super(props);
-        this.state = {text: 'A* Search'};
+        this.state = { text: "A* Search" };
     }
 
     hide() {
@@ -174,22 +163,17 @@ export class AlgorithmDropDown extends React.Component<AlgProps, DropDownTextSta
 
     onChange(key: string, algText: string) {
         this.props.onChange(key);
-        this.setState({text: algText});
+        this.setState({ text: algText });
     }
 
     render() {
         return (
-            <DropDown
-                ref={this.dropDown}
-                onClick={this.props.onClick}
-                text={this.state.text}
-                dropDownContentClass='alg-drop-down-content'
-            >
-                <Clickable click={() => this.onChange('a*', 'A* Search')}>A* Search</Clickable>
-                <Clickable click={() => this.onChange('dijkstra', 'Dijkstra')}>Dijkstra's Algorithm</Clickable>
-                <Clickable click={() => this.onChange('best-first', 'Best First')}>Best First Search</Clickable>
-                <Clickable click={() => this.onChange('bfs', 'Breadth First')}>Breadth First Search</Clickable>
-                <Clickable click={() => this.onChange('dfs', 'Depth First')}>Depth First Search</Clickable>
+            <DropDown ref={this.dropDown} onClick={this.props.onClick} text={this.state.text} dropDownContentClass="alg-drop-down-content">
+                <Clickable click={() => this.onChange("a*", "A* Search")}>A* Search</Clickable>
+                <Clickable click={() => this.onChange("dijkstra", "Dijkstra")}>Dijkstra's Algorithm</Clickable>
+                <Clickable click={() => this.onChange("best-first", "Best First")}>Best First Search</Clickable>
+                <Clickable click={() => this.onChange("bfs", "Breadth First")}>Breadth First Search</Clickable>
+                <Clickable click={() => this.onChange("dfs", "Depth First")}>Depth First Search</Clickable>
             </DropDown>
         );
     }
@@ -204,12 +188,7 @@ export class ClearDropDown extends React.Component<ClrProps> {
 
     render() {
         return (
-            <DropDown
-                ref={this.dropDown}
-                onClick={this.props.onClick}
-                text='Reset'
-                dropDownContentClass='clr-drop-down-content'
-            >
+            <DropDown ref={this.dropDown} onClick={this.props.onClick} text="Reset" dropDownContentClass="clr-drop-down-content">
                 <Clickable click={this.props.onClickPath}>Clear Path</Clickable>
                 <Clickable click={this.props.onClickTiles}>Clear Tiles</Clickable>
                 <Clickable click={this.props.onClickReset}>Reset Grid</Clickable>
@@ -230,9 +209,9 @@ export class MazeDropDown extends React.Component<MazeProps> {
             <DropDown
                 ref={this.dropDown}
                 onClick={this.props.onClick}
-                text='Terrain'
-                dropDownContentClass='maze-drop-down-content'
-                dropDownClass='maze-drop-down'
+                text="Terrain"
+                dropDownContentClass="maze-drop-down-content"
+                dropDownClass="maze-drop-down"
             >
                 <Clickable click={this.props.onClickMaze}>Recursive Maze Division</Clickable>
                 <Clickable click={this.props.onClickMazeHorizontal}>Horizontal Skewed Maze</Clickable>
@@ -248,7 +227,7 @@ export class TilesDropDown extends React.Component<TileProps, DropDownTextState>
 
     constructor(props: TileProps) {
         super(props);
-        this.state = {text: 'Wall [∞]'};
+        this.state = { text: "Wall [∞]" };
     }
 
     hide() {
@@ -257,7 +236,7 @@ export class TilesDropDown extends React.Component<TileProps, DropDownTextState>
 
     onChange(cost: number, text: string) {
         this.props.onClickTileType(cost);
-        this.setState({text: text}, () => this.props.onClickTileType(cost));
+        this.setState({ text: text }, () => this.props.onClickTileType(cost));
     }
 
     render() {
@@ -266,13 +245,13 @@ export class TilesDropDown extends React.Component<TileProps, DropDownTextState>
                 ref={this.dropDown}
                 onClick={this.props.onClick}
                 text={this.state.text}
-                dropDownContentClass='tiles-drop-down-content'
-                dropDownClass='tiles-drop-down'
+                dropDownContentClass="tiles-drop-down-content"
+                dropDownClass="tiles-drop-down"
             >
-                <Clickable click={() => this.onChange(-1, 'Wall [∞]')}>Wall [∞]</Clickable>
-                <Clickable click={() => this.onChange(2, 'Weight [2]')}>Weight [2]</Clickable>
-                <Clickable click={() => this.onChange(3, 'Weight [3]')}>Weight [3]</Clickable>
-                <Clickable click={() => this.onChange(5, 'Weight [5]')}>Weight [5]</Clickable>
+                <Clickable click={() => this.onChange(-1, "Wall [∞]")}>Wall [∞]</Clickable>
+                <Clickable click={() => this.onChange(2, "Weight [2]")}>Weight [2]</Clickable>
+                <Clickable click={() => this.onChange(3, "Weight [3]")}>Weight [3]</Clickable>
+                <Clickable click={() => this.onChange(5, "Weight [5]")}>Weight [5]</Clickable>
             </DropDown>
         );
     }

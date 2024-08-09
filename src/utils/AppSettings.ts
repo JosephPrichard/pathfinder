@@ -4,14 +4,13 @@
 
 import { SPEED_MIN } from "../components/SettingPanels";
 
-interface AppSettings
-{
-    showArrows: boolean,
-    delayInc: number,
-    algorithm: string,
-    heuristicKey: string,
-    navigatorKey: string,
-    bidirectional: boolean
+interface AppSettings {
+    showArrows: boolean;
+    delayInc: number;
+    algorithm: string;
+    heuristicKey: string;
+    navigatorKey: string;
+    bidirectional: boolean;
 }
 
 export function getDefaultSettings(): AppSettings {
@@ -19,11 +18,11 @@ export function getDefaultSettings(): AppSettings {
     return {
         showArrows: true,
         delayInc: defaultDelayInc >= SPEED_MIN ? defaultDelayInc : SPEED_MIN,
-        algorithm: 'a*',
-        heuristicKey: 'manhattan',
-        navigatorKey: 'plus',
-        bidirectional: false
-    }
+        algorithm: "a*",
+        heuristicKey: "manhattan",
+        navigatorKey: "plus",
+        bidirectional: false,
+    };
 }
 
 export default AppSettings;

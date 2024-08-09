@@ -2,35 +2,36 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React from 'react';
+import React from "react";
 
 interface Props {
-    boxStyle: string,
-    defaultChecked: boolean,
-    disabled?: boolean,
-    onChange: (checked: boolean) => void
+    boxStyle: string;
+    defaultChecked: boolean;
+    disabled?: boolean;
+    onChange: (checked: boolean) => void;
 }
 
 interface State {
-    checked: boolean
+    checked: boolean;
 }
 
 class Checkbox extends React.Component<Props, State> {
     public static defaultProps = {
-        disabled: false
+        disabled: false,
     };
 
     constructor(props: Props) {
         super(props);
         this.state = {
-            checked: this.props.defaultChecked
+            checked: this.props.defaultChecked,
         };
     }
 
     onChange() {
         this.setState(
-            prevState => ({checked: !prevState.checked}),
-            () => this.props.onChange(this.state.checked));
+            (prevState) => ({ checked: !prevState.checked }),
+            () => this.props.onChange(this.state.checked)
+        );
     }
 
     render() {
@@ -38,7 +39,7 @@ class Checkbox extends React.Component<Props, State> {
             <div>
                 <input
                     checked={this.state.checked}
-                    type='checkbox'
+                    type="checkbox"
                     disabled={this.props.disabled}
                     className={this.props.boxStyle}
                     onKeyPress={() => this.onChange()}
@@ -47,7 +48,7 @@ class Checkbox extends React.Component<Props, State> {
                 {this.props.children}
             </div>
         );
-    };
+    }
 }
 
 export default Checkbox;

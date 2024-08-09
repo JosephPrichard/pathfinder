@@ -44,8 +44,8 @@ export abstract class TerrainGenerator {
     protected getSolid() {
         return {
             pathCost: 1,
-            isSolid: true
-        }
+            isSolid: true,
+        };
     }
 
     protected shouldIgnore(point: Point) {
@@ -90,44 +90,39 @@ export class TerrainMazeGenerator extends TerrainGenerator {
         const grid = new RectGrid(this.width, this.height);
 
         if (topLeft === undefined) {
-            topLeft = {x: 1, y: 1};
+            topLeft = { x: 1, y: 1 };
         }
         if (bottomRight === undefined) {
-            bottomRight = {x: grid.getWidth() - 2, y: grid.getHeight() - 2};
+            bottomRight = { x: grid.getWidth() - 2, y: grid.getHeight() - 2 };
         }
 
         for (let x = topLeft.x - 1; x <= bottomRight.x + 1; x++) {
             this.draw(grid, {
-                point: {x: x, y: topLeft.y - 1},
-                data: this.getSolid()
+                point: { x: x, y: topLeft.y - 1 },
+                data: this.getSolid(),
             });
             this.draw(grid, {
-                point: {x: x, y: bottomRight.y + 1},
-                data: this.getSolid()
+                point: { x: x, y: bottomRight.y + 1 },
+                data: this.getSolid(),
             });
         }
 
         for (let y = topLeft.y - 1; y <= bottomRight.y + 1; y++) {
             this.draw(grid, {
-                point: {x: topLeft.x - 1, y: y},
-                data: this.getSolid()
+                point: { x: topLeft.x - 1, y: y },
+                data: this.getSolid(),
             });
             this.draw(grid, {
-                point: {x: bottomRight.x + 1, y: y},
-                data: this.getSolid()
+                point: { x: bottomRight.x + 1, y: y },
+                data: this.getSolid(),
             });
         }
 
-        this.divide(grid, {
-            topLeft: topLeft,
-            bottomRight: bottomRight,
-        });
-
+        this.divide(grid, { topLeft, bottomRight });
         return grid;
     }
 
     divide(grid: Grid, chamber: Chamber) {
-
         const width = TerrainMazeGenerator.widthOf(chamber);
         const height = TerrainMazeGenerator.heightOf(chamber);
         const min = chamber.topLeft;
@@ -140,48 +135,46 @@ export class TerrainMazeGenerator extends TerrainGenerator {
                 const toDraw: Tile[] = [];
                 for (let y = min.y; y <= max.y; y++) {
                     toDraw.push({
-                        point: {x: randX, y: y},
-                        data: this.getTerrain()
+                        point: { x: randX, y: y },
+                        data: this.getTerrain(),
                     });
                 }
 
                 let edgeBlocked = false;
 
-                let tile = grid.get({x: randX, y: min.y - 1});
+                let tile = grid.get({ x: randX, y: min.y - 1 });
                 if (TerrainMazeGenerator.canDrawHole(tile)) {
                     toDraw.push({
-                        point: {x: randX, y: min.y},
-                        data: createTileData(false)
+                        point: { x: randX, y: min.y },
+                        data: createTileData(false),
                     });
                     edgeBlocked = true;
                 }
 
-                tile = grid.get({x: randX, y: max.y + 1});
+                tile = grid.get({ x: randX, y: max.y + 1 });
                 if (TerrainMazeGenerator.canDrawHole(tile)) {
                     toDraw.push({
-                        point: {x: randX, y: max.y},
-                        data: createTileData(false)
+                        point: { x: randX, y: max.y },
+                        data: createTileData(false),
                     });
                     edgeBlocked = true;
                 }
 
                 if (!edgeBlocked) {
-                    const randY = getRand(
-                        min.y, max.y,
-                    );
+                    const randY = getRand(min.y, max.y);
                     toDraw.push({
-                        point: {x: randX, y: randY},
-                        data: createTileData(false)
+                        point: { x: randX, y: randY },
+                        data: createTileData(false),
                     });
                 }
                 this.drawArr(grid, toDraw);
 
                 const leftChamber = {
                     topLeft: chamber.topLeft,
-                    bottomRight: {x: randX - 1, y: chamber.bottomRight.y},
+                    bottomRight: { x: randX - 1, y: chamber.bottomRight.y },
                 };
                 const rightChamber = {
-                    topLeft: {x: randX + 1, y: chamber.topLeft.y},
+                    topLeft: { x: randX + 1, y: chamber.topLeft.y },
                     bottomRight: chamber.bottomRight,
                 };
                 this.divide(grid, leftChamber);
@@ -194,27 +187,27 @@ export class TerrainMazeGenerator extends TerrainGenerator {
                 const toDraw: Tile[] = [];
                 for (let x = min.x; x <= max.x; x++) {
                     toDraw.push({
-                        point: {x: x, y: randY},
-                        data: this.getTerrain()
+                        point: { x: x, y: randY },
+                        data: this.getTerrain(),
                     });
                 }
 
                 let edgeBlocked = false;
 
-                let tile = grid.get({x: min.x - 1, y: randY});
+                let tile = grid.get({ x: min.x - 1, y: randY });
                 if (TerrainMazeGenerator.canDrawHole(tile)) {
                     toDraw.push({
-                        point: {x: min.x, y: randY},
-                        data: createTileData(false)
+                        point: { x: min.x, y: randY },
+                        data: createTileData(false),
                     });
                     edgeBlocked = true;
                 }
 
-                tile = grid.get({x: max.x + 1, y: randY});
+                tile = grid.get({ x: max.x + 1, y: randY });
                 if (TerrainMazeGenerator.canDrawHole(tile)) {
                     toDraw.push({
-                        point: {x: max.x, y: randY},
-                        data: createTileData(false)
+                        point: { x: max.x, y: randY },
+                        data: createTileData(false),
                     });
                     edgeBlocked = true;
                 }
@@ -222,8 +215,8 @@ export class TerrainMazeGenerator extends TerrainGenerator {
                 if (!edgeBlocked) {
                     const randX = getRand(min.x, max.x);
                     toDraw.push({
-                        point: {x: randX, y: randY},
-                        data: createTileData(false)
+                        point: { x: randX, y: randY },
+                        data: createTileData(false),
                     });
                 }
 
@@ -231,10 +224,10 @@ export class TerrainMazeGenerator extends TerrainGenerator {
 
                 const topChamber = {
                     topLeft: chamber.topLeft,
-                    bottomRight: {x: chamber.bottomRight.x, y: randY - 1},
+                    bottomRight: { x: chamber.bottomRight.x, y: randY - 1 },
                 };
                 const bottomChamber = {
-                    topLeft: {x: chamber.topLeft.x, y: randY + 1},
+                    topLeft: { x: chamber.topLeft.x, y: randY + 1 },
                     bottomRight: chamber.bottomRight,
                 };
 
@@ -245,8 +238,7 @@ export class TerrainMazeGenerator extends TerrainGenerator {
     }
 
     private drawArr(grid: Grid, tiles: Tile[]) {
-        for (const tile of tiles)
-            this.draw(grid, tile);
+        for (const tile of tiles) this.draw(grid, tile);
     }
 }
 
@@ -276,20 +268,20 @@ export class TerrainRandomGenerator extends TerrainGenerator {
     generateTerrain(topLeft?: Point, bottomRight?: Point) {
         const grid = new RectGrid(this.width, this.height);
         if (topLeft === undefined) {
-            topLeft = {x: 1, y: 1};
+            topLeft = { x: 1, y: 1 };
         }
         if (bottomRight === undefined) {
             bottomRight = {
                 x: grid.getWidth() - 2,
-                y: grid.getHeight() - 2
+                y: grid.getHeight() - 2,
             };
         }
         for (let x = topLeft.x - 1; x <= bottomRight.x + 1; x++) {
             for (let y = topLeft.y - 1; y <= bottomRight.y + 1; y++) {
                 if (getRand(0, 3) === 0) {
                     this.draw(grid, {
-                        point: {x: x, y: y},
-                        data: this.getTerrain()
+                        point: { x: x, y: y },
+                        data: this.getTerrain(),
                     });
                 }
             }

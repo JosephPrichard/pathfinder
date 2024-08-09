@@ -18,8 +18,8 @@ export interface Tile {
 export function createTileData(isSolid: boolean): TileData {
     return {
         pathCost: 1,
-        isSolid: isSolid
-    }
+        isSolid: isSolid,
+    };
 }
 
 export interface Grid {
@@ -47,7 +47,7 @@ export interface Grid {
 
     isEmpty(point: Point): boolean;
 
-    clone(): Grid,
+    clone(): Grid;
 
     cloneNewSize(width: number, height: number): Grid;
 }
@@ -78,8 +78,8 @@ export class RectGrid implements Grid {
     get(point: Point) {
         return {
             point: this.tiles[point.y][point.x].point,
-            data: this.tiles[point.y][point.x].data
-        }
+            data: this.tiles[point.y][point.x].data,
+        };
     }
 
     mutate(point: Point, data: TileData) {
@@ -91,16 +91,14 @@ export class RectGrid implements Grid {
     }
 
     mutateDefault(point: Point, solid: boolean) {
-        this.mutate(
-            point, createTileData(solid)
-        );
+        this.mutate(point, createTileData(solid));
     }
 
     output(console: Console) {
         for (let y = 0; y < this.height; y++) {
-            let str = '';
+            let str = "";
             for (let x = 0; x < this.width; x++) {
-                str += this.tiles[y][x].data.isSolid + ', ';
+                str += this.tiles[y][x].data.isSolid + ", ";
             }
             console.log(str);
         }
@@ -120,7 +118,7 @@ export class RectGrid implements Grid {
 
     isEmpty(point: Point) {
         const data = this.tiles[point.y][point.x].data;
-        return data.pathCost === 1 && !data.isSolid
+        return data.pathCost === 1 && !data.isSolid;
     }
 
     clone() {
@@ -128,8 +126,9 @@ export class RectGrid implements Grid {
         for (let y = 0; y < grid.height; y++) {
             for (let x = 0; x < grid.width; x++) {
                 const point = {
-                    x: x, y: y
-                }
+                    x: x,
+                    y: y,
+                };
                 grid.mutateTile(this.get(point));
             }
         }
@@ -141,8 +140,9 @@ export class RectGrid implements Grid {
         for (let y = 0; y < grid.height; y++) {
             for (let x = 0; x < grid.width; x++) {
                 const point = {
-                    x: x, y: y
-                }
+                    x: x,
+                    y: y,
+                };
                 if (this.inBounds(point)) {
                     grid.mutateTile(this.get(point));
                 }
@@ -152,7 +152,6 @@ export class RectGrid implements Grid {
     }
 }
 
-
 function createEmptyGrid(width: number, height: number) {
     const nodes: Tile[][] = [];
     for (let y = 0; y < height; y++) {
@@ -160,9 +159,10 @@ function createEmptyGrid(width: number, height: number) {
         for (let x = 0; x < width; x++) {
             row.push({
                 point: {
-                    x: x, y: y
+                    x: x,
+                    y: y,
                 },
-                data: createTileData(false)
+                data: createTileData(false),
             });
         }
         nodes.push(row);
@@ -197,28 +197,28 @@ export class PlusNavigator extends Navigator {
     neighbors(point: Point) {
         const tiles: Tile[] = [];
         if (point.x + UNIT < this.grid.getWidth()) {
-            const tile = this.grid.get({x: point.x + UNIT, y: point.y});
+            const tile = this.grid.get({ x: point.x + UNIT, y: point.y });
 
             if (!tile.data.isSolid) {
                 tiles.push(tile);
             }
         }
         if (point.y + UNIT < this.grid.getHeight()) {
-            const tile = this.grid.get({x: point.x, y: point.y + UNIT});
+            const tile = this.grid.get({ x: point.x, y: point.y + UNIT });
 
             if (!tile.data.isSolid) {
                 tiles.push(tile);
             }
         }
         if (point.x - UNIT >= 0) {
-            const tile = this.grid.get({x: point.x - UNIT, y: point.y});
+            const tile = this.grid.get({ x: point.x - UNIT, y: point.y });
 
             if (!tile.data.isSolid) {
                 tiles.push(tile);
             }
         }
         if (point.y - UNIT >= 0) {
-            const tile = this.grid.get({x: point.x, y: point.y - UNIT});
+            const tile = this.grid.get({ x: point.x, y: point.y - UNIT });
 
             if (!tile.data.isSolid) {
                 tiles.push(tile);
@@ -233,6 +233,6 @@ export class PlusNavigator extends Navigator {
     }
 
     getType() {
-        return 'plus';
+        return "plus";
     }
 }

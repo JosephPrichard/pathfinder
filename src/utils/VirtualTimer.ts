@@ -2,10 +2,9 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-class VirtualTimer
-{
+class VirtualTimer {
     private timeout: NodeJS.Timeout;
-    private readonly callback: () => void
+    private readonly callback: () => void;
     private timeStarted: number;
     private timeRemaining: number;
     private finished: boolean;
@@ -27,14 +26,14 @@ class VirtualTimer
     }
 
     pause() {
-        if(!this.finished) {
+        if (!this.finished) {
             clearTimeout(this.timeout);
             this.timeRemaining -= Date.now() - this.timeStarted;
         }
     }
 
     resume() {
-        if(!this.finished) {
+        if (!this.finished) {
             this.timeStarted = Date.now();
             this.timeout = setTimeout(() => {
                 this.callback();

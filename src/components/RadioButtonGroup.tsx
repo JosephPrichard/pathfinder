@@ -2,13 +2,13 @@
  * Copyright (c) Joseph Prichard 2022.
  */
 
-import React from 'react';
+import React from "react";
 
 interface Props {
-    boxStyle: string,
-    defaultChecked: number,
-    disabled: boolean,
-    onChange: (() => void)[]
+    boxStyle: string;
+    defaultChecked: number;
+    disabled: boolean;
+    onChange: (() => void)[];
 }
 
 interface State {
@@ -43,7 +43,7 @@ class RadioButtonGroup extends React.Component<Props, State> {
                 <div key={i}>
                     <input
                         checked={this.state.checked[i]}
-                        type='radio'
+                        type="radio"
                         disabled={this.props.disabled}
                         className={this.props.boxStyle}
                         onChange={() => this.onChange(i)}
@@ -53,7 +53,7 @@ class RadioButtonGroup extends React.Component<Props, State> {
             );
         }
         return radioButtons;
-    };
+    }
 }
 
 export default RadioButtonGroup;
